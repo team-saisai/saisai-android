@@ -1,0 +1,189 @@
+package com.choius323.saisai.ui.screen.home
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.FlashOn
+import androidx.compose.material.icons.outlined.LocalFireDepartment
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import coil3.compose.AsyncImage
+import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.model.CourseInfo
+import com.choius323.saisai.ui.theme.SaiTheme
+
+@Composable
+fun CourseCardSimple(
+    courseInfo: CourseInfo,
+    modifier: Modifier = Modifier,
+) {
+    Card(
+        modifier = modifier
+            .size(width = 170.dp, height = 240.dp),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surface
+        ),
+        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    ) {
+        Column {
+            // 상단 이미지 및 날짜 배지 섹션
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(160.dp)
+            ) {
+                // 배경 지도 이미지
+                AsyncImage(
+                    model = courseInfo.imageUrl,
+                    contentDescription = "챌린지 경로 이미지",
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Crop
+                )
+
+                // 날짜 정보 배지
+                DateBadge(
+                    date = courseInfo.endDate,
+                    modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+                )
+            }
+
+            // 하단 정보 섹션
+            Column(
+                modifier = Modifier.padding(horizontal = 12.dp)
+            ) {
+                Row {
+                    SaiText(
+                        text = "${courseInfo.startPlace} - ${courseInfo.endPlace}",
+                        color = MaterialTheme.colorScheme.onSurface,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        textAlign = null,
+                    )
+                }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    SaiText(
+                        text = "${courseInfo.distance} · 난이도 ",
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            color = MaterialTheme.colorScheme.onSurface,
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp
+                        )
+                    )
+                    SaiText(
+                        text = courseInfo.difficulty,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            color = Color(0xFFFFD700), // 노란색으로 강조
+                            fontWeight = FontWeight.Medium,
+                            fontSize = 12.sp
+                        )
+                    )
+                }
+
+                Spacer(modifier = Modifier.height(10.dp))
+
+                // 현재 도전 인원 정보
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(4.dp)
+                ) {
+                    Icon(
+                        imageVector = Icons.Outlined.FlashOn,
+                        contentDescription = "도전 아이콘",
+                        modifier = Modifier.size(16.dp),
+                        tint = Color(0xFF8A2BE2)
+                    )
+                    SaiText(
+                        text = "${courseInfo.challengerCount}명 도전 중",
+                        fontSize = 12.sp,
+                        color = Color(0xFF8A2BE2)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun DateBadge(date: String, modifier: Modifier = Modifier) {
+    Row(
+        modifier = modifier
+            .clip(RoundedCornerShape(4.dp))
+            .background(Color(0xFCDE6666))
+            .padding(horizontal = 6.dp, vertical = 4.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(4.dp)
+    ) {
+        Icon(
+            imageVector = Icons.Outlined.LocalFireDepartment,
+            contentDescription = "기간 아이콘",
+            tint = Color.White,
+            modifier = Modifier.size(20.dp)
+        )
+        SaiText(
+            text = "~ $date",
+            style = TextStyle(
+                color = Color.White,
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp
+            )
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+fun CourseCardSimplePreview() {
+    // 샘플 데이터
+    val sampleChallenge = CourseInfo(
+        courseId = 4,
+        imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image", // 실제 이미지 URL로 교체하세요.
+        endDate = "6/31",
+        startPlace = "여의도",
+        endPlace = "반포",
+        distance = "8.6km",
+        difficulty = "중",
+        challengerCount = 207
+    )
+
+    // MaterialTheme으로 감싸서 미리보기
+    SaiTheme {
+        Surface {
+            CourseCardSimple(courseInfo = sampleChallenge)
+        }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun DateBadgePreview() {
+    SaiTheme {
+        Surface {
+            DateBadge(date = "6/31")
+        }
+    }
+}

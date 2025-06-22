@@ -1,0 +1,26 @@
+package com.choius323.saisai.ui.screen.home
+
+import com.choius323.saisai.ui.model.BadgeInfo
+import com.choius323.saisai.ui.model.CourseInfo
+
+data class HomeUiState(
+    val name: String? = null,
+    val location: String = "",
+    val temperature: String = "",
+    val recentChallenge: CourseInfo? = null,
+    val trendChallenges: List<CourseInfo> = emptyList(),
+    val aroundChallenges: List<CourseInfo> = emptyList(),
+    val badges: List<BadgeInfo> = emptyList(),
+    val isLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val isLoaded: Boolean = false,
+)
+
+sealed interface HomeUiEvent {
+    data class LoadData(val isForceLoad: Boolean = false) : HomeUiEvent
+    data class CourseClicked(val courseId: Int) : HomeUiEvent
+}
+
+sealed interface HomeSideEffect {
+    data class GoToDetail(val courseId: Int) : HomeSideEffect
+}

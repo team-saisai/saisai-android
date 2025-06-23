@@ -7,7 +7,6 @@ import io.ktor.client.call.body
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
-import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
@@ -52,15 +51,18 @@ class CourseRemoteDataSourceImpl(
         sigun: String?,
     ): Result<CourseListResponseDto> = withContext(ioDispatcher) {
         try {
-            val response = client.get("http://43.202.239.148:8080/api/courses") {
+            val response = client.get("courses") {
                 header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
-                header(HttpHeaders.ContentType, ContentType.Application.Json)
                 parameter("page", page)
                 level?.let { parameter("level", it) }
                 distance?.let { parameter("distance", it) }
                 sigun?.let { parameter("sigun", it) }
             }
-            Result.success(response.body())
+            if (response.status.value in 200..299) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Network error: ${response.status.value} - ${response.status.description}"))
+            }
         } catch (e: Exception) {
             Result.failure(e)
         }

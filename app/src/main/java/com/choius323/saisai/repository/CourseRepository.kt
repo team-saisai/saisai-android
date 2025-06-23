@@ -4,36 +4,39 @@ import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.ui.model.CourseInfo
 import com.choius323.saisai.ui.model.CoursePage
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flowOn
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.withContext
 
 interface CourseRepository {
-    suspend fun getRecentCourse(): Result<CourseInfo>
+    suspend fun getRecentCourse(): Flow<Result<CourseInfo>>
     suspend fun getAllCourses(
         page: Int,
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<CoursePage>
+    ): Flow<Result<CoursePage>>
 }
 
 class CourseRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher,
     private val courseRemoteDataSource: CourseRemoteDataSource,
 ) : CourseRepository {
-    override suspend fun getRecentCourse(): Result<CourseInfo> = withContext(ioDispatcher) {
-        courseRemoteDataSource.getRecentCourse()
-    }
+    override suspend fun getRecentCourse(): Flow<Result<CourseInfo>> =
+        courseRemoteDataSource.getRecentCourse().flowOn(ioDispatcher)
 
     override suspend fun getAllCourses(
         page: Int,
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<CoursePage> = withContext(ioDispatcher) {
-        courseRemoteDataSource.getAllCourses(page, level, distance, sigun)
-            .mapCatching { responseDto ->
+    ): Flow<Result<CoursePage>> = withContext(ioDispatcher) {
+        courseRemoteDataSource.getAllCourses(page, level, distance, sigun).map { result ->
+            result.mapCatching { responseDto ->
                 // DTO를 UI 모델로 변환
                 responseDto.toCoursePage()
             }
+        }.flowOn(ioDispatcher)
     }
 }

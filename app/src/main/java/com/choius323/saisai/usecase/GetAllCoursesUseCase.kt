@@ -2,6 +2,7 @@ package com.choius323.saisai.usecase
 
 import com.choius323.saisai.repository.CourseRepository
 import com.choius323.saisai.ui.model.CoursePage
+import kotlinx.coroutines.flow.Flow
 
 class GetAllCoursesUseCase(
     private val courseRepository: CourseRepository,
@@ -11,7 +12,5 @@ class GetAllCoursesUseCase(
         level: Int? = null,
         distance: Int? = null,
         sigun: String? = null,
-    ): Result<CoursePage> {
-        return courseRepository.getAllCourses(page, level, distance, sigun)
-    }
+    ): Flow<Result<CoursePage>> = courseRepository.getAllCourses(page, level, distance, sigun)
 }

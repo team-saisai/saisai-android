@@ -11,23 +11,25 @@ import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 
 interface CourseRemoteDataSource {
-    suspend fun getRecentCourse(): Result<CourseInfo>
+    suspend fun getRecentCourse(): Flow<Result<CourseInfo>>
     suspend fun getAllCourses(
         page: Int,
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<SaiResponseDto<CourseDataDto>> // Ktor 응답 등을 직접 반환하거나, Result 래퍼를 사용할 수 있습니다. 여기서는 예시로 Result를 사용합니다.
+    ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
-    suspend fun getCourseDetail(courseName: String): Result<SaiResponseDto<CourseDetailDataDto>>
+    suspend fun getCourseDetail(courseName: String): Flow<Result<SaiResponseDto<CourseDetailDataDto>>>
 }
 
 class CourseRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : CourseRemoteDataSource {
-    override suspend fun getRecentCourse(): Result<CourseInfo> {
+    override suspend fun getRecentCourse(): Flow<Result<CourseInfo>> = flow {
         delay(1000)
         val mockCourse = CourseInfo(
             courseId = 1,
@@ -41,7 +43,7 @@ class CourseRemoteDataSourceImpl(
             themes = listOf("국토종주", "자전거길"),
             completedCount = 75
         )
-        return Result.success(mockCourse)
+        emit(Result.success(mockCourse))
     }
 
     override suspend fun getAllCourses(
@@ -49,8 +51,8 @@ class CourseRemoteDataSourceImpl(
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<SaiResponseDto<CourseDataDto>> {
-        return try {
+    ): Flow<Result<SaiResponseDto<CourseDataDto>>> = flow {
+        emit(runCatching {
             val response = client.get("courses") {
                 header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
                 parameter("page", page)
@@ -59,31 +61,31 @@ class CourseRemoteDataSourceImpl(
                 sigun?.let { parameter("sigun", it) }
             }
             if (response.status.value in 200..299) {
-                Result.success(response.body())
+                Result.success(response.body<SaiResponseDto<CourseDataDto>>())
             } else {
                 Result.failure(Exception("Network error: ${response.status.value} - ${response.status.description}"))
             }
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Result.failure(e)
-        }
+        })
     }
 
     override suspend fun getCourseDetail(
         courseName: String,
-    ): Result<SaiResponseDto<CourseDetailDataDto>> {
-        return try {
+    ): Flow<Result<SaiResponseDto<CourseDetailDataDto>>> = flow {
+        emit(runCatching {
             val response = client.get("courses") {
                 header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
                 parameter("courseName", courseName)
             }
             if (response.status.value in 200..299) {
-                Result.success(response.body())
+                Result.success(response.body<SaiResponseDto<CourseDetailDataDto>>())
             } else {
                 Result.failure(Exception("Network error: ${response.status.value} - ${response.status.description}"))
             }
-        } catch (e: Exception) {
+        }.getOrElse { e ->
             Result.failure(e)
-        }
+        })
     }
 
     private val tempAccessToken = "YOUR_ACCESS_TOKEN" // 임시 토큰

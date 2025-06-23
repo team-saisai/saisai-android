@@ -1,14 +1,15 @@
 package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
-import com.choius323.saisai.data.course.remote.model.CourseListResponseDto
+import com.choius323.saisai.data.course.remote.model.CourseDataDto
+import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
 
 
-fun CourseListResponseDto.toCoursePage(): CoursePage {
-    val content = this.data.content.map { courseItemDto ->
+fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
+    val content = data.content.map { courseItemDto ->
         CourseListItem(
             courseId = courseItemDto.courseId,
             courseName = courseItemDto.courseName,

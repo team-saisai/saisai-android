@@ -1,6 +1,8 @@
 package com.choius323.saisai.data.course.remote
 
-import com.choius323.saisai.data.course.remote.model.CourseListResponseDto
+import com.choius323.saisai.data.course.remote.model.CourseDataDto
+import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
+import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.CourseInfo
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -19,8 +21,9 @@ interface CourseRemoteDataSource {
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<CourseListResponseDto> // Ktor 응답 등을 직접 반환하거나, Result 래퍼를 사용할 수 있습니다. 여기서는 예시로 Result를 사용합니다.
+    ): Result<SaiResponseDto<CourseDataDto>> // Ktor 응답 등을 직접 반환하거나, Result 래퍼를 사용할 수 있습니다. 여기서는 예시로 Result를 사용합니다.
 
+    suspend fun getCourseDetail(courseName: String): Result<SaiResponseDto<CourseDetailDataDto>>
 }
 
 class CourseRemoteDataSourceImpl(
@@ -49,7 +52,7 @@ class CourseRemoteDataSourceImpl(
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<CourseListResponseDto> = withContext(ioDispatcher) {
+    ): Result<SaiResponseDto<CourseDataDto>> = withContext(ioDispatcher) {
         try {
             val response = client.get("courses") {
                 header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
@@ -57,6 +60,24 @@ class CourseRemoteDataSourceImpl(
                 level?.let { parameter("level", it) }
                 distance?.let { parameter("distance", it) }
                 sigun?.let { parameter("sigun", it) }
+            }
+            if (response.status.value in 200..299) {
+                Result.success(response.body())
+            } else {
+                Result.failure(Exception("Network error: ${response.status.value} - ${response.status.description}"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
+    }
+
+    override suspend fun getCourseDetail(
+        courseName: String,
+    ): Result<SaiResponseDto<CourseDetailDataDto>> = withContext(ioDispatcher) {
+        try {
+            val response = client.get("courses") {
+                header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
+                parameter("courseName", courseName)
             }
             if (response.status.value in 200..299) {
                 Result.success(response.body())

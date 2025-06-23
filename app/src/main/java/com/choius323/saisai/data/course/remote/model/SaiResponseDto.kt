@@ -3,8 +3,8 @@ package com.choius323.saisai.data.course.remote.model
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class CourseListResponseDto(
+data class SaiResponseDto<T>(
     val code: String,
     val message: String,
-    val data: CourseDataDto,
+    val data: T,
 )

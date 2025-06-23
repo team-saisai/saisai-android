@@ -45,7 +45,7 @@ class CourseRepositoryImpl(
     override suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>> =
         courseRemoteDataSource.getCourseDetail(courseName).map { result ->
             result.mapCatching { responseDto ->
-                responseDto.data.toCourseDetailInfo() // DTO 내부의 data 객체에서 변환 함수 호출
+                responseDto.data.toCourseDetailInfo()
             }
-        }.flowOn(ioDispatcher) // UI 스레드 부담을 줄이기 위해 IO 디스패처에서 실행
+        }.flowOn(ioDispatcher)
 }

@@ -8,4 +8,6 @@ data class CourseListItem(
     val distance: Double,
     val estimatedTime: Double,
     val sigun: String,
+    val imageUrl: String?,
+    val challengeInfo: ChallengeInfo?,
 )

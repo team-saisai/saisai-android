@@ -2,10 +2,14 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
+import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
+import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
+import com.choius323.saisai.ui.model.CourseDetailInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
+import com.choius323.saisai.ui.model.RewardInfo
 
 
 fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
@@ -38,5 +42,31 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
 fun ChallengeInfoDto?.toChallengeInfo() = this?.run {
     ChallengeInfo(
         challengeStatus = challengeStatus, challengeEndedTime = challengeEndedTime
+    )
+}
+
+fun CourseDetailDataDto.toCourseDetailInfo(): CourseDetailInfo {
+    return CourseDetailInfo(
+        courseId = courseId,
+        courseName = courseName,
+        contents = contents,
+        level = level,
+        distanceInKm = distance,
+        estimatedTimeInHours = estimatedTime,
+        sigun = sigun,
+        tourInfo = tourInfo,
+        travelerInfo = travelerInfo,
+        gpxPath = gpxpath,
+        completeUserCount = completeUserCount,
+        rewardInfo = rewardInfo?.toRewardUiInfo()
+    )
+}
+
+fun RewardInfoDto.toRewardUiInfo(): RewardInfo {
+    return RewardInfo(
+        rewardName = rewardName,
+        rewardImageUrl = rewardImageUrl,
+        startedAt = startedAt,
+        endedAt = endedAt
     )
 }

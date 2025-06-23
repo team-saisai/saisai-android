@@ -1,6 +1,7 @@
 package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
+import com.choius323.saisai.ui.model.CourseDetailInfo
 import com.choius323.saisai.ui.model.CourseInfo
 import com.choius323.saisai.ui.model.CoursePage
 import kotlinx.coroutines.CoroutineDispatcher
@@ -17,6 +18,7 @@ interface CourseRepository {
         distance: Int?,
         sigun: String?,
     ): Flow<Result<CoursePage>>
+    suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>>
 }
 
 class CourseRepositoryImpl(
@@ -39,4 +41,11 @@ class CourseRepositoryImpl(
             }
         }.flowOn(ioDispatcher)
     }
+
+    override suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>> =
+        courseRemoteDataSource.getCourseDetail(courseName).map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toCourseDetailInfo() // DTO 내부의 data 객체에서 변환 함수 호출
+            }
+        }.flowOn(ioDispatcher) // UI 스레드 부담을 줄이기 위해 IO 디스패처에서 실행
 }

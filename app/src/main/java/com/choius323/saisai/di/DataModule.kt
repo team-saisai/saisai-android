@@ -1,6 +1,7 @@
 package com.choius323.saisai.di
 
 import android.util.Log
+import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSourceImpl
 import com.choius323.saisai.repository.CourseRepository
@@ -71,7 +72,7 @@ object KtorClient {
 
     val saiClient = this.defaultClient.config {
         defaultRequest {
-            url("http://43.202.239.148:8080/api/")
+            url(BuildConfig.SAI_BASE_URL)
         }
     }
 }

@@ -45,6 +45,7 @@ accompanist = "0.37.3"
 
 # Kakao
 kakaoMap = "2.12.8"
+kakaoCommon = "2.21.4"
 
 [libraries]
 # Kotlin
@@ -119,6 +120,7 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 
 # Kakao
 kakao-map = { module = "com.kakao.maps.open:android", version.ref = "kakaoMap" }
+kakao-common = { module = "com.kakao.sdk:v2-common", version.ref = "kakaoCommon" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

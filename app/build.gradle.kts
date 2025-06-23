@@ -42,15 +42,15 @@ android {
             )
             val kakaoKey = properties.getProperty("kakao.key")
             buildConfigField("String", "KAKAO_KEY", "\"$kakaoKey\"")
+            buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
         }
         debug {
             val kakaoTestKey = properties.getProperty("kakao.test.key")
             buildConfigField("String", "KAKAO_KEY", "\"$kakaoTestKey\"")
+            buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
         }
         create("releaseTest") {
             initWith(getByName("release"))
-            val kakaoTestKey = properties.getProperty("kakao.test.key")
-            buildConfigField("String", "KAKAO_KEY", "\"$kakaoTestKey\"")
         }
     }
     compileOptions {
@@ -127,7 +127,7 @@ dependencies {
 
     // Kakao
     implementation(libs.kakao.map)
-    implementation("com.kakao.sdk:v2-common:2.21.4")
+    implementation(libs.kakao.common)
 
     // Testing
     testImplementation(libs.junit)

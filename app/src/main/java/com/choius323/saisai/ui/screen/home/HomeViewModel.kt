@@ -29,17 +29,19 @@ class HomeViewModel(
         reduce {
             state.copy(isLoading = true)
         }
-        getRecentCourseUseCase().fold(onSuccess = { courseInfo ->
-            reduce {
-                state.copy(isLoading = false, recentChallenge = courseInfo, isLoaded = true)
-            }
-        }, onFailure = { exception ->
-            reduce {
-                state.copy(
-                    isLoading = false, errorMessage = exception.message ?: "Unknown error"
-                )
-            }
-        })
+        getRecentCourseUseCase().collect { result ->
+            result.fold(onSuccess = { courseInfo ->
+                reduce {
+                    state.copy(isLoading = false, recentChallenge = courseInfo, isLoaded = true)
+                }
+            }, onFailure = { exception ->
+                reduce {
+                    state.copy(
+                        isLoading = false, errorMessage = exception.message ?: "Unknown error"
+                    )
+                }
+            })
+        }
     }
 }
 

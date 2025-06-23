@@ -10,9 +10,7 @@ import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.parameter
 import io.ktor.http.HttpHeaders
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.withContext
 
 interface CourseRemoteDataSource {
     suspend fun getRecentCourse(): Result<CourseInfo>
@@ -27,10 +25,9 @@ interface CourseRemoteDataSource {
 }
 
 class CourseRemoteDataSourceImpl(
-    private val ioDispatcher: CoroutineDispatcher,
     private val client: HttpClient,
 ) : CourseRemoteDataSource {
-    override suspend fun getRecentCourse(): Result<CourseInfo> = withContext(ioDispatcher) {
+    override suspend fun getRecentCourse(): Result<CourseInfo> {
         delay(1000)
         val mockCourse = CourseInfo(
             courseId = 1,
@@ -44,7 +41,7 @@ class CourseRemoteDataSourceImpl(
             themes = listOf("국토종주", "자전거길"),
             completedCount = 75
         )
-        Result.success(mockCourse)
+        return Result.success(mockCourse)
     }
 
     override suspend fun getAllCourses(
@@ -52,8 +49,8 @@ class CourseRemoteDataSourceImpl(
         level: Int?,
         distance: Int?,
         sigun: String?,
-    ): Result<SaiResponseDto<CourseDataDto>> = withContext(ioDispatcher) {
-        try {
+    ): Result<SaiResponseDto<CourseDataDto>> {
+        return try {
             val response = client.get("courses") {
                 header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
                 parameter("page", page)
@@ -73,8 +70,8 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun getCourseDetail(
         courseName: String,
-    ): Result<SaiResponseDto<CourseDetailDataDto>> = withContext(ioDispatcher) {
-        try {
+    ): Result<SaiResponseDto<CourseDetailDataDto>> {
+        return try {
             val response = client.get("courses") {
                 header(HttpHeaders.Authorization, "Bearer $tempAccessToken")
                 parameter("courseName", courseName)

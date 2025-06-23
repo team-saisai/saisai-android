@@ -21,8 +21,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
-import org.koin.core.module.dsl.bind
-import org.koin.core.module.dsl.singleOf
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -86,9 +84,13 @@ val dataModule = module {
 
     single<CourseRemoteDataSource> {
         CourseRemoteDataSourceImpl(
-            get(named(IO_DISPATCHER)),
             get(named(SAI_CLIENT))
         )
     }
-    singleOf(::CourseRepositoryImpl) { bind<CourseRepository>() }
+    single<CourseRepository> {
+        CourseRepositoryImpl(
+            get(named(IO_DISPATCHER)),
+            get()
+        )
+    }
 }

@@ -1,15 +1,15 @@
 package com.choius323.saisai.ui.screen.home
 
 import com.choius323.saisai.ui.model.BadgeInfo
-import com.choius323.saisai.ui.model.CourseInfo
+import com.choius323.saisai.ui.model.CourseListItem
 
 data class HomeUiState(
     val name: String? = null,
     val location: String = "",
     val temperature: String = "",
-    val recentChallenge: CourseInfo? = null,
-    val trendChallenges: List<CourseInfo> = emptyList(),
-    val aroundChallenges: List<CourseInfo> = emptyList(),
+    val recentChallenge: CourseListItem? = null,
+    val popularChallenges: List<CourseListItem> = emptyList(),
+    val aroundChallenges: List<CourseListItem> = emptyList(),
     val badges: List<BadgeInfo> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,

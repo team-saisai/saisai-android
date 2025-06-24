@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.BadgeInfo
-import com.choius323.saisai.ui.model.CourseInfo
+import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -79,7 +79,7 @@ fun HomeScreen(
         location = uiState.location,
         temperature = uiState.temperature,
         recentChallenge = uiState.recentChallenge,
-        trendChallenges = uiState.trendChallenges,
+        trendChallenges = uiState.popularChallenges,
         aroundChallenges = uiState.aroundChallenges,
         badges = uiState.badges,
         modifier = modifier,
@@ -92,9 +92,9 @@ fun HomeScreenContent(
     name: String?,
     location: String,
     temperature: String,
-    recentChallenge: CourseInfo?,
-    trendChallenges: List<CourseInfo>,
-    aroundChallenges: List<CourseInfo>,
+    recentChallenge: CourseListItem?,
+    trendChallenges: List<CourseListItem>,
+    aroundChallenges: List<CourseListItem>,
     badges: List<BadgeInfo>,
     modifier: Modifier = Modifier,
     onEvent: (HomeUiEvent) -> Unit,
@@ -111,8 +111,8 @@ fun HomeScreenContent(
         Spacer(Modifier.height(40.dp))
         recentChallenge?.let {
             CourseCardSimple(
-                courseInfo = it,
-                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(it.courseId)) })
+                course = it,
+                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) })
             Spacer(Modifier.height(40.dp))
         }
         SaiText(
@@ -121,7 +121,9 @@ fun HomeScreenContent(
         if (trendChallenges.isNotEmpty()) {
             LazyRow {
                 items(trendChallenges) { courseInfo ->
-                    CourseCardSimple(courseInfo = courseInfo)
+                    CourseCardSimple(
+                        course = courseInfo,
+                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) })
                 }
             }
         } else {
@@ -134,12 +136,14 @@ fun HomeScreenContent(
         BadgeCollectionCard(badges)
         Spacer(Modifier.height(40.dp))
         SaiText(
-            text = "내 주변 코스", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
+            text = "내 주변 코스", fontSize = 18.sp, modifier = Modifier
+                .padding(bottom = 16.dp)
+                .clickable { onEvent(HomeUiEvent.CourseClicked(0)) }
         )
         if (aroundChallenges.isNotEmpty()) {
             LazyRow() {
                 items(aroundChallenges) { courseInfo ->
-                    CourseCardSimple(courseInfo = courseInfo)
+                    CourseCardSimple(course = courseInfo)
                 }
             }
         } else {
@@ -152,22 +156,50 @@ fun HomeScreenContent(
 @Composable
 fun HomeScreenContentPreview() {
     val dummyCourses = listOf(
-        CourseInfo(
-            1, "img1.url", "2024-12-31", "서울", "부산", "450km", "상", 100, listOf("국토종주", "자연"), 50
-        ), CourseInfo(
-            2, "img2.url", "2025-01-15", "강릉", "속초", "80km", "중", 250, listOf("해안도로"), 120
-        ), CourseInfo(
-            3,
-            "img3.url",
-            "2024-11-30",
-            "제주 한바퀴",
-            "제주 한바퀴",
-            "234km",
-            "중",
-            500,
-            listOf("섬일주", "해안"),
-            200
-        )
+        CourseListItem(
+            courseId = "COURSE_ID_12345",
+            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
+            courseName = "여의도 - 반포",
+            summary = "dapibus",
+            level = 2,
+            distance = 8.6,
+            estimatedTime = 50.0,
+            sigun = "서울시 강남구",
+            challengeInfo = null,
+        ),
+        CourseListItem(
+            courseId = "COURSE_ID_67890",
+            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
+            courseName = "한강 수영장 - 여의도",
+            summary = "dapibus",
+            level = 1,
+            distance = 5.2,
+            estimatedTime = 30.0,
+            sigun = "서울시 강남구",
+            challengeInfo = null,
+        ),
+        CourseListItem(
+            courseId = "COURSE_ID_12345",
+            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
+            courseName = "여의도 - 반포",
+            summary = "dapibus",
+            level = 2,
+            distance = 8.6,
+            estimatedTime = 50.0,
+            sigun = "서울시 강남구",
+            challengeInfo = null,
+        ),
+        CourseListItem(
+            courseId = "COURSE_ID_67890",
+            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
+            courseName = "한강 수영장 - 여의도",
+            summary = "dapibus",
+            level = 1,
+            distance = 5.2,
+            estimatedTime = 30.0,
+            sigun = "서울시 강남구",
+            challengeInfo = null,
+        ),
     )
     val dummyBadges = listOf(
         BadgeInfo(1, "첫 완주", "badge1.url"),
@@ -175,7 +207,7 @@ fun HomeScreenContentPreview() {
         BadgeInfo(3, "산악왕", "badge3.url")
     )
 
-    SaiTheme { // Assuming your theme is named SaiSaiTheme. Adjust if necessary.
+    SaiTheme {
         HomeScreenContent(
             name = "사이",
             location = "서울시 강남구",
@@ -193,7 +225,7 @@ fun HomeScreenContentPreview() {
 @Preview(showBackground = true, name = "HomeScreenContent Preview (No Contents Challenge)")
 @Composable
 fun HomeScreenContentPreviewNoContents() {
-    val dummyCourses = emptyList<CourseInfo>()
+    val dummyCourses = emptyList<CourseListItem>()
     val dummyBadges = emptyList<BadgeInfo>()
 
     SaiTheme { // Assuming your theme is named SaiSaiTheme. Adjust if necessary.

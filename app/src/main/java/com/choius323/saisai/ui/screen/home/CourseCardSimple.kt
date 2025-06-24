@@ -33,12 +33,12 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.model.CourseInfo
+import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
 
 @Composable
 fun CourseCardSimple(
-    courseInfo: CourseInfo,
+    course: CourseListItem,
     modifier: Modifier = Modifier,
 ) {
     Card(
@@ -59,7 +59,7 @@ fun CourseCardSimple(
             ) {
                 // 배경 지도 이미지
                 AsyncImage(
-                    model = courseInfo.imageUrl,
+                    model = course.imageUrl,
                     contentDescription = "챌린지 경로 이미지",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -67,7 +67,7 @@ fun CourseCardSimple(
 
                 // 날짜 정보 배지
                 DateBadge(
-                    date = courseInfo.endDate,
+                    date = "6/31",
                     modifier = Modifier.padding(top = 5.dp, start = 5.dp)
                 )
             }
@@ -78,7 +78,7 @@ fun CourseCardSimple(
             ) {
                 Row {
                     SaiText(
-                        text = "${courseInfo.startPlace} - ${courseInfo.endPlace}",
+                        text = course.courseName,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
@@ -87,7 +87,7 @@ fun CourseCardSimple(
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SaiText(
-                        text = "${courseInfo.distance} · 난이도 ",
+                        text = "${course.distance} · 난이도 ",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Medium,
@@ -95,7 +95,7 @@ fun CourseCardSimple(
                         )
                     )
                     SaiText(
-                        text = courseInfo.difficulty,
+                        text = course.level.toString(),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             color = Color(0xFFFFD700), // 노란색으로 강조
                             fontWeight = FontWeight.Medium,
@@ -118,7 +118,7 @@ fun CourseCardSimple(
                         tint = Color(0xFF8A2BE2)
                     )
                     SaiText(
-                        text = "${courseInfo.challengerCount}명 도전 중",
+                        text = "${course.challengeInfo ?: 102}명 도전 중",
                         fontSize = 12.sp,
                         color = Color(0xFF8A2BE2)
                     )
@@ -159,21 +159,21 @@ private fun DateBadge(date: String, modifier: Modifier = Modifier) {
 @Composable
 fun CourseCardSimplePreview() {
     // 샘플 데이터
-    val sampleChallenge = CourseInfo(
-        courseId = 4,
-        imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image", // 실제 이미지 URL로 교체하세요.
-        endDate = "6/31",
-        startPlace = "여의도",
-        endPlace = "반포",
-        distance = "8.6km",
-        difficulty = "중",
-        challengerCount = 207
+    val sampleChallenge = CourseListItem(
+        courseId = "COURSE_ID_12345",
+        imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
+        courseName = "여의도 - 반포",
+        summary = "dapibus",
+        level = 2,
+        distance = 8.6,
+        estimatedTime = 50.0,
+        sigun = "서울시 강남구",
+        challengeInfo = null,
     )
 
-    // MaterialTheme으로 감싸서 미리보기
     SaiTheme {
         Surface {
-            CourseCardSimple(courseInfo = sampleChallenge)
+            CourseCardSimple(course = sampleChallenge)
         }
     }
 }

@@ -2,16 +2,16 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.ui.model.CourseDetailInfo
-import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.PopularChallengeListItem
+import com.choius323.saisai.ui.model.RecentCourse
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface CourseRepository {
-    suspend fun getRecentCourse(): Flow<Result<CourseListItem>>
+    suspend fun getRecentCourse(): Flow<Result<RecentCourse>>
     suspend fun getAllCourses(
         page: Int,
         status: String? = null,
@@ -25,8 +25,12 @@ class CourseRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher,
     private val courseRemoteDataSource: CourseRemoteDataSource,
 ) : CourseRepository {
-    override suspend fun getRecentCourse(): Flow<Result<CourseListItem>> =
-        courseRemoteDataSource.getRecentCourse().flowOn(ioDispatcher)
+    override suspend fun getRecentCourse(): Flow<Result<RecentCourse>> =
+        courseRemoteDataSource.getRecentCourse().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toCourseListItem()
+            }
+        }.flowOn(ioDispatcher)
 
     override suspend fun getAllCourses(
         page: Int,

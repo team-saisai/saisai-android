@@ -49,7 +49,7 @@ class HomeViewModel(
 
                 state.copy(
                     isLoading = false,
-                    recentChallenge = recentData,
+                    recentCourse = recentData,
                     popularChallenges = popularData,
                     errorMessage = null,
                     isLoaded = true
@@ -57,7 +57,7 @@ class HomeViewModel(
             }
             recentResult.fold(onSuccess = { courseInfo ->
                 reduce {
-                    state.copy(isLoading = false, recentChallenge = courseInfo, isLoaded = true)
+                    state.copy(isLoading = false, recentCourse = courseInfo, isLoaded = true)
                 }
             }, onFailure = { exception ->
                 reduce {

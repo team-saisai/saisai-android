@@ -4,6 +4,7 @@ import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
+import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
@@ -11,8 +12,10 @@ import com.choius323.saisai.ui.model.CourseDetailInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.PopularChallengeListItem
+import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RewardInfo
 import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 
 fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
@@ -86,5 +89,16 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
         participantCount = participantCount,
         sigun = sigun,
         imageUrl = imageUrl,
+    )
+}
+
+fun RecentCourseDto.toCourseListItem(): RecentCourse {
+    return RecentCourse(
+        courseName = courseName,
+        distance = distance,
+        sigun = sigun,
+        progressRate = progressRate,
+        recentDateAt = LocalDateTime.parse(recentRideAt, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+        imageUrl = courseImageUrl
     )
 }

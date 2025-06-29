@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.home
 
+import android.R.attr.level
 import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -34,6 +35,7 @@ import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.PopularChallengeListItem
+import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -80,7 +82,7 @@ fun HomeScreen(
         name = uiState.name,
         location = uiState.location,
         temperature = uiState.temperature,
-        recentChallenge = uiState.recentChallenge,
+        recentChallenge = uiState.recentCourse,
         trendChallenges = uiState.popularChallenges,
         aroundChallenges = uiState.aroundChallenges,
         badges = uiState.badges,
@@ -94,7 +96,7 @@ fun HomeScreenContent(
     name: String?,
     location: String,
     temperature: String,
-    recentChallenge: CourseListItem?,
+    recentChallenge: RecentCourse?,
     trendChallenges: List<PopularChallengeListItem>,
     aroundChallenges: List<CourseListItem>,
     badges: List<BadgeInfo>,
@@ -251,13 +253,22 @@ fun HomeScreenContentPreview() {
             imageUrl = ""
         )
     )
+    val dummyRecentCourse = RecentCourse(
+        courseName = "Chase McDonald",
+        distance = 24.25,
+        sigun = "sententiae",
+        progressRate = 26.27,
+        recentDateAt = LocalDateTime.now().minusDays(3),
+        imageUrl = "http://www.bing.com/search?q=vitae"
+
+    )
 
     SaiTheme {
         HomeScreenContent(
             name = "사이",
             location = "서울시 강남구",
             temperature = "25°C",
-            recentChallenge = dummyCourses.first(),
+            recentChallenge = dummyRecentCourse,
             trendChallenges = dummyTrendChallenges,
             aroundChallenges = dummyCourses.takeLast(2),
             badges = dummyBadges,

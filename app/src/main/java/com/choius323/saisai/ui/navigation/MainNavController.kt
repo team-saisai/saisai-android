@@ -12,6 +12,7 @@ import androidx.navigation.toRoute
 import com.choius323.saisai.ui.screen.course.CourseScreen
 import com.choius323.saisai.ui.screen.coursedetail.CourseDetailScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
+import com.choius323.saisai.ui.screen.login.LoginScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
 
 @Stable
@@ -25,7 +26,7 @@ fun MainNavController(
     NavHost(
         navController = navController.navController,
         modifier = Modifier,
-        startDestination = MainNavItem.BottomNavItem.Home,
+        startDestination = MainNavItem.Login,
     ) {
         composable<MainNavItem.BottomNavItem.Home> { backStackEntry ->
             HomeScreen(
@@ -51,6 +52,12 @@ fun MainNavController(
                 courseDetail.courseId, Modifier
                     .fillMaxSize()
                     .statusBarsPadding()
+            )
+        }
+        composable<MainNavItem.Login> { backStackEntry ->
+            LoginScreen(
+                modifier = modifier,
+                goHome = { navController.navigate(MainNavItem.BottomNavItem.Home) }
             )
         }
     }

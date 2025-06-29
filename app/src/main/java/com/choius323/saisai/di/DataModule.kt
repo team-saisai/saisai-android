@@ -2,8 +2,12 @@ package com.choius323.saisai.di
 
 import android.util.Log
 import com.choius323.saisai.BuildConfig
+import com.choius323.saisai.data.account.AccountRemoteDataSource
+import com.choius323.saisai.data.account.AccountRemoteDataSourceImpl
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSourceImpl
+import com.choius323.saisai.repository.AccountRepository
+import com.choius323.saisai.repository.AccountRepositoryImpl
 import com.choius323.saisai.repository.CourseRepository
 import com.choius323.saisai.repository.CourseRepositoryImpl
 import io.ktor.client.HttpClient
@@ -93,5 +97,13 @@ val dataModule = module {
             get(named(IO_DISPATCHER)),
             get()
         )
+    }
+    single<AccountRemoteDataSource> {
+        AccountRemoteDataSourceImpl(
+            get(named(IO_DISPATCHER)), get(named(SAI_CLIENT))
+        )
+    }
+    single<AccountRepository> {
+        AccountRepositoryImpl(get())
     }
 }

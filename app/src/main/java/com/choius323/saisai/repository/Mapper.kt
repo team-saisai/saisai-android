@@ -3,13 +3,16 @@ package com.choius323.saisai.repository
 import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
+import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
 import com.choius323.saisai.ui.model.CourseDetailInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
+import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RewardInfo
+import org.threeten.bp.LocalDateTime
 
 
 fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
@@ -68,5 +71,19 @@ fun RewardInfoDto.toRewardUiInfo(): RewardInfo {
         rewardImageUrl = rewardImageUrl,
         startedAt = startedAt,
         endedAt = endedAt
+    )
+}
+
+fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListItem {
+    return PopularChallengeListItem(
+        courseName = courseName,
+        challengeStatus = challengeStatus,
+        distance = distance,
+        endedAt = LocalDateTime.parse(endedAt),
+        estimatedTime = estimatedTime,
+        level = level,
+        participantCount = participantCount,
+        sigun = sigun,
+        imageUrl = imageUrl,
     )
 }

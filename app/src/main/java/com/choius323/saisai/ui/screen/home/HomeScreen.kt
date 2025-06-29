@@ -33,9 +33,11 @@ import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
+import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectSideEffect
+import org.threeten.bp.LocalDateTime
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -93,7 +95,7 @@ fun HomeScreenContent(
     location: String,
     temperature: String,
     recentChallenge: CourseListItem?,
-    trendChallenges: List<CourseListItem>,
+    trendChallenges: List<PopularChallengeListItem>,
     aroundChallenges: List<CourseListItem>,
     badges: List<BadgeInfo>,
     modifier: Modifier = Modifier,
@@ -109,10 +111,15 @@ fun HomeScreenContent(
             name, location, temperature
         )
         Spacer(Modifier.height(40.dp))
-        recentChallenge?.let {
+        recentChallenge?.apply {
             CourseCardSimple(
-                course = it,
-                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) })
+                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) },
+                imageUrl = imageUrl ?: "",
+                sigun = sigun,
+                distance = distance,
+                level = level,
+                participantCount = 265
+            )
             Spacer(Modifier.height(40.dp))
         }
         SaiText(
@@ -122,8 +129,14 @@ fun HomeScreenContent(
             LazyRow {
                 items(trendChallenges) { courseInfo ->
                     CourseCardSimple(
-                        course = courseInfo,
-                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) })
+                        imageUrl = courseInfo.imageUrl ?: "",
+                        sigun = courseInfo.sigun,
+                        distance = courseInfo.distance,
+                        level = courseInfo.level,
+                        participantCount = courseInfo.participantCount,
+                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) }
+
+                    )
                 }
             }
         } else {
@@ -143,7 +156,15 @@ fun HomeScreenContent(
         if (aroundChallenges.isNotEmpty()) {
             LazyRow() {
                 items(aroundChallenges) { courseInfo ->
-                    CourseCardSimple(course = courseInfo)
+                    CourseCardSimple(
+                        imageUrl = courseInfo.imageUrl ?: "",
+                        sigun = courseInfo.sigun,
+                        distance = courseInfo.distance,
+                        level = courseInfo.level,
+                        participantCount = 125,
+                        modifier = modifier
+
+                    )
                 }
             }
         } else {
@@ -206,6 +227,30 @@ fun HomeScreenContentPreview() {
         BadgeInfo(2, "100km 돌파", "badge2.url"),
         BadgeInfo(3, "산악왕", "badge3.url")
     )
+    val dummyTrendChallenges = listOf(
+        PopularChallengeListItem(
+            challengeStatus = "eruditi",
+            courseName = "Camille Sheppard",
+            distance = 6.7,
+            endedAt = LocalDateTime.now(),
+            estimatedTime = 5284,
+            level = 1223,
+            participantCount = 6935,
+            sigun = "neque",
+            imageUrl = ""
+        ),
+        PopularChallengeListItem(
+            challengeStatus = "scripta",
+            courseName = "Alejandro Padilla",
+            distance = 12.13,
+            endedAt = LocalDateTime.now(),
+            estimatedTime = 7293,
+            level = 7323,
+            participantCount = 5304,
+            sigun = "solum",
+            imageUrl = ""
+        )
+    )
 
     SaiTheme {
         HomeScreenContent(
@@ -213,7 +258,7 @@ fun HomeScreenContentPreview() {
             location = "서울시 강남구",
             temperature = "25°C",
             recentChallenge = dummyCourses.first(),
-            trendChallenges = dummyCourses + dummyCourses,
+            trendChallenges = dummyTrendChallenges,
             aroundChallenges = dummyCourses.takeLast(2),
             badges = dummyBadges,
             modifier = Modifier.padding(all = 0.dp),
@@ -228,16 +273,16 @@ fun HomeScreenContentPreviewNoContents() {
     val dummyCourses = emptyList<CourseListItem>()
     val dummyBadges = emptyList<BadgeInfo>()
 
-    SaiTheme { // Assuming your theme is named SaiSaiTheme. Adjust if necessary.
+    SaiTheme {
         Scaffold { innerPadding ->
             HomeScreenContent(
                 name = "방문자",
                 location = "부산시 해운대구",
                 temperature = "22°C",
-                recentChallenge = null, // Test case with no recent challenge
-                trendChallenges = dummyCourses,
-                aroundChallenges = dummyCourses,
-                badges = dummyBadges,
+                recentChallenge = null,
+                trendChallenges = emptyList(),
+                aroundChallenges = emptyList(),
+                badges = emptyList(),
                 modifier = Modifier.padding(innerPadding),
                 onEvent = {},
             )

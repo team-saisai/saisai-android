@@ -1,7 +1,7 @@
 package com.choius323.saisai.ui.screen.home
 
 import androidx.lifecycle.ViewModel
-import com.choius323.saisai.usecase.GetPopularCourseUseCase
+import com.choius323.saisai.usecase.GetPopularChallengeUseCase
 import com.choius323.saisai.usecase.GetRecentCourseUseCase
 import kotlinx.coroutines.flow.combine
 import org.orbitmvi.orbit.ContainerHost
@@ -10,7 +10,7 @@ import org.orbitmvi.orbit.viewmodel.container
 
 class HomeViewModel(
     private val getRecentCourseUseCase: GetRecentCourseUseCase,
-    private val getPopularCourseUseCase: GetPopularCourseUseCase,
+    private val getPopularChallengeUseCase: GetPopularChallengeUseCase,
 ) : ViewModel(),
     ContainerHost<HomeUiState, HomeSideEffect> {
 
@@ -33,7 +33,7 @@ class HomeViewModel(
         reduce {
             state.copy(isLoading = true)
         }
-        getRecentCourseUseCase().combine(getPopularCourseUseCase()) { item1, item2 ->
+        getRecentCourseUseCase().combine(getPopularChallengeUseCase()) { item1, item2 ->
             item1 to item2
         }.collect { (recentResult, popularResult) ->
             val exception = recentResult.exceptionOrNull() ?: popularResult.exceptionOrNull()
@@ -50,7 +50,7 @@ class HomeViewModel(
                 state.copy(
                     isLoading = false,
                     recentChallenge = recentData,
-                    popularChallenges = popularData.list,
+                    popularChallenges = popularData,
                     errorMessage = null,
                     isLoaded = true
                 )

@@ -2,6 +2,7 @@ package com.choius323.saisai.data.course.remote
 
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
+import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.CourseListItem
 import io.ktor.client.HttpClient
@@ -19,6 +20,7 @@ interface CourseRemoteDataSource {
     ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
     suspend fun getCourseDetail(courseName: String): Flow<Result<SaiResponseDto<CourseDetailDataDto>>>
+    suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
 }
 
 class CourseRemoteDataSourceImpl(
@@ -54,5 +56,6 @@ class CourseRemoteDataSourceImpl(
     ): Flow<Result<SaiResponseDto<CourseDetailDataDto>>> =
         saiFetch(client.get("courses/$courseName"))
 
-    private val tempAccessToken = "YOUR_ACCESS_TOKEN" // 임시 토큰
+    override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>> =
+        saiFetch(client.get("challenges/popular"))
 }

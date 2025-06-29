@@ -4,6 +4,7 @@ import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.ui.model.CourseDetailInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
+import com.choius323.saisai.ui.model.PopularChallengeListItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -17,6 +18,7 @@ interface CourseRepository {
     ): Flow<Result<CoursePage>>
 
     suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>>
+    suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
 }
 
 class CourseRepositoryImpl(
@@ -41,6 +43,13 @@ class CourseRepositoryImpl(
         courseRemoteDataSource.getCourseDetail(courseName).map { result ->
             result.mapCatching { responseDto ->
                 responseDto.data.toCourseDetailInfo()
+            }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>> =
+        courseRemoteDataSource.getPopularChallenge().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.map { it.toPopularChallengeListItem() }
             }
         }.flowOn(ioDispatcher)
 }

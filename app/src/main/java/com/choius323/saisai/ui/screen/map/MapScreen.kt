@@ -23,12 +23,6 @@ import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
-/***
- * 지도 화면
- *
- * @param route 출발지, 도착지
- * @param goBack 뒤로가기 콜백
- */
 @Composable
 fun MapScreen(
     route: List<Position>,
@@ -43,12 +37,13 @@ fun MapScreen(
         }
     }
     MapScreen(
-        route = route, modifier = modifier
+        uiState = uiState, route = route, modifier = modifier
     )
 }
 
 @Composable
 private fun MapScreen(
+    uiState: MapUiState,
     route: List<Position>,
     modifier: Modifier = Modifier,
 ) {
@@ -61,9 +56,11 @@ private fun MapScreen(
     }
     Box(modifier = modifier) {
         AndroidView(
-            factory = { mapView },
-            update = {
+            factory = { mapView }, update = {
                 Log.d(TAG, "MapView update")
+                updateMapData(
+                    kakaoMap, (route)
+                )
             },
             modifier = Modifier.fillMaxSize()
         )

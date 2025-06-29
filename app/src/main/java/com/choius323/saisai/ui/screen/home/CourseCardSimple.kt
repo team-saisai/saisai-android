@@ -35,11 +35,18 @@ import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
+import org.threeten.bp.LocalDateTime
+import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun CourseCardSimple(
-    course: CourseListItem,
+    imageUrl: String,
+    sigun: String,
+    distance: Double,
+    level: Int,
+    participantCount: Int,
     modifier: Modifier = Modifier,
+    endDate: LocalDateTime? = null,
 ) {
     Card(
         modifier = modifier
@@ -59,17 +66,19 @@ fun CourseCardSimple(
             ) {
                 // 배경 지도 이미지
                 AsyncImage(
-                    model = course.imageUrl,
+                    model = imageUrl,
                     contentDescription = "챌린지 경로 이미지",
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
                 )
 
                 // 날짜 정보 배지
-                DateBadge(
-                    date = "6/31",
-                    modifier = Modifier.padding(top = 5.dp, start = 5.dp)
-                )
+                if (endDate != null) {
+                    DateBadge(
+                        date = endDate.format(DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+                        modifier = Modifier.padding(top = 5.dp, start = 5.dp)
+                    )
+                }
             }
 
             // 하단 정보 섹션
@@ -78,7 +87,7 @@ fun CourseCardSimple(
             ) {
                 Row {
                     SaiText(
-                        text = course.courseName,
+                        text = sigun,
                         color = MaterialTheme.colorScheme.onSurface,
                         fontSize = 16.sp,
                         fontWeight = FontWeight.Medium,
@@ -87,7 +96,7 @@ fun CourseCardSimple(
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SaiText(
-                        text = "${course.distance} · 난이도 ",
+                        text = "${distance}km · 난이도 ",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Medium,
@@ -95,9 +104,9 @@ fun CourseCardSimple(
                         )
                     )
                     SaiText(
-                        text = course.level.toString(),
+                        text = level.toString(),
                         style = MaterialTheme.typography.bodyLarge.copy(
-                            color = Color(0xFFFFD700), // 노란색으로 강조
+                            color = Color(0xFFFFD700),
                             fontWeight = FontWeight.Medium,
                             fontSize = 12.sp
                         )
@@ -118,7 +127,7 @@ fun CourseCardSimple(
                         tint = Color(0xFF8A2BE2)
                     )
                     SaiText(
-                        text = "${course.challengeInfo ?: 102}명 도전 중",
+                        text = "${participantCount}명 도전 중",
                         fontSize = 12.sp,
                         color = Color(0xFF8A2BE2)
                     )
@@ -129,7 +138,9 @@ fun CourseCardSimple(
 }
 
 @Composable
-private fun DateBadge(date: String, modifier: Modifier = Modifier) {
+private fun DateBadge(
+    date: String, modifier: Modifier = Modifier,
+) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(4.dp))
@@ -173,7 +184,17 @@ fun CourseCardSimplePreview() {
 
     SaiTheme {
         Surface {
-            CourseCardSimple(course = sampleChallenge)
+            sampleChallenge.apply {
+                CourseCardSimple(
+                    imageUrl = imageUrl ?: "",
+                    sigun = sigun,
+                    distance = distance,
+                    level = level,
+                    participantCount = 671,
+                    endDate = LocalDateTime.now().plusDays(7L),
+                    modifier = Modifier
+                )
+            }
         }
     }
 }

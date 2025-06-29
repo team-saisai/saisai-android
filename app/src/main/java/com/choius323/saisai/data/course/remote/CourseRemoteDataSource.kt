@@ -6,6 +6,7 @@ import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.CourseListItem
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
+import io.ktor.http.parameters
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
@@ -14,9 +15,7 @@ interface CourseRemoteDataSource {
     suspend fun getRecentCourse(): Flow<Result<CourseListItem>>
     suspend fun getAllCourses(
         page: Int,
-        level: Int?,
-        distance: Int?,
-        sigun: String?,
+        status: String?,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
     suspend fun getCourseDetail(courseName: String): Flow<Result<SaiResponseDto<CourseDetailDataDto>>>
@@ -43,10 +42,12 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun getAllCourses(
         page: Int,
-        level: Int?,
-        distance: Int?,
-        sigun: String?,
-    ): Flow<Result<SaiResponseDto<CourseDataDto>>> = saiFetch(client.get("courses"))
+        status: String?,
+    ): Flow<Result<SaiResponseDto<CourseDataDto>>> = saiFetch(client.get("courses") {
+        parameters {
+            if (status != null) append("status", status)
+        }
+    })
 
     override suspend fun getCourseDetail(
         courseName: String,

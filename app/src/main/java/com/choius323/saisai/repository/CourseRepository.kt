@@ -13,9 +13,7 @@ interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<CourseListItem>>
     suspend fun getAllCourses(
         page: Int,
-        level: Int?,
-        distance: Int?,
-        sigun: String?,
+        status: String? = null,
     ): Flow<Result<CoursePage>>
 
     suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>>
@@ -30,11 +28,9 @@ class CourseRepositoryImpl(
 
     override suspend fun getAllCourses(
         page: Int,
-        level: Int?,
-        distance: Int?,
-        sigun: String?,
+        status: String?,
     ): Flow<Result<CoursePage>> =
-        courseRemoteDataSource.getAllCourses(page, level, distance, sigun).map { result ->
+        courseRemoteDataSource.getAllCourses(page, status).map { result ->
             result.mapCatching { responseDto ->
                 // DTO를 UI 모델로 변환
                 responseDto.toCoursePage()

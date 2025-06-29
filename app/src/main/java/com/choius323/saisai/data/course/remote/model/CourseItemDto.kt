@@ -11,6 +11,6 @@ data class CourseItemDto(
     val distance: Double,
     val estimatedTime: Double,
     val sigun: String,
-    val imageUrl: String?,
+    val imageUrl: String? = null,
     val challengeInfo: ChallengeInfoDto?,
 )

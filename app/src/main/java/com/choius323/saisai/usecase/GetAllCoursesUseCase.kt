@@ -9,8 +9,6 @@ class GetAllCoursesUseCase(
 ) {
     suspend operator fun invoke(
         page: Int,
-        level: Int? = null,
-        distance: Int? = null,
-        sigun: String? = null,
-    ): Flow<Result<CoursePage>> = courseRepository.getAllCourses(page, level, distance, sigun)
+        status: String? = null,
+    ): Flow<Result<CoursePage>> = courseRepository.getAllCourses(page, status)
 }

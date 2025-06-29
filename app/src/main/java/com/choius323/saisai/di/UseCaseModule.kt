@@ -1,5 +1,6 @@
 package com.choius323.saisai.di
 
+import com.choius323.saisai.usecase.FetchLoginUseCase
 import com.choius323.saisai.usecase.GetAllCoursesUseCase
 import com.choius323.saisai.usecase.GetCourseDetailUseCase
 import com.choius323.saisai.usecase.GetPopularChallengeUseCase
@@ -12,4 +13,5 @@ val useCaseModule = module {
     singleOf(::GetAllCoursesUseCase)
     singleOf(::GetCourseDetailUseCase)
     singleOf(::GetPopularChallengeUseCase)
+    singleOf(::FetchLoginUseCase)
 }

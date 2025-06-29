@@ -44,7 +44,8 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
 
 fun ChallengeInfoDto?.toChallengeInfo() = this?.run {
     ChallengeInfo(
-        challengeStatus = challengeStatus, challengeEndedTime = challengeEndedTime
+        challengeStatus = challengeStatus,
+        challengeEndedTime = LocalDateTime.parse(challengeEndedTime)
     )
 }
 

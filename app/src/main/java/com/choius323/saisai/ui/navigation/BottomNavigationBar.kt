@@ -22,10 +22,16 @@ fun BottomNavigationBar(
     mainNavController: MainNavController,
     modifier: Modifier = Modifier,
 ) {
-    val bottomBarScreens = listOf(
+    val bottomBarItems = listOf(
         MainNavItem.BottomNavItem.Home,
         MainNavItem.BottomNavItem.Course,
         MainNavItem.BottomNavItem.Record,
+        MainNavItem.BottomNavItem.MyPage,
+    )
+
+    val bottomBarShowItems = listOf(
+        MainNavItem.BottomNavItem.Home,
+        MainNavItem.BottomNavItem.Course,
         MainNavItem.BottomNavItem.MyPage,
     )
 
@@ -33,7 +39,7 @@ fun BottomNavigationBar(
 
     // 현재 route가 bottomBarScreens에 포함되는지 확인
     val currentRoute = navBackStackEntry?.destination?.route
-    val shouldShowBottomBar = bottomBarScreens.any { screen ->
+    val shouldShowBottomBar = bottomBarShowItems.any { screen ->
         currentRoute == screen.fullName
     }
 
@@ -42,7 +48,7 @@ fun BottomNavigationBar(
             modifier = modifier.padding(vertical = 10.dp, horizontal = 40.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
-            for (screen in bottomBarScreens) {
+            for (screen in bottomBarItems) {
                 val isSelected = currentRoute == screen.fullName
                 Column(
                     modifier = Modifier.clickable {

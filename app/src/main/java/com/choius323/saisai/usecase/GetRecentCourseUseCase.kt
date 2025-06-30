@@ -7,5 +7,5 @@ import kotlinx.coroutines.flow.Flow
 class GetRecentCourseUseCase(
     private val courseRepository: CourseRepository,
 ) {
-    suspend operator fun invoke(): Flow<Result<RecentCourse>> = courseRepository.getRecentCourse()
+    suspend operator fun invoke(): Flow<Result<RecentCourse?>> = courseRepository.getRecentCourse()
 }

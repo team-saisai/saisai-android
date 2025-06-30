@@ -11,7 +11,7 @@ import io.ktor.http.parameters
 import kotlinx.coroutines.flow.Flow
 
 interface CourseRemoteDataSource {
-    suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto>>>
+    suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>>
     suspend fun getAllCourses(
         page: Int,
         status: String?,
@@ -24,8 +24,9 @@ interface CourseRemoteDataSource {
 class CourseRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : CourseRemoteDataSource {
-    override suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto>>> =
+    override suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>> =
         saiFetch(client.get("my/rides"))
+
 
     override suspend fun getAllCourses(
         page: Int,

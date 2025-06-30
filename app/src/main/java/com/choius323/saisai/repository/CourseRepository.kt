@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface CourseRepository {
-    suspend fun getRecentCourse(): Flow<Result<RecentCourse>>
+    suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
     suspend fun getAllCourses(
         page: Int,
         status: String? = null,
@@ -25,10 +25,10 @@ class CourseRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher,
     private val courseRemoteDataSource: CourseRemoteDataSource,
 ) : CourseRepository {
-    override suspend fun getRecentCourse(): Flow<Result<RecentCourse>> =
+    override suspend fun getRecentCourse(): Flow<Result<RecentCourse?>> =
         courseRemoteDataSource.getRecentCourse().map { result ->
             result.mapCatching { responseDto ->
-                responseDto.data.toCourseListItem()
+                responseDto.data?.toRecentCourse()
             }
         }.flowOn(ioDispatcher)
 

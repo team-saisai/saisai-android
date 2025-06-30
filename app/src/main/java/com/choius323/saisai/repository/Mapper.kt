@@ -92,7 +92,7 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
     )
 }
 
-fun RecentCourseDto.toCourseListItem(): RecentCourse {
+fun RecentCourseDto.toRecentCourse(): RecentCourse {
     return RecentCourse(
         courseName = courseName,
         distance = distance,

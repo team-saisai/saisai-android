@@ -2,8 +2,12 @@ package com.choius323.saisai.di
 
 import android.util.Log
 import com.choius323.saisai.BuildConfig
+import com.choius323.saisai.data.account.AccountLocalDataSource
+import com.choius323.saisai.data.account.AccountLocalDataSourceImpl
 import com.choius323.saisai.data.account.AccountRemoteDataSource
 import com.choius323.saisai.data.account.AccountRemoteDataSourceImpl
+import com.choius323.saisai.data.account.AuthDataStore
+import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSourceImpl
 import com.choius323.saisai.repository.AccountRepository
@@ -12,6 +16,9 @@ import com.choius323.saisai.repository.CourseRepository
 import com.choius323.saisai.repository.CourseRepositoryImpl
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.okhttp.OkHttp
+import io.ktor.client.plugins.auth.Auth
+import io.ktor.client.plugins.auth.providers.BearerTokens
+import io.ktor.client.plugins.auth.providers.bearer
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
 import io.ktor.client.plugins.defaultRequest
 import io.ktor.client.plugins.logging.LogLevel
@@ -26,6 +33,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
+import org.koin.android.ext.koin.androidContext
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -60,13 +68,14 @@ object KtorClient {
     val defaultClient = HttpClient(OkHttp) {
         install(Logging) {
             logger = PrettyLogger
-            level = LogLevel.BODY
+            level = LogLevel.ALL
         }
         install(ContentNegotiation) {
             json(Json {
                 prettyPrint = true // JSON 로그 보기 좋게 출력 (개발 시 유용)
                 isLenient = true // 약간의 JSON 문법 오류 허용
                 ignoreUnknownKeys = true // 데이터 클래스에 정의되지 않은 키 무시
+                coerceInputValues = true
             })
         }
         defaultRequest {
@@ -74,9 +83,22 @@ object KtorClient {
         }
     }
 
-    val saiClient = this.defaultClient.config {
+    fun saiClient() = this.defaultClient.config {
         defaultRequest {
             url(BuildConfig.SAI_BASE_URL)
+        }
+        install(Auth) {
+            bearer {
+                loadTokens {
+                    val accessToken = SessionManager.accessToken.value
+                    val refreshToken = SessionManager.refreshToken.value
+                    if (accessToken != null && refreshToken != null) {
+                        BearerTokens(accessToken, refreshToken)
+                    } else {
+                        null
+                    }
+                }
+            }
         }
     }
 }
@@ -85,7 +107,9 @@ object KtorClient {
 val dataModule = module {
     single<CoroutineDispatcher>(named(IO_DISPATCHER)) { Dispatchers.IO }
     single<HttpClient>(named(DEFAULT_CLIENT)) { KtorClient.defaultClient }
-    single<HttpClient>(named(SAI_CLIENT)) { KtorClient.saiClient }
+    single<HttpClient>(named(SAI_CLIENT)) { KtorClient.saiClient() }
+
+    single { AuthDataStore(androidContext()) }
 
     single<CourseRemoteDataSource> {
         CourseRemoteDataSourceImpl(
@@ -103,6 +127,7 @@ val dataModule = module {
             get(named(IO_DISPATCHER)), get(named(SAI_CLIENT))
         )
     }
+    single<AccountLocalDataSource> { AccountLocalDataSourceImpl(get()) }
     single<AccountRepository> {
         AccountRepositoryImpl(get())
     }

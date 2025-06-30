@@ -1,6 +1,7 @@
 package com.choius323.saisai.ui.screen.login
 
 import androidx.lifecycle.ViewModel
+import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.usecase.FetchLoginUseCase
 import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.Container
@@ -11,6 +12,12 @@ class LoginViewModel(
     private val fetchLoginUseCase: FetchLoginUseCase,
 ) : ViewModel(), ContainerHost<LoginUiState, LoginSideEffect> {
     override val container: Container<LoginUiState, LoginSideEffect> = container(LoginUiState())
+
+    init {
+        if (SessionManager.accessToken.value != null) {
+            intent { postSideEffect(LoginSideEffect.LoginSuccess) }
+        }
+    }
 
     fun onEvent(event: LoginUiEvent) = when (event) {
         is LoginUiEvent.LoginButtonClicked -> login()

@@ -100,6 +100,7 @@ dependencies {
     implementation(libs.ktor.client.logging)
     implementation(libs.ktor.client.content.negotiation)
     implementation(libs.ktor.serialization.kotlinx.json)
+    implementation(libs.ktor.client.auth)
 //    implementation(libs.logback.classic)
 
     // Kotlin Serialization Runtime
@@ -128,6 +129,10 @@ dependencies {
     // Kakao
     implementation(libs.kakao.map)
     implementation(libs.kakao.common)
+
+    // DataStore
+    implementation(libs.datastore.preferences)
+
 
     // Testing
     testImplementation(libs.junit)

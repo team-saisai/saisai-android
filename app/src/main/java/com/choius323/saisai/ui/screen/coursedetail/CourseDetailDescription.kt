@@ -68,7 +68,7 @@ fun CourseDetailDescription(
             ChallengeButton(
                 modifier = Modifier
                     .align(Alignment.Bottom)
-                    .clickable { onChallengeClick() })
+            )
         }
     }
 }
@@ -148,14 +148,15 @@ private fun ParticipantInfoSection(challengerCount: Int, completedCount: Int) {
 @Composable
 private fun ChallengeButton(
     modifier: Modifier = Modifier,
+    onClick: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier
+        modifier
             .clip(RoundedCornerShape(16.dp))
             .background(Color(0xFFC9FF66))
-            .padding(vertical = 12.dp, horizontal = 5.5.dp),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+            .padding(vertical = 12.dp, horizontal = 5.5.dp)
+            .clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
             imageVector = Icons.AutoMirrored.Default.DirectionsBike,
@@ -165,7 +166,7 @@ private fun ChallengeButton(
         Spacer(modifier = Modifier.height(4.dp))
         SaiText(
             text = "도전하기", style = MaterialTheme.typography.labelMedium.copy(
-                color = Color.Black, fontWeight = FontWeight.Bold
+                color = Color.Black, fontWeight = FontWeight.SemiBold
             )
         )
     }

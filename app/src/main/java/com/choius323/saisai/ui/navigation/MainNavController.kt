@@ -37,8 +37,8 @@ fun MainNavController(
             )
         }
         composable<MainNavItem.BottomNavItem.Course> { backStackEntry ->
-            CourseScreen(modifier.fillMaxSize(), onClickCourse = { courseId ->
-                navController.navigate(MainNavItem.CourseDetail("$courseId"))
+            CourseScreen(modifier.fillMaxSize(), onClickCourse = { courseName ->
+                navController.navigate(MainNavItem.CourseDetail(courseName))
             })
         }
         composable<MainNavItem.BottomNavItem.Record> { backStackEntry ->

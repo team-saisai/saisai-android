@@ -1,5 +1,6 @@
 package com.choius323.saisai.di
 
+import com.choius323.saisai.ui.screen.course.CourseListViewModel
 import com.choius323.saisai.ui.screen.coursedetail.CourseDetailViewModel
 import com.choius323.saisai.ui.screen.home.HomeViewModel
 import com.choius323.saisai.ui.screen.login.LoginViewModel
@@ -12,4 +13,5 @@ val uiModule = module {
     viewModelOf(::MapViewModel)
     viewModelOf(::LoginViewModel)
     viewModelOf(::CourseDetailViewModel)
+    viewModelOf(::CourseListViewModel)
 }

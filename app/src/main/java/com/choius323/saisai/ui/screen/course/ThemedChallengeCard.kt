@@ -199,7 +199,7 @@ private fun EndedBadge() {
  * 챌린지 테마 태그들을 표시하는 컴포넌트
  */
 @Composable
-private fun ThemeTags(themes: List<String>) {
+fun ThemeTags(themes: List<String>) {
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         themes.forEach { theme ->
             Box(
@@ -224,7 +224,7 @@ private fun ThemeTags(themes: List<String>) {
  * 도전자와 완주자 수를 표시하는 컴포넌트
  */
 @Composable
-private fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
+fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         // 도전자 정보
         Icon(
@@ -236,28 +236,24 @@ private fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
         Spacer(modifier = Modifier.width(4.dp))
         SaiText(
             text = "${challengerCount}명 도전 중",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            color = MaterialTheme.colorScheme.onSurface,
+            fontSize = 12.sp,
         )
 
-        Spacer(modifier = Modifier.width(16.dp))
+        Spacer(modifier = Modifier.width(6.dp))
 
         // 완주자 정보
         Icon(
             imageVector = Icons.Default.CheckCircle,
             contentDescription = "완주 아이콘",
             modifier = Modifier.size(24.dp),
-            tint = Color(0xFF32CD32)
+            tint = Color(0xFF8A2BE2)
         )
         Spacer(modifier = Modifier.width(4.dp))
         SaiText(
             text = "${completedCount}명 완주",
-            style = MaterialTheme.typography.bodyLarge.copy(
-                fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.onSurface
-            )
+            fontWeight = FontWeight.Bold,
+            fontSize = 12.sp,
         )
     }
 }

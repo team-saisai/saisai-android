@@ -8,13 +8,16 @@ import com.choius323.saisai.data.account.AccountRemoteDataSource
 import com.choius323.saisai.data.account.AccountRemoteDataSourceImpl
 import com.choius323.saisai.data.account.AuthDataStore
 import com.choius323.saisai.data.account.SessionManager
+import com.choius323.saisai.data.account.model.AccountTokenDto
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSourceImpl
+import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.repository.AccountRepository
 import com.choius323.saisai.repository.AccountRepositoryImpl
 import com.choius323.saisai.repository.CourseRepository
 import com.choius323.saisai.repository.CourseRepositoryImpl
 import io.ktor.client.HttpClient
+import io.ktor.client.call.body
 import io.ktor.client.engine.okhttp.OkHttp
 import io.ktor.client.plugins.auth.Auth
 import io.ktor.client.plugins.auth.providers.BearerTokens
@@ -25,8 +28,10 @@ import io.ktor.client.plugins.logging.LogLevel
 import io.ktor.client.plugins.logging.Logger
 import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.header
+import io.ktor.client.request.post
 import io.ktor.http.ContentType
 import io.ktor.http.HttpHeaders
+import io.ktor.http.isSuccess
 import io.ktor.serialization.kotlinx.json.json
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -96,6 +101,23 @@ object KtorClient {
                     if (accessToken != null && refreshToken != null) {
                         BearerTokens(accessToken, refreshToken)
                     } else {
+                        null
+                    }
+                }
+                refreshTokens {
+                    val refreshToken = SessionManager.refreshToken.value ?: run {
+                        SessionManager.onLogout()
+                        return@refreshTokens null
+                    }
+                    val response = defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/reissue") {
+                        header(HttpHeaders.Authorization, "Bearer $refreshToken")
+                    }
+                    if (response.status.isSuccess()) {
+                        val newTokens = response.body<SaiResponseDto<AccountTokenDto>>().data
+                        SessionManager.onLoginSuccess(newTokens.accessToken, newTokens.refreshToken)
+                        BearerTokens(newTokens.accessToken, newTokens.refreshToken)
+                    } else {
+                        SessionManager.onLogout()
                         null
                     }
                 }

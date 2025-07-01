@@ -92,6 +92,7 @@ object KtorClient {
                 loadTokens {
                     val accessToken = SessionManager.accessToken.value
                     val refreshToken = SessionManager.refreshToken.value
+                    println("asdasd $accessToken $refreshToken")
                     if (accessToken != null && refreshToken != null) {
                         BearerTokens(accessToken, refreshToken)
                     } else {

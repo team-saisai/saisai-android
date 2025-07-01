@@ -1,7 +1,7 @@
 package com.choius323.saisai.data.course.remote
 
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
-import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
+import com.choius323.saisai.data.course.remote.model.CourseDetailDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
@@ -17,7 +17,7 @@ interface CourseRemoteDataSource {
         status: String?,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
-    suspend fun getCourseDetail(courseName: String): Flow<Result<SaiResponseDto<CourseDetailDataDto>>>
+    suspend fun getCourseDetail(courseName: String): Flow<Result<SaiResponseDto<CourseDetailDto>>>
     suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
 }
 
@@ -39,7 +39,7 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun getCourseDetail(
         courseName: String,
-    ): Flow<Result<SaiResponseDto<CourseDetailDataDto>>> =
+    ): Flow<Result<SaiResponseDto<CourseDetailDto>>> =
         saiFetch(client.get("courses/$courseName"))
 
     override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>> =

@@ -32,13 +32,13 @@ fun MainNavController(
             HomeScreen(
                 modifier = modifier.fillMaxSize(),
                 goToDetail = {
-                    navController.navigate(MainNavItem.CourseDetail(it))
+                    navController.navigate(MainNavItem.CourseDetail("$it"))
                 }
             )
         }
         composable<MainNavItem.BottomNavItem.Course> { backStackEntry ->
             CourseScreen(modifier.fillMaxSize(), onClickCourse = { courseId ->
-                navController.navigate(MainNavItem.CourseDetail(courseId))
+                navController.navigate(MainNavItem.CourseDetail("$courseId"))
             })
         }
         composable<MainNavItem.BottomNavItem.Record> { backStackEntry ->
@@ -49,9 +49,10 @@ fun MainNavController(
         composable<MainNavItem.CourseDetail> { backStackEntry ->
             val courseDetail = backStackEntry.toRoute<MainNavItem.CourseDetail>()
             CourseDetailScreen(
-                courseDetail.courseId, Modifier
+                modifier = Modifier
                     .fillMaxSize()
-                    .statusBarsPadding()
+                    .statusBarsPadding(),
+                goBack = { navController.upPress() }
             )
         }
         composable<MainNavItem.Login> { backStackEntry ->

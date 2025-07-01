@@ -1,7 +1,7 @@
 package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
-import com.choius323.saisai.ui.model.CourseDetailInfo
+import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
@@ -17,7 +17,7 @@ interface CourseRepository {
         status: String? = null,
     ): Flow<Result<CoursePage>>
 
-    suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>>
+    suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
 }
 
@@ -43,10 +43,10 @@ class CourseRepositoryImpl(
             }
         }.flowOn(ioDispatcher)
 
-    override suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetailInfo>> =
+    override suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetail>> =
         courseRemoteDataSource.getCourseDetail(courseName).map { result ->
             result.mapCatching { responseDto ->
-                responseDto.data.toCourseDetailInfo()
+                responseDto.data.toCourseDetail()
             }
         }.flowOn(ioDispatcher)
 

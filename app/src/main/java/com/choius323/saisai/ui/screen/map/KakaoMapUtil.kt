@@ -2,6 +2,7 @@ package com.choius323.saisai.ui.screen.map
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.choius323.saisai.ui.model.GpxPoint
 import com.choius323.saisai.ui.model.Position
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
@@ -14,8 +15,8 @@ import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.R as KakaoMapR
 
-fun updateMapData(map: KakaoMap?, route: List<Position>) {
-    val latLngList = route.map(Position::toLatLng)
+fun updateMapData(map: KakaoMap?, route: List<GpxPoint>) {
+    val latLngList = route.map(GpxPoint::toLatLng)
     if (map == null) return
     map.drawLine(latLngList)
     map.moveCamera(latLngList)
@@ -23,6 +24,7 @@ fun updateMapData(map: KakaoMap?, route: List<Position>) {
 
 fun KakaoMap?.drawLine(route: List<LatLng>) {
     val layer = this?.routeLineManager?.layer ?: return
+    if (route.size < 2) return
     layer.removeAll()
     val style = RouteLineStyle.from(LINE_WIDTH, Color(201, 255, 102).toArgb())
     val segment = RouteLineSegment.from(route)

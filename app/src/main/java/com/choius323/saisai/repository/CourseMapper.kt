@@ -2,15 +2,17 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
-import com.choius323.saisai.data.course.remote.model.CourseDetailDataDto
+import com.choius323.saisai.data.course.remote.model.CourseDetailDto
+import com.choius323.saisai.data.course.remote.model.GpxPointDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
-import com.choius323.saisai.ui.model.CourseDetailInfo
+import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
+import com.choius323.saisai.ui.model.GpxPoint
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RewardInfo
@@ -52,22 +54,28 @@ fun ChallengeInfoDto?.toChallengeInfo() = this?.run {
     )
 }
 
-fun CourseDetailDataDto.toCourseDetailInfo(): CourseDetailInfo {
-    return CourseDetailInfo(
+fun CourseDetailDto.toCourseDetail(): CourseDetail {
+    return CourseDetail(
         courseId = courseId,
         courseName = courseName,
-        contents = contents,
+        summary = summary,
         level = level,
-        distanceInKm = distance,
-        estimatedTimeInHours = estimatedTime,
+        distance = distance,
+        estimatedTime = estimatedTime,
         sigun = sigun,
-        tourInfo = tourInfo,
-        travelerInfo = travelerInfo,
-        gpxPath = gpxpath,
+        imageUrl = imageUrl,
+        inProgressUserCount = inProgressUserCount,
         completeUserCount = completeUserCount,
-        rewardInfo = rewardInfo?.toRewardUiInfo()
+        gpxPointList = gpxPointDtoList.map(GpxPointDto::toGpxPoint),
     )
 }
+
+fun GpxPointDto.toGpxPoint(): GpxPoint = GpxPoint(
+    lat = latitude,
+    lng = longitude,
+    elevation = elevation,
+    segmentDistance = segmentDistance,
+)
 
 fun RewardInfoDto.toRewardUiInfo(): RewardInfo {
     return RewardInfo(
@@ -92,13 +100,20 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
     )
 }
 
-fun RecentCourseDto.toRecentCourse(): RecentCourse {
-    return RecentCourse(
-        courseName = courseName,
-        distance = distance,
-        sigun = sigun,
-        progressRate = progressRate,
-        recentDateAt = LocalDateTime.parse(recentRideAt, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
-        imageUrl = courseImageUrl
-    )
+fun RecentCourseDto.toRecentCourse(): RecentCourse? {
+    return if (courseName == null || distance == null || sigun == null || progressRate == null || recentRideAt == null) {
+        null
+    } else {
+        RecentCourse(
+            courseName = courseName,
+            distance = distance,
+            sigun = sigun,
+            progressRate = progressRate,
+            recentDateAt = LocalDateTime.parse(
+                recentRideAt,
+                DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            ),
+            imageUrl = courseImageUrl
+        )
+    }
 }

@@ -14,7 +14,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import com.choius323.saisai.ui.component.ComposableLifecycle
-import com.choius323.saisai.ui.model.Position
+import com.choius323.saisai.ui.model.GpxPoint
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.KakaoMapReadyCallback
 import com.kakao.vectormap.MapLifeCycleCallback
@@ -25,7 +25,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
 fun MapScreen(
-    route: List<Position>,
+    route: List<GpxPoint>,
     modifier: Modifier = Modifier,
     viewModel: MapViewModel = koinViewModel(),
     goBack: () -> Unit = {},
@@ -44,7 +44,7 @@ fun MapScreen(
 @Composable
 private fun MapScreen(
     uiState: MapUiState,
-    route: List<Position>,
+    route: List<GpxPoint>,
     modifier: Modifier = Modifier,
 ) {
     var kakaoMap by remember { mutableStateOf<KakaoMap?>(null) }

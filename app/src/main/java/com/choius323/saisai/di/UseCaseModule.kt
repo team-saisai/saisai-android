@@ -14,4 +14,5 @@ val useCaseModule = module {
     singleOf(::GetCourseDetailUseCase)
     singleOf(::GetPopularChallengeUseCase)
     singleOf(::FetchLoginUseCase)
+    singleOf(::GetCourseDetailUseCase)
 }

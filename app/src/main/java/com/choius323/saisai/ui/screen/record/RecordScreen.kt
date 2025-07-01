@@ -45,7 +45,7 @@ fun RecordScreen(
     RecordScreenContent(
         route = route,
         modifier = modifier,
-        { MapScreen(route, modifier = Modifier.fillMaxSize()) },
+        { MapScreen(emptyList(), modifier = Modifier.fillMaxSize()) },
     )
 }
 

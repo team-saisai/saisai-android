@@ -1,5 +1,6 @@
 package com.choius323.saisai.data.course.remote.model
 
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 
 @Serializable
@@ -9,10 +10,11 @@ data class CourseDetailDto(
     val summary: String,
     val level: Int,
     val distance: Double,
-    val estimatedTime: Int,
+    val estimatedTime: Double,
     val sigun: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val inProgressUserCount: Int,
     val completeUserCount: Int,
-    val gpxPointDtoList: List<GpxPointDto>,
+    @SerialName("gpxPoints")
+    val gpxPointDtoList: List<GpxPointDto> = emptyList(),
 )

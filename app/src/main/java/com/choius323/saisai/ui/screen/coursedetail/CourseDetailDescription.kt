@@ -180,7 +180,7 @@ fun CourseDetailDescriptionPreview() {
         summary = "conubia",
         level = 4193,
         distance = 4.5,
-        estimatedTime = 2564,
+        estimatedTime = 25.3,
         sigun = "sapien",
         imageUrl = "",
         inProgressUserCount = 9838,

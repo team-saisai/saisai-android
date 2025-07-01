@@ -58,7 +58,11 @@ fun MainNavController(
         composable<MainNavItem.Login> { backStackEntry ->
             LoginScreen(
                 modifier = modifier,
-                goHome = { navController.navigate(MainNavItem.BottomNavItem.Home) }
+                goHome = {
+                    navController.navigate(MainNavItem.BottomNavItem.Home) {
+                        popUpTo(MainNavItem.Login) { inclusive = true }
+                    }
+                }
             )
         }
     }

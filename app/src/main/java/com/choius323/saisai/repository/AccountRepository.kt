@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.map
 
 interface AccountRepository {
     suspend fun login(email: String, password: String): Flow<Result<AccountToken>>
+
+    suspend fun reissueToken(): Flow<Result<AccountToken>>
 }
 
 class AccountRepositoryImpl(
@@ -22,4 +24,13 @@ class AccountRepositoryImpl(
             }
         }
     }
+
+    override suspend fun reissueToken(): Flow<Result<AccountToken>> =
+        accountRemoteDataSource.reissueToken().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toAccountToken().apply {
+                    SessionManager.onLoginSuccess(accessToken, refreshToken)
+                }
+            }
+        }
 }

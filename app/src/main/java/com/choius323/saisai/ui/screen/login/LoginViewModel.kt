@@ -3,6 +3,7 @@ package com.choius323.saisai.ui.screen.login
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.usecase.FetchLoginUseCase
+import com.choius323.saisai.usecase.ReissueTokenUseCase
 import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -10,12 +11,30 @@ import org.orbitmvi.orbit.viewmodel.container
 
 class LoginViewModel(
     private val fetchLoginUseCase: FetchLoginUseCase,
+    private val reissueTokenUseCase: ReissueTokenUseCase,
 ) : ViewModel(), ContainerHost<LoginUiState, LoginSideEffect> {
     override val container: Container<LoginUiState, LoginSideEffect> = container(LoginUiState())
 
     init {
-        if (SessionManager.accessToken.value != null) {
-            intent { postSideEffect(LoginSideEffect.LoginSuccess) }
+        intent {
+            reduce { state.copy(isLoading = true) }
+            if (SessionManager.accessToken.value != null && SessionManager.refreshToken.value != null) {
+                reissueTokenUseCase().collectLatest { result ->
+                    result.onSuccess {
+                        postSideEffect(LoginSideEffect.LoginSuccess)
+                    }.onFailure {
+                        SessionManager.onLogout()
+                        reduce {
+                            state.copy(
+                                isLoading = false, error = it.message ?: "Unknown Error"
+                            )
+                        }
+                    }
+                }
+            } else {
+                SessionManager.onLogout()
+                reduce { state.copy(isLoading = false) }
+            }
         }
     }
 

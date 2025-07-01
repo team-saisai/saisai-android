@@ -37,7 +37,8 @@ fun KakaoMap?.drawLine(route: List<Position>) {
     drawLine(route.map(Position::toLatLng))
 }
 
-fun KakaoMap.moveCamera(route: List<LatLng>) {
+fun KakaoMap?.moveCamera(route: List<LatLng>) {
+    if (this == null || route.isEmpty()) return
     moveCamera(
         CameraUpdateFactory.fitMapPoints(
             route.toTypedArray(), 200

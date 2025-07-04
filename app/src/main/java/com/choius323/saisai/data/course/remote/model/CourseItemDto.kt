@@ -4,7 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class CourseItemDto(
-    val courseId: String = "EMPTY",
+    val courseId: Long,
     val courseName: String,
     val summary: String,
     val level: Int,

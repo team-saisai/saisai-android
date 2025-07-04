@@ -176,8 +176,8 @@ private fun ChallengeButton(
 @Composable
 fun CourseDetailDescriptionPreview() {
     val sampleDetail = CourseDetail(
-        courseId = "usu",
-        courseName = "Adeline Lindsay",
+        courseId = 236,
+        courseName = "올림픽대로코스",
         summary = "conubia",
         level = 4193,
         distance = 4.5,

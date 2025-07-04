@@ -20,9 +20,9 @@ data class HomeUiState(
 
 sealed interface HomeUiEvent {
     data class LoadData(val isForceLoad: Boolean = false) : HomeUiEvent
-    data class CourseClicked(val courseId: Int) : HomeUiEvent
+    data class CourseClicked(val courseId: Long) : HomeUiEvent
 }
 
 sealed interface HomeSideEffect {
-    data class GoToDetail(val courseId: Int) : HomeSideEffect
+    data class GoToDetail(val courseId: Long) : HomeSideEffect
 }

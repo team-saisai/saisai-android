@@ -46,5 +46,5 @@ sealed interface MainNavItem : NavItem {
     data object Login : MainNavItem
 
     @Serializable
-    data class CourseDetail(val courseName: String) : MainNavItem
+    data class CourseDetail(val courseId: Long) : MainNavItem
 }

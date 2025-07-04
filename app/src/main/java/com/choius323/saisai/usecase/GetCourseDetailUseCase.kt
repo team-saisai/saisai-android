@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 class GetCourseDetailUseCase(
     private val courseRepository: CourseRepository,
 ) {
-    suspend operator fun invoke(courseName: String): Flow<Result<CourseDetail>> {
-        return courseRepository.getCourseDetail(courseName)
+    suspend operator fun invoke(courseId: Long): Flow<Result<CourseDetail>> {
+        return courseRepository.getCourseDetail(courseId)
     }
 }

@@ -17,7 +17,7 @@ interface CourseRepository {
         status: String? = null,
     ): Flow<Result<CoursePage>>
 
-    suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetail>>
+    suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
 }
 
@@ -43,8 +43,8 @@ class CourseRepositoryImpl(
             }
         }.flowOn(ioDispatcher)
 
-    override suspend fun getCourseDetail(courseName: String): Flow<Result<CourseDetail>> =
-        courseRemoteDataSource.getCourseDetail(courseName).map { result ->
+    override suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>> =
+        courseRemoteDataSource.getCourseDetail(courseId).map { result ->
             result.mapCatching { responseDto ->
                 responseDto.data.toCourseDetail()
             }

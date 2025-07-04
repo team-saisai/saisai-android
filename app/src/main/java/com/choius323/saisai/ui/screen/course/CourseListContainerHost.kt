@@ -9,9 +9,9 @@ data class CourseListUiState(
 )
 
 sealed interface CourseListUiEvent {
-    data class CourseClicked(val courseName: String) : CourseListUiEvent
+    data class CourseClicked(val courseId: Long) : CourseListUiEvent
 }
 
 sealed interface CourseListSideEffect {
-    data class GoCourseDetail(val courseName: String) : CourseListSideEffect
+    data class GoCourseDetail(val courseId: Long) : CourseListSideEffect
 }

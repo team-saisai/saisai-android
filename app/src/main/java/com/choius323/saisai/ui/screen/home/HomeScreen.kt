@@ -46,7 +46,7 @@ import org.threeten.bp.LocalDateTime
 fun HomeScreen(
     modifier: Modifier = Modifier,
     viewModel: HomeViewModel = koinViewModel(),
-    goToDetail: (Int) -> Unit,
+    goToDetail: (Long) -> Unit,
 ) {
     val uiState by viewModel.container.stateFlow.collectAsState()
     val context = LocalContext.current
@@ -180,7 +180,7 @@ fun HomeScreenContent(
 fun HomeScreenContentPreview() {
     val dummyCourses = listOf(
         CourseListItem(
-            courseId = "COURSE_ID_12345",
+            courseId = 12345,
             imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
             courseName = "여의도 - 반포",
             summary = "dapibus",
@@ -191,7 +191,7 @@ fun HomeScreenContentPreview() {
             challengeInfo = null,
         ),
         CourseListItem(
-            courseId = "COURSE_ID_67890",
+            courseId = 123451,
             imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
             courseName = "한강 수영장 - 여의도",
             summary = "dapibus",
@@ -202,7 +202,7 @@ fun HomeScreenContentPreview() {
             challengeInfo = null,
         ),
         CourseListItem(
-            courseId = "COURSE_ID_12345",
+            courseId = 1234,
             imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
             courseName = "여의도 - 반포",
             summary = "dapibus",
@@ -213,7 +213,7 @@ fun HomeScreenContentPreview() {
             challengeInfo = null,
         ),
         CourseListItem(
-            courseId = "COURSE_ID_67890",
+            courseId = 12345123,
             imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
             courseName = "한강 수영장 - 여의도",
             summary = "dapibus",
@@ -239,7 +239,8 @@ fun HomeScreenContentPreview() {
             level = 1223,
             participantCount = 6935,
             sigun = "neque",
-            imageUrl = ""
+            imageUrl = "",
+            courseId = 12
         ),
         PopularChallengeListItem(
             challengeStatus = "scripta",
@@ -250,7 +251,8 @@ fun HomeScreenContentPreview() {
             level = 7323,
             participantCount = 5304,
             sigun = "solum",
-            imageUrl = ""
+            imageUrl = "",
+            courseId = 561
         )
     )
     val dummyRecentCourse = RecentCourse(
@@ -259,8 +261,8 @@ fun HomeScreenContentPreview() {
         sigun = "sententiae",
         progressRate = 26.27,
         recentDateAt = LocalDateTime.now().minusDays(3),
-        imageUrl = "http://www.bing.com/search?q=vitae"
-
+        imageUrl = "http://www.bing.com/search?q=vitae",
+        courseId = 125
     )
 
     SaiTheme {

@@ -19,7 +19,7 @@ class CourseListViewModel(
 
     fun onEvent(event: CourseListUiEvent) = when (event) {
         is CourseListUiEvent.CourseClicked -> intent {
-            postSideEffect(CourseListSideEffect.GoCourseDetail(event.courseName))
+            postSideEffect(CourseListSideEffect.GoCourseDetail(event.courseId))
         }
     }
 

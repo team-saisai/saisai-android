@@ -17,13 +17,12 @@ class CourseDetailViewModel(
     override val container: Container<CourseDetailUiState, CourseDetailSideEffect> =
         container(CourseDetailUiState())
 
-    val courseName =
-        savedStateHandle.toRoute<MainNavItem.CourseDetail>().courseName.also { println(it) }
+    val courseId = savedStateHandle.toRoute<MainNavItem.CourseDetail>().courseId
 
     init {
         intent {
             reduce { state.copy(isLoading = true) }
-            getCourseDetailUseCase(courseName).collect { result ->
+            getCourseDetailUseCase(courseId).collect { result ->
                 result.onSuccess { courseDetail ->
                     reduce { state.copy(courseDetail = courseDetail, isLoading = false) }
                 }.onFailure {

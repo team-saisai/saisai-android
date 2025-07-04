@@ -64,8 +64,8 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
         estimatedTime = estimatedTime,
         sigun = sigun,
         imageUrl = imageUrl,
-        inProgressUserCount = inProgressUserCount,
-        completeUserCount = completeUserCount,
+        inProgressUserCount = challengerCount,
+        completeUserCount = finisherCount,
         gpxPointList = gpxPointDtoList.map(GpxPointDto::toGpxPoint),
     )
 }
@@ -91,17 +91,18 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
         courseName = courseName,
         challengeStatus = challengeStatus,
         distance = distance,
-        endedAt = LocalDateTime.parse(endedAt),
+        endedAt = LocalDateTime.parse(endedAt, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
         estimatedTime = estimatedTime,
         level = level,
-        participantCount = participantCount,
+        participantCount = challengerCount,
         sigun = sigun,
         imageUrl = imageUrl,
+        courseId = courseId,
     )
 }
 
 fun RecentCourseDto.toRecentCourse(): RecentCourse? {
-    return if (courseName == null || distance == null || sigun == null || progressRate == null || recentRideAt == null) {
+    return if (courseName == null || distance == null || sigun == null || progressRate == null || recentRideAt == null || courseId == null) {
         null
     } else {
         RecentCourse(
@@ -113,7 +114,8 @@ fun RecentCourseDto.toRecentCourse(): RecentCourse? {
                 recentRideAt,
                 DateTimeFormatter.ofPattern("yyyy-MM-dd")
             ),
-            imageUrl = courseImageUrl
+            imageUrl = courseImageUrl,
+            courseId = courseId
         )
     }
 }

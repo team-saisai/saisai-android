@@ -36,7 +36,7 @@ import org.threeten.bp.LocalDateTime
 fun CourseScreen(
     modifier: Modifier = Modifier,
     viewModel: CourseListViewModel = koinViewModel(),
-    onClickCourse: (String) -> Unit,
+    onClickCourse: (Long) -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
 
@@ -48,7 +48,7 @@ fun CourseScreen(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is CourseListSideEffect.GoCourseDetail -> onClickCourse(sideEffect.courseName)
+            is CourseListSideEffect.GoCourseDetail -> onClickCourse(sideEffect.courseId)
         }
     }
 
@@ -101,7 +101,7 @@ fun CourseScreenContent(
                         .clickable(
                             onClick = {
                                 onEvent(
-                                    CourseListUiEvent.CourseClicked(course.courseName)
+                                    CourseListUiEvent.CourseClicked(course.courseId)
                                 )
                             }
                         ),
@@ -118,7 +118,7 @@ private fun CourseScreenContentPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleCourseList = listOf(
         CourseListItem(
-            courseId = "123",
+            courseId = 123,
             courseName = "한강 라이딩 코스",
             summary = "서울의 아름다운 풍경을 따라",
             level = 2,
@@ -131,7 +131,7 @@ private fun CourseScreenContentPreview() {
             )
         ),
         CourseListItem(
-            courseId = "quam",
+            courseId = 742,
             courseName = "Regina Ellis",
             summary = "nostra",
             level = 2,
@@ -142,7 +142,7 @@ private fun CourseScreenContentPreview() {
             challengeInfo = null
         ),
         CourseListItem(
-            courseId = "123",
+            courseId = 813,
             courseName = "한강 라이딩 코스",
             summary = "서울의 아름다운 풍경을 따라",
             level = 2,

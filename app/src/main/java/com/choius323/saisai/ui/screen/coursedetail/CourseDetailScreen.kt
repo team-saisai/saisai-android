@@ -16,7 +16,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.model.CourseDetails
+import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.screen.map.MapScreen
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.koin.androidx.compose.koinViewModel
@@ -81,19 +81,24 @@ fun CourseDetailScreenContent(
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailScreenContentPreview() {
-    val sampleDetails = CourseDetails(
-        name = "여의대로 - 국회대로",
-        distance = "8.6km",
-        difficulty = "하",
-        themes = listOf("테마 1", "테마 1"),
-        challengerCount = 207,
-        completedCount = 412
+    val sampleDetails = CourseDetail(
+        courseId = 2163,
+        courseName = "한강나들이",
+        summary = "fusce",
+        level = 2,
+        distance = 4.5,
+        estimatedTime = 6.7,
+        sigun = "cursus",
+        imageUrl = "https://search.yahoo.com/search?p=definitionem",
+        inProgressUserCount = 73,
+        completeUserCount = 102,
+        gpxPointList = listOf()
     )
 
     SaiTheme {
         Surface {
             CourseDetailScreenContent(
-                uiState = CourseDetailUiState(),
+                uiState = CourseDetailUiState(courseDetail = sampleDetails),
                 modifier = Modifier.fillMaxSize(),
                 mapContent = {
                     Box(

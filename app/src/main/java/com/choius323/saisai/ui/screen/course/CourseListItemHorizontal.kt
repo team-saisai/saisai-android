@@ -158,7 +158,7 @@ private fun ChallengeStatusBadge(endTime: LocalDateTime?) {
 fun CourseListItemHorizontalPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val course = CourseListItem(
-        courseId = "123",
+        courseId = 123,
         courseName = "한강 라이딩 코스",
         summary = "서울의 아름다운 풍경을 따라",
         level = 2,

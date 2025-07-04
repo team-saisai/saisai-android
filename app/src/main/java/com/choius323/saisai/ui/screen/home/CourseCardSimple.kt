@@ -171,7 +171,7 @@ private fun DateBadge(
 fun CourseCardSimplePreview() {
     // 샘플 데이터
     val sampleChallenge = CourseListItem(
-        courseId = "COURSE_ID_12345",
+        courseId = 234,
         imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
         courseName = "여의도 - 반포",
         summary = "dapibus",

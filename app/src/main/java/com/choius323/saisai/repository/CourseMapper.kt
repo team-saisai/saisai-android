@@ -16,23 +16,28 @@ import com.choius323.saisai.ui.model.GpxPoint
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RewardInfo
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import com.choius323.saisai.util.DateTimeFormat
+import org.threeten.bp.LocalDate
 
 
 fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
     val content = data.content.map { courseItemDto ->
-        CourseListItem(
-            courseId = courseItemDto.courseId,
-            courseName = courseItemDto.courseName,
-            summary = courseItemDto.summary,
-            level = courseItemDto.level,
-            distance = courseItemDto.distance,
-            estimatedTime = courseItemDto.estimatedTime,
-            sigun = courseItemDto.sigun,
-            imageUrl = courseItemDto.imageUrl,
-            challengeInfo = courseItemDto.challengeInfo.toChallengeInfo(),
-        )
+        courseItemDto.run {
+            CourseListItem(
+                courseId = courseId,
+                courseName = courseName,
+                summary = summary,
+                level = level,
+                distance = distance,
+                estimatedTime = estimatedTime,
+                sigun = sigun,
+                imageUrl = imageUrl,
+                courseChallengerCount = courseChallengerCount,
+                courseFinisherCount = courseFinisherCount,
+                challengeStatus = challengeStatus,
+                challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
+            )
+        }
     }
 
     return CoursePage(
@@ -50,7 +55,7 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
 fun ChallengeInfoDto?.toChallengeInfo() = this?.run {
     ChallengeInfo(
         challengeStatus = challengeStatus,
-        challengeEndedTime = LocalDateTime.parse(challengeEndedTime)
+        challengeEndedTime = LocalDate.parse(challengeEndedTime, DateTimeFormat.dateFormat)
     )
 }
 
@@ -91,7 +96,7 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
         courseName = courseName,
         challengeStatus = challengeStatus,
         distance = distance,
-        endedAt = LocalDateTime.parse(endedAt, DateTimeFormatter.ofPattern("yyyy-MM-dd")),
+        endedAt = LocalDate.parse(endedAt, DateTimeFormat.dateFormat),
         estimatedTime = estimatedTime,
         level = level,
         participantCount = challengerCount,
@@ -110,9 +115,8 @@ fun RecentCourseDto.toRecentCourse(): RecentCourse? {
             distance = distance,
             sigun = sigun,
             progressRate = progressRate,
-            recentDateAt = LocalDateTime.parse(
-                recentRideAt,
-                DateTimeFormatter.ofPattern("yyyy-MM-dd")
+            recentDateAt = LocalDate.parse(
+                recentRideAt, DateTimeFormat.dateFormat
             ),
             imageUrl = courseImageUrl,
             courseId = courseId

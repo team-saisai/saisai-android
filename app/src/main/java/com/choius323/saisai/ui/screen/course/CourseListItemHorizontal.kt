@@ -35,11 +35,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.model.ChallengeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
-import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
@@ -71,10 +70,7 @@ fun CourseListItemHorizontal(
                         .align(Alignment.Center),
                     contentScale = ContentScale.Crop
                 )
-                // ChallengeInfo가 있을 경우에만 뱃지 표시
-                course.challengeInfo?.let {
-                    ChallengeStatusBadge(endTime = it.challengeEndedTime)
-                }
+                ChallengeStatusBadge(course.challengeEndedAt)
             }
 
             Spacer(Modifier.width(16.dp))
@@ -106,21 +102,19 @@ fun CourseListItemHorizontal(
                 Spacer(modifier = Modifier.height(6.dp))
 
                 // 도전자 및 완주자 정보
-                if (course.challengeInfo != null) {
-                    ParticipantInfo(
-                        challengerCount = 52, // DTO에 추가 필요
-                        completedCount = 412 // DTO에 추가 필요
-                    )
-                }
+                ParticipantInfo(
+                    challengerCount = course.courseChallengerCount,
+                    completedCount = course.courseFinisherCount,
+                )
             }
         }
     }
 }
 
 @Composable
-private fun ChallengeStatusBadge(endTime: LocalDateTime?) {
+private fun ChallengeStatusBadge(endTime: LocalDate?) {
     if (endTime == null) return
-    val isFinished = endTime.isBefore(LocalDateTime.now())
+    val isFinished = endTime.isBefore(LocalDate.now())
     val badgeText = if (isFinished) "챌린지 종료" else "~${
         endTime.format(
             DateTimeFormatter.ofPattern("M/d")
@@ -157,32 +151,21 @@ private fun ChallengeStatusBadge(endTime: LocalDateTime?) {
 @Composable
 fun CourseListItemHorizontalPreview() {
     AndroidThreeTen.init(LocalContext.current)
-    val course = CourseListItem(
-        courseId = 123,
-        courseName = "한강 라이딩 코스",
-        summary = "서울의 아름다운 풍경을 따라",
-        level = 2,
-        distance = 15.5,
-        estimatedTime = 1.5,
-        sigun = "서울",
-        imageUrl = "https://example.com/image.jpg",
-        challengeInfo = ChallengeInfo(
-            challengeStatus = "진행중", challengeEndedTime = LocalDateTime.now().plusDays(7)
-        )
-    )
+    val course = CourseListItem.dummyItem1
     SaiTheme {
         Surface {
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 CourseListItemHorizontal(course = course)
                 CourseListItemHorizontal(
                     course = course.copy(
-                        challengeInfo = ChallengeInfo(
-                            challengeStatus = "종료",
-                            challengeEndedTime = LocalDateTime.now().minusDays(7)
-                        )
+                        challengeEndedAt = LocalDate.now().minusDays(7)
                     )
                 )
-                CourseListItemHorizontal(course = course.copy(challengeInfo = null))
+                CourseListItemHorizontal(
+                    course = course.copy(
+                        challengeEndedAt = LocalDate.now().plusDays(7)
+                    )
+                )
             }
         }
     }

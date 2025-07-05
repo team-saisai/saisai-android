@@ -9,7 +9,7 @@ data class PopularChallengeItemDto(
     val courseName: String,
     val distance: Double,
     val endedAt: String,
-    val estimatedTime: Int,
+    val estimatedTime: Double,
     val level: Int,
     val challengerCount: Int,
     val sigun: String,

@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.home
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.usecase.GetPopularChallengeUseCase
 import com.choius323.saisai.usecase.GetRecentCourseUseCase
@@ -27,45 +28,33 @@ class HomeViewModel(
 
     private fun loadData(isForceLoad: Boolean) = intent {
         if ((state.isLoaded && isForceLoad.not()) || state.isLoading) return@intent
-        // getCourseDetailUseCase("남파랑길 1코스").collectLatest {
-        //     Log.d(TAG, it.toString())
-        // }
         reduce {
             state.copy(isLoading = true)
         }
         getRecentCourseUseCase().combine(getPopularChallengeUseCase()) { item1, item2 ->
             item1 to item2
         }.collect { (recentResult, popularResult) ->
-            val exception = recentResult.exceptionOrNull() ?: popularResult.exceptionOrNull()
-            if (exception != null) {
-                reduce {
-                    state.copy(
-                        isLoading = false, errorMessage = exception.message ?: "Unknown error"
-                    )
-                }
-            } else {
+            runCatching {
                 val recentData = recentResult.getOrThrow()
-                val popularData = popularResult.getOrThrow() // popularData가 PopularCourse 타입이라고 가정
-
-                state.copy(
-                    isLoading = false,
-                    recentCourse = recentData,
-                    popularChallenges = popularData,
-                    errorMessage = null,
-                    isLoaded = true
-                )
-            }
-            recentResult.fold(onSuccess = { courseInfo ->
+                val popularData = popularResult.getOrThrow()
                 reduce {
-                    state.copy(isLoading = false, recentCourse = courseInfo, isLoaded = true)
+                    state.copy(
+                        isLoading = false,
+                        recentCourse = recentData,
+                        popularChallenges = popularData,
+                        isLoaded = true
+                    )
                 }
-            }, onFailure = { exception ->
+            }.onFailure { exception ->
+                Log.d(TAG, exception.toString())
                 reduce {
                     state.copy(
                         isLoading = false, errorMessage = exception.message ?: "Unknown error"
                     )
                 }
-            })
+
+            }
+
         }
     }
 }

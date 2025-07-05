@@ -16,6 +16,9 @@ class MapViewModel(
             MapUiEvent.BackClicked -> intent {
                 postSideEffect(MapSideEffect.NavigateBack)
             }
+            is MapUiEvent.SetRoute -> intent {
+                reduce { state.copy(route = event.route) }
+            }
         }
     }
 }

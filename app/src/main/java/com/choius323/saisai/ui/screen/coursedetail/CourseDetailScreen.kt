@@ -9,6 +9,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -18,6 +19,8 @@ import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.screen.map.MapScreen
+import com.choius323.saisai.ui.screen.map.MapUiEvent
+import com.choius323.saisai.ui.screen.map.MapViewModel
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -27,6 +30,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun CourseDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: CourseDetailViewModel = koinViewModel(),
+    mapViewModel: MapViewModel = koinViewModel(),
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
@@ -44,14 +48,18 @@ fun CourseDetailScreen(
                 modifier = Modifier.clickable(onClick = goBack)
             )
         })
+    LaunchedEffect(uiState.courseDetail) {
+        mapViewModel.onEvent(MapUiEvent.SetRoute(uiState.courseDetail?.gpxPointList ?: emptyList()))
+    }
     CourseDetailScreenContent(
         uiState = uiState,
         modifier = modifier,
         onEvent = viewModel::onEvent,
         mapContent = {
             MapScreen(
-                uiState.courseDetail?.gpxPointList ?: emptyList(),
-                modifier = Modifier.fillMaxSize()
+                route = uiState.courseDetail?.gpxPointList ?: emptyList(),
+                modifier = Modifier.fillMaxSize(),
+                viewModel = mapViewModel
             )
         },
     )
@@ -67,7 +75,6 @@ fun CourseDetailScreenContent(
 ) {
     Box(modifier) {
         mapContent()
-        println(uiState)
         if (uiState.courseDetail != null) {
             CourseDetailDescription(
                 uiState.courseDetail,

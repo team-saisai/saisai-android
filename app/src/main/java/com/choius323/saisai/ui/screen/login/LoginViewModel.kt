@@ -18,8 +18,19 @@ class LoginViewModel(
     init {
         intent {
             reduce { state.copy(isLoading = true) }
-            if (SessionManager.accessToken.value != null && SessionManager.refreshToken.value != null) {
-                postSideEffect(LoginSideEffect.LoginSuccess)
+            if (SessionManager.refreshToken.value != null) {
+                reissueTokenUseCase().collectLatest { result ->
+                    result.onSuccess {
+                        postSideEffect(LoginSideEffect.LoginSuccess)
+                    }.onFailure {
+                        reduce {
+                            state.copy(
+                                isLoading = false,
+                                error = it.message ?: "Unknown Error"
+                            )
+                        }
+                    }
+                }
             } else {
                 SessionManager.onLogout()
                 reduce { state.copy(isLoading = false) }

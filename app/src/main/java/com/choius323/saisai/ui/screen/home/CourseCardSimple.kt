@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -35,6 +36,7 @@ import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDateTime
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -43,14 +45,14 @@ fun CourseCardSimple(
     imageUrl: String,
     sigun: String,
     distance: Double,
-    level: Int,
     participantCount: Int,
     modifier: Modifier = Modifier,
+    level: Int? = null,
     endDate: LocalDateTime? = null,
 ) {
     Card(
         modifier = modifier
-            .size(width = 170.dp, height = 240.dp),
+            .size(width = 170.dp, height = 250.dp),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface
@@ -83,7 +85,9 @@ fun CourseCardSimple(
 
             // 하단 정보 섹션
             Column(
-                modifier = Modifier.padding(horizontal = 12.dp)
+                modifier = Modifier
+                    .padding(horizontal = 12.dp)
+                    .padding(bottom = 14.dp)
             ) {
                 Row {
                     SaiText(
@@ -96,21 +100,30 @@ fun CourseCardSimple(
                 }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     SaiText(
-                        text = "${distance}km · 난이도 ",
+                        text = "${distance}km",
                         style = MaterialTheme.typography.bodyLarge.copy(
                             color = MaterialTheme.colorScheme.onSurface,
                             fontWeight = FontWeight.Medium,
                             fontSize = 12.sp
                         )
                     )
-                    SaiText(
-                        text = level.toString(),
-                        style = MaterialTheme.typography.bodyLarge.copy(
-                            color = Color(0xFFFFD700),
-                            fontWeight = FontWeight.Medium,
-                            fontSize = 12.sp
+                    if (level != null) {
+                        SaiText(
+                            text = " · 난이도 ", style = MaterialTheme.typography.bodyLarge.copy(
+                                color = MaterialTheme.colorScheme.onSurface,
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp
+                            )
                         )
-                    )
+                        SaiText(
+                            text = level.toString(),
+                            style = MaterialTheme.typography.bodyLarge.copy(
+                                color = Color(0xFFFFD700),
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 12.sp
+                            )
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(10.dp))
@@ -169,18 +182,8 @@ private fun DateBadge(
 @Preview(showBackground = true)
 @Composable
 fun CourseCardSimplePreview() {
-    // 샘플 데이터
-    val sampleChallenge = CourseListItem(
-        courseId = 234,
-        imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-        courseName = "여의도 - 반포",
-        summary = "dapibus",
-        level = 2,
-        distance = 8.6,
-        estimatedTime = 50.0,
-        sigun = "서울시 강남구",
-        challengeInfo = null,
-    )
+    AndroidThreeTen.init(LocalContext.current)
+    val sampleChallenge = CourseListItem.dummyItem4
 
     SaiTheme {
         Surface {

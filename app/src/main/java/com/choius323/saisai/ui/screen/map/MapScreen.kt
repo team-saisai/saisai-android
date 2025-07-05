@@ -27,7 +27,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun MapScreen(
     route: List<GpxPoint>,
     modifier: Modifier = Modifier,
-    viewModel: MapViewModel = koinViewModel(),
+    viewModel: MapViewModel,
     goBack: () -> Unit = {},
 ) {
     val uiState by viewModel.collectAsState()
@@ -37,14 +37,13 @@ fun MapScreen(
         }
     }
     MapScreen(
-        uiState = uiState, route = route, modifier = modifier
+        uiState = uiState, modifier = modifier
     )
 }
 
 @Composable
 private fun MapScreen(
     uiState: MapUiState,
-    route: List<GpxPoint>,
     modifier: Modifier = Modifier,
 ) {
     var kakaoMap by remember { mutableStateOf<KakaoMap?>(null) }
@@ -59,14 +58,11 @@ private fun MapScreen(
             factory = { mapView }, update = {
                 Log.d(TAG, "MapView update")
                 updateMapData(
-                    kakaoMap, (route)
+                    kakaoMap, uiState.route
                 )
             },
             modifier = Modifier.fillMaxSize()
         )
-        if (route.isEmpty()) {
-            Text("경로가 없습니다.")
-        }
     }
 }
 

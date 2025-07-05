@@ -12,5 +12,8 @@ data class CourseItemDto(
     val estimatedTime: Double,
     val sigun: String,
     val imageUrl: String? = null,
-    val challengeInfo: ChallengeInfoDto?,
+    val courseChallengerCount: Int,
+    val courseFinisherCount: Int,
+    val challengeStatus: String,
+    val challengeEndedAt: String,
 )

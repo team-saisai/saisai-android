@@ -1,6 +1,6 @@
 package com.choius323.saisai.ui.model
 
-import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalDate
 
 data class RecentCourse(
     val courseId: Long,
@@ -8,6 +8,6 @@ data class RecentCourse(
     val distance: Double,
     val sigun: String,
     val progressRate: Double,
-    val recentDateAt: LocalDateTime,
+    val recentDateAt: LocalDate,
     val imageUrl: String?,
 )

@@ -23,14 +23,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.model.ChallengeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import org.threeten.bp.LocalDateTime
 
 @Composable
 fun CourseScreen(
@@ -117,43 +115,9 @@ fun CourseScreenContent(
 private fun CourseScreenContentPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleCourseList = listOf(
-        CourseListItem(
-            courseId = 123,
-            courseName = "한강 라이딩 코스",
-            summary = "서울의 아름다운 풍경을 따라",
-            level = 2,
-            distance = 15.5,
-            estimatedTime = 1.5,
-            sigun = "서울",
-            imageUrl = "https://example.com/image.jpg",
-            challengeInfo = ChallengeInfo(
-                challengeStatus = "진행중", challengeEndedTime = LocalDateTime.now().plusDays(7)
-            )
-        ),
-        CourseListItem(
-            courseId = 742,
-            courseName = "Regina Ellis",
-            summary = "nostra",
-            level = 2,
-            distance = 4.5,
-            estimatedTime = 6.7,
-            sigun = "vis",
-            imageUrl = "https://www.google.com/#q=dicant",
-            challengeInfo = null
-        ),
-        CourseListItem(
-            courseId = 813,
-            courseName = "한강 라이딩 코스",
-            summary = "서울의 아름다운 풍경을 따라",
-            level = 2,
-            distance = 15.5,
-            estimatedTime = 1.5,
-            sigun = "서울",
-            imageUrl = "https://example.com/image.jpg",
-            challengeInfo = ChallengeInfo(
-                challengeStatus = "진행중", challengeEndedTime = LocalDateTime.now().minusDays(7)
-            )
-        )
+        CourseListItem.dummyItem1,
+        CourseListItem.dummyItem2,
+        CourseListItem.dummyItem3
     )
     SaiTheme {
         Surface {

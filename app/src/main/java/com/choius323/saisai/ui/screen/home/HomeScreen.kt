@@ -1,8 +1,8 @@
 package com.choius323.saisai.ui.screen.home
 
-import android.R.attr.level
 import android.widget.Toast
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -21,7 +21,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,9 +36,11 @@ import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.androidx.compose.koinViewModel
+import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
-import org.threeten.bp.LocalDateTime
+import org.threeten.bp.LocalDate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -48,7 +49,7 @@ fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
     goToDetail: (Long) -> Unit,
 ) {
-    val uiState by viewModel.container.stateFlow.collectAsState()
+    val uiState by viewModel.collectAsState()
     val context = LocalContext.current
 
     viewModel.collectSideEffect { sideEffect ->
@@ -115,11 +116,10 @@ fun HomeScreenContent(
         Spacer(Modifier.height(40.dp))
         recentChallenge?.apply {
             CourseCardSimple(
-                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) },
+                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseId)) },
                 imageUrl = imageUrl ?: "",
                 sigun = sigun,
                 distance = distance,
-                level = level,
                 participantCount = 265
             )
             Spacer(Modifier.height(40.dp))
@@ -128,7 +128,7 @@ fun HomeScreenContent(
             "인기 챌린지", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
         )
         if (trendChallenges.isNotEmpty()) {
-            LazyRow {
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(trendChallenges) { courseInfo ->
                     CourseCardSimple(
                         imageUrl = courseInfo.imageUrl ?: "",
@@ -136,8 +136,7 @@ fun HomeScreenContent(
                         distance = courseInfo.distance,
                         level = courseInfo.level,
                         participantCount = courseInfo.participantCount,
-                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(0)) }
-
+                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) }
                     )
                 }
             }
@@ -153,7 +152,6 @@ fun HomeScreenContent(
         SaiText(
             text = "내 주변 코스", fontSize = 18.sp, modifier = Modifier
                 .padding(bottom = 16.dp)
-                .clickable { onEvent(HomeUiEvent.CourseClicked(0)) }
         )
         if (aroundChallenges.isNotEmpty()) {
             LazyRow() {
@@ -164,13 +162,12 @@ fun HomeScreenContent(
                         distance = courseInfo.distance,
                         level = courseInfo.level,
                         participantCount = 125,
-                        modifier = modifier
-
+                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) }
                     )
                 }
             }
         } else {
-            SaiText("인기 챌린지가 없습니다.", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            SaiText("내 주변에 코스가 없습니다.", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -178,51 +175,12 @@ fun HomeScreenContent(
 @Preview(showBackground = true, name = "HomeScreenContent Preview")
 @Composable
 fun HomeScreenContentPreview() {
+    AndroidThreeTen.init(LocalContext.current)
     val dummyCourses = listOf(
-        CourseListItem(
-            courseId = 12345,
-            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-            courseName = "여의도 - 반포",
-            summary = "dapibus",
-            level = 2,
-            distance = 8.6,
-            estimatedTime = 50.0,
-            sigun = "서울시 강남구",
-            challengeInfo = null,
-        ),
-        CourseListItem(
-            courseId = 123451,
-            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-            courseName = "한강 수영장 - 여의도",
-            summary = "dapibus",
-            level = 1,
-            distance = 5.2,
-            estimatedTime = 30.0,
-            sigun = "서울시 강남구",
-            challengeInfo = null,
-        ),
-        CourseListItem(
-            courseId = 1234,
-            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-            courseName = "여의도 - 반포",
-            summary = "dapibus",
-            level = 2,
-            distance = 8.6,
-            estimatedTime = 50.0,
-            sigun = "서울시 강남구",
-            challengeInfo = null,
-        ),
-        CourseListItem(
-            courseId = 12345123,
-            imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-            courseName = "한강 수영장 - 여의도",
-            summary = "dapibus",
-            level = 1,
-            distance = 5.2,
-            estimatedTime = 30.0,
-            sigun = "서울시 강남구",
-            challengeInfo = null,
-        ),
+        CourseListItem.dummyItem1,
+        CourseListItem.dummyItem2,
+        CourseListItem.dummyItem3,
+        CourseListItem.dummyItem4,
     )
     val dummyBadges = listOf(
         BadgeInfo(1, "첫 완주", "badge1.url"),
@@ -230,37 +188,15 @@ fun HomeScreenContentPreview() {
         BadgeInfo(3, "산악왕", "badge3.url")
     )
     val dummyTrendChallenges = listOf(
-        PopularChallengeListItem(
-            challengeStatus = "eruditi",
-            courseName = "Camille Sheppard",
-            distance = 6.7,
-            endedAt = LocalDateTime.now(),
-            estimatedTime = 5284,
-            level = 1223,
-            participantCount = 6935,
-            sigun = "neque",
-            imageUrl = "",
-            courseId = 12
-        ),
-        PopularChallengeListItem(
-            challengeStatus = "scripta",
-            courseName = "Alejandro Padilla",
-            distance = 12.13,
-            endedAt = LocalDateTime.now(),
-            estimatedTime = 7293,
-            level = 7323,
-            participantCount = 5304,
-            sigun = "solum",
-            imageUrl = "",
-            courseId = 561
-        )
+        PopularChallengeListItem.dummyItem1,
+        PopularChallengeListItem.dummyItem2,
     )
     val dummyRecentCourse = RecentCourse(
         courseName = "Chase McDonald",
         distance = 24.25,
         sigun = "sententiae",
         progressRate = 26.27,
-        recentDateAt = LocalDateTime.now().minusDays(3),
+        recentDateAt = LocalDate.now().minusDays(3),
         imageUrl = "http://www.bing.com/search?q=vitae",
         courseId = 125
     )

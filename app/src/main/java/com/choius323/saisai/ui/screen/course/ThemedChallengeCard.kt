@@ -35,9 +35,8 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseInfo
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
-import java.time.format.DateTimeParseException
+import com.choius323.saisai.util.DateTimeFormat
+import org.threeten.bp.LocalDate
 
 /**
  * 새로운 UI 디자인이 적용된 챌린지 카드 컴포넌트
@@ -75,7 +74,7 @@ fun ThemedChallengeCard(
  * 카드 상단의 이미지와 상태 배지를 표시하는 컴포넌트
  */
 @Composable
-private fun ChallengeImageHeader(imageUrl: String, endDate: String) {
+private fun ChallengeImageHeader(imageUrl: String, endDate: LocalDate) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
@@ -96,23 +95,15 @@ private fun ChallengeImageHeader(imageUrl: String, endDate: String) {
  * 챌린지 진행 상태에 따라 다른 배지를 보여주는 컴포넌트
  */
 @Composable
-private fun ChallengeStatusBadge(endDate: String) {
-    val isFinished = remember(endDate) {
-        try {
-            val formatter = DateTimeFormatter.ofPattern("M/d")
-            val challengeDate = LocalDate.parse(endDate, formatter).withYear(LocalDate.now().year)
-
-            // 챌린지 종료일이 오늘보다 이전인지 확인
-            challengeDate.isBefore(LocalDate.now())
-        } catch (e: DateTimeParseException) {
-            // 날짜 형식이 잘못된 경우, 종료되지 않은 것으로 간주
-            false
-        }
-    }
+fun ChallengeStatusBadge(
+    endDate: LocalDate,
+    modifier: Modifier = Modifier,
+) {
+    val isFinished = remember(endDate) { endDate.isBefore(LocalDate.now()) }
     if (isFinished) {
-        EndedBadge()
+        EndedBadge(modifier)
     } else {
-        DateBadge(date = endDate)
+        DateBadge(endDate = endDate, modifier = modifier)
     }
 }
 
@@ -153,9 +144,10 @@ private fun ChallengeDetails(courseInfo: CourseInfo) {
  * 진행 중인 챌린지의 종료 날짜를 표시하는 배지
  */
 @Composable
-fun DateBadge(date: String) {
+fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
+    val endDateStr = remember(endDate) { endDate.format(DateTimeFormat.monthDay) }
     Row(
-        modifier = Modifier
+        modifier = modifier
             .padding(12.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color(0xFFF08080).copy(alpha = 0.9f))
@@ -170,7 +162,7 @@ fun DateBadge(date: String) {
             modifier = Modifier.size(20.dp)
         )
         SaiText(
-            text = "~ $date",
+            text = "~ $endDateStr",
             style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
         )
     }
@@ -180,9 +172,9 @@ fun DateBadge(date: String) {
  * 종료된 챌린지를 표시하는 배지
  */
 @Composable
-private fun EndedBadge() {
+private fun EndedBadge(modifier: Modifier = Modifier) {
     Box(
-        modifier = Modifier
+        modifier = modifier
             .padding(12.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color.Gray.copy(alpha = 0.9f))
@@ -263,18 +255,7 @@ fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
 @Preview(showBackground = true, name = "진행 중인 챌린지")
 @Composable
 fun ThemedChallengeCardOngoingPreview() {
-    val sampleChallenge = CourseInfo(
-        courseId = 1,
-        imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-        endDate = "6/31",
-        distance = "8.6km",
-        difficulty = "하",
-        themes = listOf("테마 1", "테마 2"),
-        challengerCount = 207,
-        completedCount = 412,
-        startPlace = "여의대로",
-        endPlace = "국회대로",
-    )
+    val sampleChallenge = CourseInfo.dummyItem
     MaterialTheme {
         ThemedChallengeCard(courseInfo = sampleChallenge)
     }
@@ -283,18 +264,7 @@ fun ThemedChallengeCardOngoingPreview() {
 @Preview(showBackground = true, name = "종료된 챌린지")
 @Composable
 fun ThemedChallengeCardFinishedPreview() {
-    val sampleChallenge = CourseInfo(
-        courseId = 6,
-        imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-        endDate = "5/31",
-        distance = "12.5km",
-        difficulty = "상",
-        themes = listOf("공원", "야경"),
-        challengerCount = 540,
-        completedCount = 310,
-        startPlace = "여의대로",
-        endPlace = "국회대로",
-    )
+    val sampleChallenge = CourseInfo.dummyItem
     MaterialTheme {
         ThemedChallengeCard(courseInfo = sampleChallenge)
     }

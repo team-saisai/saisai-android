@@ -19,10 +19,10 @@ class AccountLocalDataSourceImpl(
         get() = authDataStore.refreshToken
 
     override suspend fun saveTokens(accessToken: String, refreshToken: String) {
-        authDataStore.saveTokens(accessToken, refreshToken)
+        SessionManager.onLoginSuccess(accessToken, refreshToken)
     }
 
     override suspend fun clearTokens() {
-        authDataStore.clearTokens()
+        SessionManager.onLogout()
     }
 }

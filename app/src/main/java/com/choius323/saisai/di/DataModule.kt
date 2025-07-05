@@ -97,7 +97,10 @@ object KtorClient {
                 loadTokens {
                     val accessToken = SessionManager.accessToken.value
                     val refreshToken = SessionManager.refreshToken.value
-                    println("BearerTokens: $accessToken $refreshToken")
+                    Log.d(
+                        TAG,
+                        "BearerTokens\naccessToken: $accessToken\nrefreshToken: $refreshToken"
+                    )
                     if (accessToken != null && refreshToken != null) {
                         BearerTokens(accessToken, refreshToken)
                     } else {
@@ -105,6 +108,7 @@ object KtorClient {
                     }
                 }
                 refreshTokens {
+                    Log.d(TAG, "start refreshTokens block")
                     val refreshToken = SessionManager.refreshToken.value ?: run {
                         SessionManager.onLogout()
                         return@refreshTokens null
@@ -112,10 +116,14 @@ object KtorClient {
                     val response = defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/reissue") {
                         header(HttpHeaders.Authorization, "Bearer $refreshToken")
                     }
+                    Log.d(TAG, "reissue refreshTokens: ${response.status}")
                     if (response.status.isSuccess()) {
                         val newTokens = response.body<SaiResponseDto<AccountTokenDto>>().data
                         SessionManager.onLoginSuccess(newTokens.accessToken, newTokens.refreshToken)
-                        BearerTokens(newTokens.accessToken, newTokens.refreshToken)
+
+                        val accessToken = SessionManager.accessToken.value
+                        val refreshToken = SessionManager.refreshToken.value
+                        BearerTokens(accessToken!!, refreshToken)
                     } else {
                         SessionManager.onLogout()
                         null
@@ -147,7 +155,9 @@ val dataModule = module {
     }
     single<AccountRemoteDataSource> {
         AccountRemoteDataSourceImpl(
-            get(named(IO_DISPATCHER)), get(named(SAI_CLIENT))
+            get(named(IO_DISPATCHER)),
+            get(named(SAI_CLIENT)),
+            get(named(DEFAULT_CLIENT))
         )
     }
     single<AccountLocalDataSource> { AccountLocalDataSourceImpl(get()) }
@@ -155,3 +165,5 @@ val dataModule = module {
         AccountRepositoryImpl(get())
     }
 }
+
+private const val TAG = "DataModule"

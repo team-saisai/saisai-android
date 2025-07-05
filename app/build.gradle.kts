@@ -133,6 +133,9 @@ dependencies {
     // DataStore
     implementation(libs.datastore.preferences)
 
+    // GMS
+    implementation(libs.gms.services.location)
+
 
     // Testing
     testImplementation(libs.junit)

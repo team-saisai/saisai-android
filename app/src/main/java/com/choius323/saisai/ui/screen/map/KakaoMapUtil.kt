@@ -2,10 +2,12 @@ package com.choius323.saisai.ui.screen.map
 
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
+import com.choius323.saisai.R
 import com.choius323.saisai.ui.model.GpxPoint
-import com.choius323.saisai.ui.model.Position
+import com.choius323.saisai.ui.model.Point
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.camera.CameraAnimation
 import com.kakao.vectormap.camera.CameraUpdateFactory
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
@@ -33,8 +35,8 @@ fun KakaoMap?.drawLine(route: List<LatLng>) {
 }
 
 @JvmName("drawLineWithPositions")
-fun KakaoMap?.drawLine(route: List<Position>) {
-    drawLine(route.map(Position::toLatLng))
+fun KakaoMap?.drawLine(route: List<Point>) {
+    drawLine(route.map(Point::toLatLng))
 }
 
 fun KakaoMap?.moveCamera(route: List<LatLng>) {
@@ -44,6 +46,11 @@ fun KakaoMap?.moveCamera(route: List<LatLng>) {
             route.toTypedArray(), 200
         )
     )
+}
+
+fun KakaoMap?.moveCamera(latLng: LatLng, zoomLevel: Int = 17) {
+    if (this == null) return
+    moveCamera(CameraUpdateFactory.newCenterPosition(latLng, zoomLevel), CameraAnimation.from(500))
 }
 
 fun KakaoMap?.createLabel(start: LatLng, end: LatLng) {
@@ -57,12 +64,22 @@ fun KakaoMap?.createLabel(start: LatLng, end: LatLng) {
     )
 }
 
+fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
+    val layer = this?.labelManager?.layer ?: return
+    layer.getLabel(DIRECTION_LABEL)?.moveTo(latLng) ?: run {
+        layer.addLabel(LabelOptions.from(DIRECTION_LABEL, latLng).setStyles(directionStyle))
+    }
+}
+
 private const val START_LABEL = "Start"
 private const val END_LABEL = "End"
+private const val DIRECTION_LABEL = "Direction"
 
 private val startStyle: LabelStyles =
     LabelStyles.from(START_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
 private val endStyle: LabelStyles =
     LabelStyles.from(END_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
+private val directionStyle: LabelStyles =
+    LabelStyles.from(DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_direction_label))
 
 private const val LINE_WIDTH = 20f

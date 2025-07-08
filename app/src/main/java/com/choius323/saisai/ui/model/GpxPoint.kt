@@ -9,6 +9,7 @@ data class GpxPoint(
     val segmentDistance: Double,
 ) {
     fun toLatLng() = LatLng.from(lat, lng)
+    fun toPoint() = Point(lat = lat, lng = lng)
 
     companion object {
         val gpxPointsSample = listOf(

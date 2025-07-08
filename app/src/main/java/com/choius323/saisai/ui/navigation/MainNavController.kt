@@ -52,6 +52,7 @@ fun MainNavController(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding(),
+                goRecordScreen = { navController.navigate(MainNavItem.BottomNavItem.Record) },
                 goBack = { navController.upPress() }
             )
         }

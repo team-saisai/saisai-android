@@ -31,12 +31,13 @@ fun CourseDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: CourseDetailViewModel = koinViewModel(),
     mapViewModel: MapViewModel = koinViewModel(),
+    goRecordScreen: () -> Unit,
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is CourseDetailSideEffect.StartCourse -> {}
+            is CourseDetailSideEffect.StartCourse -> goRecordScreen()
             is CourseDetailSideEffect.GoBack -> goBack()
         }
     }
@@ -57,7 +58,6 @@ fun CourseDetailScreen(
         onEvent = viewModel::onEvent,
         mapContent = {
             MapScreen(
-                route = uiState.courseDetail?.gpxPointList ?: emptyList(),
                 modifier = Modifier.fillMaxSize(),
                 viewModel = mapViewModel
             )

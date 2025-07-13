@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class GpxPointDto(
     val latitude: Double,
     val longitude: Double,
-    val elevation: Double,
+    val elevation: Double? = null,
     val segmentDistance: Double,
+    val totalDistance: Double,
 )

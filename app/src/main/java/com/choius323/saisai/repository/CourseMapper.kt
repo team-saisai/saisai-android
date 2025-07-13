@@ -80,6 +80,7 @@ fun GpxPointDto.toGpxPoint(): GpxPoint = GpxPoint(
     lng = longitude,
     elevation = elevation,
     segmentDistance = segmentDistance,
+    totalDistance = totalDistance,
 )
 
 fun RewardInfoDto.toRewardUiInfo(): RewardInfo {

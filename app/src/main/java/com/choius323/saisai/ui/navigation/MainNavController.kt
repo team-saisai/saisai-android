@@ -13,6 +13,7 @@ import com.choius323.saisai.ui.screen.course.CourseScreen
 import com.choius323.saisai.ui.screen.coursedetail.CourseDetailScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
 import com.choius323.saisai.ui.screen.login.LoginScreen
+import com.choius323.saisai.ui.screen.mypage.MyPageScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
 
 @Stable
@@ -45,6 +46,9 @@ fun MainNavController(
             RecordScreen(modifier.fillMaxSize()) {
                 navController.upPress()
             }
+        }
+        composable<MainNavItem.BottomNavItem.MyPage> { backStackEntry ->
+            MyPageScreen(modifier.fillMaxSize())
         }
         composable<MainNavItem.CourseDetail> { backStackEntry ->
             val courseDetail = backStackEntry.toRoute<MainNavItem.CourseDetail>()

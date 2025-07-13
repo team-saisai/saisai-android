@@ -4,7 +4,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.model.GpxPoint
-import com.choius323.saisai.ui.model.Point
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraAnimation
@@ -20,23 +19,37 @@ import com.kakao.vectormap.R as KakaoMapR
 fun updateMapData(map: KakaoMap?, route: List<GpxPoint>) {
     val latLngList = route.map(GpxPoint::toLatLng)
     if (map == null) return
-    map.drawLine(latLngList)
+    map.drawRoute(latLngList)
     map.moveCamera(latLngList)
 }
 
-fun KakaoMap?.drawLine(route: List<LatLng>) {
+fun KakaoMap?.drawRoute(route: List<LatLng>, color: Int = Color(0xFFC9FF66).toArgb()) {
     val layer = this?.routeLineManager?.layer ?: return
     if (route.size < 2) return
     layer.removeAll()
-    val style = RouteLineStyle.from(LINE_WIDTH, Color(201, 255, 102).toArgb())
+    val style = RouteLineStyle.from(LINE_WIDTH, color)
     val segment = RouteLineSegment.from(route)
         .setStyles(style)
     layer.addRouteLine(RouteLineOptions.from(segment))
 }
 
-@JvmName("drawLineWithPositions")
-fun KakaoMap?.drawLine(route: List<Point>) {
-    drawLine(route.map(Point::toLatLng))
+fun KakaoMap?.drawRideRoute(route: List<LatLng>, startIndex: Int, endIndex: Int) {
+    val layer = this?.routeLineManager?.layer ?: return
+    if (route.size < 2) return
+    if (layer.getRouteLine("rideLine/${startIndex}/${endIndex}") != null) return
+    val segment =
+        RouteLineSegment.from(route.subList(startIndex, endIndex)).setStyles(rideLineStyle)
+    layer.addRouteLine(RouteLineOptions.from("rideLine/${startIndex}/${endIndex}", segment))
+}
+
+@JvmName("drawRideRouteWithGpxPoints")
+fun KakaoMap?.drawRideRoute(route: List<GpxPoint>, startIndex: Int, endIndex: Int) {
+    drawRideRoute(route.map(GpxPoint::toLatLng), startIndex, endIndex)
+}
+
+@JvmName("drawRouteWithGpxPoints")
+fun KakaoMap?.drawRoute(route: List<GpxPoint>, color: Int = Color(0xFFC9FF66).toArgb()) {
+    drawRoute(route.map(GpxPoint::toLatLng), color)
 }
 
 fun KakaoMap?.moveCamera(route: List<LatLng>) {
@@ -81,5 +94,6 @@ private val endStyle: LabelStyles =
     LabelStyles.from(END_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
 private val directionStyle: LabelStyles =
     LabelStyles.from(DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_direction_label))
+private val rideLineStyle = RouteLineStyle.from(LINE_WIDTH, Color(0xFFC9FF66).toArgb())
 
 private const val LINE_WIDTH = 20f

@@ -13,6 +13,9 @@ data class MapUiState(
     val isShowPermissionDialog: Boolean = false,
     val isCameraTracking: Boolean = false,
     val isCourseStarted: Boolean = false,
+    val segmentIndex: Int = 0,
+    val totalRideDistance: Double = 0.0,
+    val projectedPoint: LatLng? = null,
 )
 
 sealed interface MapUiEvent {

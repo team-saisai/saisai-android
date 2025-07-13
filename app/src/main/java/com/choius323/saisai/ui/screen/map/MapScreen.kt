@@ -14,6 +14,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -24,6 +25,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
@@ -72,8 +74,7 @@ fun MapScreen(
             } else {
                 viewModel.onEvent(MapUiEvent.SetShowPermissionDialog(true))
             }
-        }
-    )
+        })
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MapSideEffect.NavigateBack -> goBack()
@@ -94,8 +95,7 @@ fun MapScreen(
             viewModel.onEvent(
                 MapUiEvent.SetNowLatLng(
                     LatLng.from(
-                        location.latitude,
-                        location.longitude
+                        location.latitude, location.longitude
                     )
                 )
             )
@@ -126,30 +126,48 @@ private fun MapScreen(
     LaunchedEffect(uiState.isCameraTracking, uiState.nowLatLng) {
         Log.d(
             TAG,
-            "isTracking: ${uiState.isCameraTracking}, isCameraTracking: ${uiState.isCameraTracking}, nowLatLng: ${uiState.nowLatLng}"
+            "isTracking: ${uiState.isTracking}, isCameraTracking: ${uiState.isCameraTracking}, nowLatLng: ${uiState.nowLatLng}"
         )
-        if (uiState.isCameraTracking && uiState.nowLatLng != null) {
-            println("tracking job: ${uiState.nowLatLng}")
+        if (uiState.isTracking && uiState.isCameraTracking && uiState.nowLatLng != null) {
             kakaoMap.moveCamera(uiState.nowLatLng)
-            kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
     LaunchedEffect(kakaoMap, uiState.route) {
         updateMapData(kakaoMap, uiState.route)
+        val latLngList = uiState.route.map { it.toLatLng() }
+        if (uiState.isTracking) {
+            kakaoMap.drawRoute(latLngList, Color(0xFFC9FF66).toArgb())
+        } else {
+            kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
+        }
+        kakaoMap.moveCamera(latLngList)
+    }
+    LaunchedEffect(uiState.nowLatLng) {
+        if (uiState.nowLatLng != null && uiState.isTracking) {
+            kakaoMap.createDirectionLabel(uiState.nowLatLng)
+        }
+    }
+    LaunchedEffect(uiState.segmentIndex) {
+        if (uiState.projectedPoint != null && uiState.segmentIndex > 0 && uiState.isTracking) {
+            kakaoMap.drawRideRoute(
+                uiState.route,
+                uiState.segmentIndex - 1, uiState.segmentIndex + 1
+            )
+        }
     }
     Box(modifier = modifier) {
         AndroidView(
             factory = { mapView }, update = {
                 Log.d(TAG, "MapView update")
-            },
-            modifier = Modifier.fillMaxSize()
+            }, modifier = Modifier.fillMaxSize()
         )
+        Text("${uiState.totalRideDistance}")
         if (uiState.isTracking) {
             Icon(
                 imageVector = Icons.Default.LocationOn,
                 modifier = Modifier
                     .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = 8.dp)
+                    .offset(x = (-8).dp, y = 24.dp)
                     .size(24.dp)
                     .background(Color.Black)
                     .clip(CircleShape)
@@ -227,9 +245,7 @@ private fun ObserveLocation(
 
             // 위치 업데이트 시작
             fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
+                locationRequest, locationCallback, Looper.getMainLooper()
             )
         } else {
             fusedLocationClient.removeLocationUpdates(locationCallback)

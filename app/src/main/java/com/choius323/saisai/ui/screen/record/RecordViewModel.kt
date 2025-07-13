@@ -26,7 +26,6 @@ class RecordViewModel() : ViewModel(), ContainerHost<RecordUiState, RecordSideEf
                 gpxPointList = GpxPoint.gpxPointsSample
             )
             reduce { state.copy(courseDetail = courseDetail) }
-            onEvent(RecordUiEvent.ClickedStart)
         }
     }
 

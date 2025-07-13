@@ -21,14 +21,8 @@ class MapViewModel(
                 reduce { state.copy(route = event.route) }
             }
 
-            is MapUiEvent.SetIsTracking -> intent {
-                reduce { state.copy(isTracking = event.isTracking) }
-            }
-
-            is MapUiEvent.SetNowLatLng -> intent {
-                reduce { state.copy(nowLatLng = event.latLng) }
-            }
-
+            is MapUiEvent.SetIsTracking -> setIsTracking(event)
+            is MapUiEvent.SetNowLatLng -> setNowLatLng(event)
             is MapUiEvent.SetPermissionGranted -> intent {
                 reduce { state.copy(permissionGranted = event.changed) }
             }
@@ -45,6 +39,17 @@ class MapViewModel(
         }
     }
 
+    private fun setIsTracking(event: MapUiEvent.SetIsTracking) = intent {
+        reduce {
+            state.copy(
+                isCourseStarted = true,
+                isTracking = true,
+                isCameraTracking = true,
+                segmentIndex = 0,
+            )
+        }
+    }
+
     private fun startRecording() = intent {
         postSideEffect(MapSideEffect.PermissionCheck)
         if (state.permissionGranted.not()) {
@@ -53,12 +58,26 @@ class MapViewModel(
         } else if (state.isCourseStarted) {
             return@intent
         }
-        reduce {
-            state.copy(
-                isCourseStarted = true,
-                isTracking = true,
-                isCameraTracking = true,
-            )
+        onEvent(MapUiEvent.SetIsTracking(true))
+    }
+
+    private fun setNowLatLng(event: MapUiEvent.SetNowLatLng) = intent {
+        reduce { state.copy(nowLatLng = event.latLng) }
+        val rideSnapshot = updateUserLocation(event.latLng, state.segmentIndex, state.route)
+        if (rideSnapshot != null) {
+            if (rideSnapshot.segmentIndex != state.route.lastIndex) {
+                reduce {
+                    state.copy(
+                        segmentIndex = rideSnapshot.segmentIndex,
+                        totalRideDistance = rideSnapshot.totalDistance,
+                        projectedPoint = rideSnapshot.projectedPoint,
+                    )
+                }
+            } else {
+                // TODO: Record 종료
+            }
+        } else {
+            reduce { state.copy(error = "코스 추적에 실패했습니다.") }
         }
     }
 }

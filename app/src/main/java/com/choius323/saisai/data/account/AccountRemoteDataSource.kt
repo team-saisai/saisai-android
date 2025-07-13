@@ -32,17 +32,15 @@ class AccountRemoteDataSourceImpl(
         email: String,
         password: String,
     ): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
-        saiFetch<SaiResponseDto<AccountTokenDto>>(client.post("auth/login") {
+        saiFetch<SaiResponseDto<AccountTokenDto>>(defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/login") {
             setBody(LoginDto(email, password))
         }).flowOn(ioDispatcher)
 
     override suspend fun reissueToken(
-    ): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
-        saiFetch<SaiResponseDto<AccountTokenDto>>(
-            defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/reissue") {
-                header(HttpHeaders.Authorization, "Bearer ${SessionManager.refreshToken.value}")
-            }
-        ).flowOn(ioDispatcher)
+    ): Flow<Result<SaiResponseDto<AccountTokenDto>>> = saiFetch<SaiResponseDto<AccountTokenDto>>(
+        defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/reissue") {
+            header(HttpHeaders.Authorization, "Bearer ${SessionManager.refreshToken.value}")
+        }).flowOn(ioDispatcher)
 }
 
 private const val TAG = "AccountRemoteDataSource"

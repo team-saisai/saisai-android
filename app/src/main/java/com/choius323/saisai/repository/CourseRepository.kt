@@ -9,6 +9,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import java.io.File
 
 interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
@@ -19,6 +20,9 @@ interface CourseRepository {
 
     suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
+    suspend fun completeCourse(
+        rideId: Long, duration: Long, distance: Double, image: File,
+    ): Flow<Result<Unit>>
 }
 
 class CourseRepositoryImpl(
@@ -55,5 +59,12 @@ class CourseRepositoryImpl(
             result.mapCatching { responseDto ->
                 responseDto.data.map { it.toPopularChallengeListItem() }
             }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun completeCourse(
+        rideId: Long, duration: Long, distance: Double, image: File,
+    ): Flow<Result<Unit>> =
+        courseRemoteDataSource.completeCourse(rideId, duration, distance, image).map { result ->
+            result.mapCatching { responseDto -> responseDto.data }
         }.flowOn(ioDispatcher)
 }

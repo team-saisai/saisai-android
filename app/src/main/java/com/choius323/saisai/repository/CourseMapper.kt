@@ -107,8 +107,8 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
     )
 }
 
-fun RecentCourseDto.toRecentCourse(): RecentCourse? {
-    return if (courseName == null || distance == null || sigun == null || progressRate == null || recentRideAt == null || courseId == null) {
+fun RecentCourseDto?.toRecentCourse(): RecentCourse? {
+    return if (this == null || courseName == null || distance == null || sigun == null || progressRate == null || recentRideAt == null || courseId == null) {
         null
     } else {
         RecentCourse(

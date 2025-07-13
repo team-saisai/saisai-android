@@ -186,13 +186,7 @@ fun CourseDetailDescriptionPreview() {
         imageUrl = "",
         inProgressUserCount = 9838,
         completeUserCount = 8441,
-        gpxPointList = listOf(
-            GpxPoint(37.517145, 126.945064, 5.2, 2.1),
-            GpxPoint(37.52, 126.99, 5.2, 2.1),
-            GpxPoint(37.55321, 126.69, 5.2, 2.1),
-            GpxPoint(37.321, 127.09, 5.2, 2.1),
-            GpxPoint(37.41, 126.753769, 5.2, 2.1),
-        )
+        gpxPointList = GpxPoint.gpxPointsSample.take(5)
     )
     SaiTheme() {
         Surface(

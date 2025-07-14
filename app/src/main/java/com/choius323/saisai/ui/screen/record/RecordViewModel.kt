@@ -3,6 +3,8 @@ package com.choius323.saisai.ui.screen.record
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.GpxPoint
+import com.choius323.saisai.ui.screen.map.updateUserLocation
+import kotlinx.coroutines.delay
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -31,19 +33,84 @@ class RecordViewModel() : ViewModel(), ContainerHost<RecordUiState, RecordSideEf
 
     fun onEvent(event: RecordUiEvent) = when (event) {
         RecordUiEvent.ClickedStart -> startRecording()
-        is RecordUiEvent.PermissionChanged -> intent {
+        is RecordUiEvent.SetPermissionGranted -> intent {
             reduce { state.copy(permissionGranted = event.isGranted) }
         }
+
+        RecordUiEvent.BackClicked -> intent {
+            postSideEffect(RecordSideEffect.NavigateBack)
+        }
+
+        is RecordUiEvent.SetIsTracking -> setIsTracking(event)
+        is RecordUiEvent.SetNowLatLng -> setNowLatLng(event)
+
+        is RecordUiEvent.SetShowPermissionDialog -> intent {
+            reduce { state.copy(isShowPermissionDialog = event.isShow) }
+        }
+
+        is RecordUiEvent.SetCameraTracking -> intent {
+            reduce { state.copy(isCameraTracking = event.isCameraTracking) }
+        }
+
+        RecordUiEvent.StartRecording -> startRecording()
     }
 
     private fun startRecording() = intent {
         println("${state.isRecording} ${state.startTime}")
+        postSideEffect(RecordSideEffect.PermissionCheck)
+        if (state.permissionGranted.not()) {
+            postSideEffect(RecordSideEffect.PermissionRequest)
+            return@intent
+        } else if (state.isRecording) {
+            return@intent
+        }
         reduce {
             state.copy(
                 isRecording = true,
+                isCameraTracking = true,
                 startTime = System.currentTimeMillis(),
             )
         }
-        postSideEffect(RecordSideEffect.StartRecording)
+    }
+
+    private fun setIsTracking(event: RecordUiEvent.SetIsTracking) = intent {
+        // reduce {
+        //     state.copy(
+        //         isCourseStarted = true,
+        //         isTracking = true,
+        //         isCameraTracking = true,
+        //         segmentIndex = 0,
+        //     )
+        // }
+    }
+
+    private fun setNowLatLng(event: RecordUiEvent.SetNowLatLng) = intent {
+        if (state.isRecording.not()) return@intent
+        reduce { state.copy(nowLatLng = event.latLng) }
+        val rideSnapshot = updateUserLocation(event.latLng, state.segmentIndex, state.route)
+        if (rideSnapshot != null) {
+            reduce {
+                state.copy(
+                    segmentIndex = rideSnapshot.segmentIndex,
+                    totalRideDistance = rideSnapshot.totalDistance,
+                    projectedPoint = rideSnapshot.projectedPoint,
+                )
+            }
+            if (rideSnapshot.segmentIndex == state.courseDetail?.gpxPointList?.lastIndex) {
+                endRecording()
+            }
+        } else {
+            reduce { state.copy(error = "코스 추적에 실패했습니다.") }
+        }
+    }
+
+    private fun endRecording() = intent {
+        delay(300)
+        reduce {
+            state.copy(
+                isRecording = false,
+                isCameraTracking = false,
+            )
+        }
     }
 }

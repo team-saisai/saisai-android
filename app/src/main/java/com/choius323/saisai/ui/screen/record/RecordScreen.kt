@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.record
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -26,13 +27,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.coroutineScope
+import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.screen.map.MapScreen
-import com.choius323.saisai.ui.screen.map.MapUiEvent
 import com.choius323.saisai.ui.screen.map.MapViewModel
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.choius323.saisai.util.locationPermissions
+import com.choius323.saisai.util.postNotificationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
@@ -59,28 +62,42 @@ fun RecordScreen(
     )
 
     val uiState by viewModel.collectAsState()
-
+    val permissionState = rememberMultiplePermissionsState(
+        postNotificationPermissions + locationPermissions
+    ) { resultMap ->
+        viewModel.onEvent(RecordUiEvent.SetPermissionGranted(resultMap.all { it.value }))
+    }
+    HandlePermissionActions(
+        permissionState,
+        isShowPermissionDialog = uiState.isShowPermissionDialog,
+        setShowPermissionDialog = { viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(it)) },
+        onPermissionAllGranted = {
+            if (permissionState.allPermissionsGranted) {
+                viewModel.onEvent(RecordUiEvent.SetPermissionGranted(true))
+            } else {
+                viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
+            }
+        })
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is RecordSideEffect.StartRecording -> mapViewModel.onEvent(MapUiEvent.StartRecording)
+            is RecordSideEffect.NavigateBack -> {/* TODO 뒤로가기 기능 추가 */
+            }
+
+            is RecordSideEffect.PermissionCheck -> viewModel.onEvent(
+                RecordUiEvent.SetPermissionGranted(
+                    permissionState.allPermissionsGranted
+                )
+            )
+
+            is RecordSideEffect.PermissionRequest -> permissionState.launchMultiplePermissionRequest()
         }
     }
-    LaunchedEffect(uiState.courseDetail) {
-        mapViewModel.onEvent(
-            MapUiEvent.SetRoute(
-                uiState.courseDetail?.gpxPointList ?: emptyList()
-            )
-        )
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(RecordUiEvent.SetPermissionGranted(permissionState.allPermissionsGranted))
     }
     RecordScreenContent(
         uiState = uiState,
         modifier = modifier,
-        mapContent = {
-            MapScreen(
-                modifier = Modifier.fillMaxSize(),
-                viewModel = mapViewModel
-            )
-        },
         onEvent = viewModel::onEvent,
     )
 }
@@ -89,11 +106,10 @@ fun RecordScreen(
 fun RecordScreenContent(
     uiState: RecordUiState,
     modifier: Modifier = Modifier,
-    mapContent: @Composable () -> Unit,
     onEvent: (RecordUiEvent) -> Unit = {},
 ) {
     Box(modifier) {
-        mapContent()
+        RecordMapSection(uiState, Modifier.fillMaxSize(), onEvent)
         TimerText(
             startTime = uiState.startTime,
             modifier = Modifier.align(Alignment.TopCenter),
@@ -108,6 +124,7 @@ fun RecordScreenContent(
     }
 }
 
+@SuppressLint("DefaultLocale")
 @Composable
 private fun TimerText(
     startTime: Long,

@@ -185,7 +185,7 @@ private fun MapScreen(
 }
 
 @Composable
-private fun rememberMapView(setKakaoMap: (KakaoMap) -> Unit): MapView {
+fun rememberMapView(setKakaoMap: (KakaoMap) -> Unit): MapView {
     val context = LocalContext.current
     val mapView = remember {
         MapView(context).apply {
@@ -219,7 +219,7 @@ private fun rememberMapView(setKakaoMap: (KakaoMap) -> Unit): MapView {
 
 @SuppressLint("MissingPermission")
 @Composable
-private fun ObserveLocation(
+fun ObserveLocation(
     isTracking: Boolean,
     permissionGranted: Boolean,
     callbackLocation: (location: Location) -> Unit,

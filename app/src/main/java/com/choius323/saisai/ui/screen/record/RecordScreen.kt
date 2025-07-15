@@ -161,6 +161,10 @@ fun RecordScreenContent(
         ) {
             SaiText("기록 시작")
         }
+        RecordStateDescription(
+            uiState = uiState,
+            modifier = Modifier.align(Alignment.BottomCenter)
+        )
     }
 }
 

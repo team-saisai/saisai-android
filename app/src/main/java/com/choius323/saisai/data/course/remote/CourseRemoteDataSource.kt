@@ -27,6 +27,7 @@ interface CourseRemoteDataSource {
 
     suspend fun getCourseDetail(courseId: Long): Flow<Result<SaiResponseDto<CourseDetailDto>>>
     suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
+    suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<Long>>>
     suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,
     ): Flow<Result<SaiResponseDto<Unit>>>
@@ -53,6 +54,9 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>> =
         saiFetch(client.get("challenges/popular"))
+
+    override suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<Long>>> =
+        saiFetch(client.patch("courses/$courseId/rides"))
 
     override suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,

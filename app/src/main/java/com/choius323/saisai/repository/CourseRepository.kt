@@ -20,6 +20,7 @@ interface CourseRepository {
 
     suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
+    suspend fun startCourse(courseId: Long): Flow<Result<Long>>
     suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,
     ): Flow<Result<Unit>>
@@ -59,6 +60,11 @@ class CourseRepositoryImpl(
             result.mapCatching { responseDto ->
                 responseDto.data.map { it.toPopularChallengeListItem() }
             }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun startCourse(courseId: Long): Flow<Result<Long>> =
+        courseRemoteDataSource.startCourse(courseId).map { result ->
+            result.mapCatching { responseDto -> responseDto.data }
         }.flowOn(ioDispatcher)
 
     override suspend fun completeCourse(

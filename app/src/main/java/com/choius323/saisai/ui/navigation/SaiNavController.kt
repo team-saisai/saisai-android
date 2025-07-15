@@ -42,7 +42,8 @@ abstract class SaiNavController(val navController: NavHostController) {
     fun <T : NavItem> navigate(
         to: T, from: NavBackStackEntry?, navOptions: NavOptions? = null,
     ) {
-        if (from == null || from.lifecycleIsResumed()) {
+        val backStackEntry = from ?: navController.currentBackStackEntry
+        if (backStackEntry == null || backStackEntry.lifecycleIsResumed()) {
             navController.navigate(to, navOptions)
         }
     }

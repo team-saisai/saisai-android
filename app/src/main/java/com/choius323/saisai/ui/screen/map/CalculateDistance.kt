@@ -87,7 +87,7 @@ fun updateUserLocation(
  * 두 지점([LatLng]) 사이의 거리를 미터(meter) 단위로 계산합니다.
  * Android의 [Location.distanceBetween] 유틸리티를 활용합니다.
  */
-private fun calculateDistance(point1: LatLng, point2: LatLng): Float {
+fun calculateDistance(point1: LatLng, point2: LatLng): Float {
     val results = FloatArray(1)
     Location.distanceBetween(
         point1.latitude, point1.longitude, point2.latitude, point2.longitude, results
@@ -140,10 +140,6 @@ private fun findProjectionAndDistance(
 
     // 사용자 위치와 코스 위의 가장 가까운 지점 사이의 거리 계산
     val distance = calculateDistance(point, projectedPoint)
-    Log.d(
-        TAG,
-        "distance: $distance, point: $point, segmentStart: $segmentStart, segmentEnd: $segmentEnd, projectedPoint: $projectedPoint"
-    )
     return Pair(distance, projectedPoint)
 }
 

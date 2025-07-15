@@ -1,6 +1,7 @@
 package com.choius323.saisai.ui.screen.map
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.location.Location
 import android.os.Looper
 import android.util.Log
@@ -255,6 +256,18 @@ fun ObserveLocation(
             fusedLocationClient.removeLocationUpdates(locationCallback)
         }
     }
+}
+
+@SuppressLint("MissingPermission")
+fun getCurrentLocation(
+    context: Context,
+    callbackLocation: (Location) -> Unit,
+    callbackCanceled: () -> Unit = {},
+) {
+    val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
+    fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
+        .addOnSuccessListener(callbackLocation)
+        .addOnCanceledListener(callbackCanceled)
 }
 
 private const val TAG = "MapScreen"

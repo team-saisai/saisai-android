@@ -31,13 +31,13 @@ fun CourseDetailScreen(
     modifier: Modifier = Modifier,
     viewModel: CourseDetailViewModel = koinViewModel(),
     mapViewModel: MapViewModel = koinViewModel(),
-    goRecordScreen: () -> Unit,
+    goRecordScreen: (courseId: Long) -> Unit,
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is CourseDetailSideEffect.StartCourse -> goRecordScreen()
+            is CourseDetailSideEffect.StartCourse -> goRecordScreen(viewModel.courseId)
             is CourseDetailSideEffect.GoBack -> goBack()
         }
     }

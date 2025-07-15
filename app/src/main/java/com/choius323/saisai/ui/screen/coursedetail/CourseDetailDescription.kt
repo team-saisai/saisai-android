@@ -67,7 +67,8 @@ fun CourseDetailDescription(
             // 우측 '도전하기' 버튼 영역
             ChallengeButton(
                 modifier = Modifier
-                    .align(Alignment.Bottom)
+                    .align(Alignment.Bottom),
+                onClick = onChallengeClick
             )
         }
     }

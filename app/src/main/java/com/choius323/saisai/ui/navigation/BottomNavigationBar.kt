@@ -22,10 +22,9 @@ fun BottomNavigationBar(
     mainNavController: MainNavController,
     modifier: Modifier = Modifier,
 ) {
-    val bottomBarItems = listOf(
+    val bottomBarItems = listOf<MainNavItem.BottomNavItem>(
         MainNavItem.BottomNavItem.Home,
         MainNavItem.BottomNavItem.Course,
-        MainNavItem.BottomNavItem.Record,
         MainNavItem.BottomNavItem.MyPage,
     )
 

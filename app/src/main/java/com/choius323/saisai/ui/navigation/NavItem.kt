@@ -32,15 +32,13 @@ sealed interface MainNavItem : NavItem {
         }
 
         @Serializable
-        data object Record : BottomNavItem {
-            override val iconRes = R.drawable.icon_clock_mono
-        }
-
-        @Serializable
         data object MyPage : BottomNavItem {
             override val iconRes = R.drawable.icon_user_mono
         }
     }
+
+    @Serializable
+    data class Record(val courseId: Long) : MainNavItem
 
     @Serializable
     data object Login : MainNavItem

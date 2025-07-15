@@ -8,7 +8,6 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.toRoute
 import com.choius323.saisai.ui.screen.course.CourseScreen
 import com.choius323.saisai.ui.screen.coursedetail.CourseDetailScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
@@ -42,7 +41,7 @@ fun MainNavController(
                 navController.navigate(MainNavItem.CourseDetail(courseId))
             })
         }
-        composable<MainNavItem.BottomNavItem.Record> { backStackEntry ->
+        composable<MainNavItem.Record> { backStackEntry ->
             RecordScreen(modifier.fillMaxSize()) {
                 navController.upPress()
             }
@@ -51,12 +50,11 @@ fun MainNavController(
             MyPageScreen(modifier.fillMaxSize())
         }
         composable<MainNavItem.CourseDetail> { backStackEntry ->
-            val courseDetail = backStackEntry.toRoute<MainNavItem.CourseDetail>()
             CourseDetailScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding(),
-                goRecordScreen = { navController.navigate(MainNavItem.BottomNavItem.Record) },
+                goRecordScreen = { navController.navigate(MainNavItem.Record(it)) },
                 goBack = { navController.upPress() }
             )
         }

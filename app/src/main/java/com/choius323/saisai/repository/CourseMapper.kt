@@ -104,6 +104,8 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
         sigun = sigun,
         imageUrl = imageUrl,
         courseId = courseId,
+        isEventActive = isEventActive,
+        reward = reward,
     )
 }
 

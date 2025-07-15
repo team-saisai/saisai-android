@@ -13,6 +13,8 @@ data class PopularChallengeListItem(
     val level: Int,
     val participantCount: Int,
     val sigun: String,
+    val isEventActive: Boolean,
+    val reward: Int,
     val imageUrl: String? = null,
 ) {
     companion object {
@@ -20,26 +22,30 @@ data class PopularChallengeListItem(
             challengeStatus = "eruditi",
             courseName = "Camille Sheppard",
             distance = 6.7,
-            endedAt = LocalDate.now(),
+            endedAt = LocalDate.now().plusDays(1),
             estimatedTime = 5284.0,
             level = 1,
             participantCount = 6935,
             sigun = "neque",
             imageUrl = "",
-            courseId = 12
+            courseId = 12,
+            isEventActive = true,
+            reward = 1000
         )
         val dummyItem2 =
             PopularChallengeListItem(
                 challengeStatus = "scripta",
                 courseName = "Alejandro Padilla",
                 distance = 12.13,
-                endedAt = LocalDate.now(),
+                endedAt = LocalDate.now().minusDays(1),
                 estimatedTime = 7293.0,
                 level = 2,
                 participantCount = 5304,
                 sigun = "solum",
                 imageUrl = "",
-                courseId = 561
+                courseId = 561,
+                isEventActive = false,
+                reward = 2000
             )
     }
 }

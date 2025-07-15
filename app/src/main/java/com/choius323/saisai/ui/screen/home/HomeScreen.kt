@@ -135,6 +135,9 @@ fun HomeScreenContent(
                         sigun = courseInfo.sigun,
                         distance = courseInfo.distance,
                         level = courseInfo.level,
+                        isEventActive = courseInfo.isEventActive,
+                        endDate = courseInfo.endedAt,
+                        reward = courseInfo.reward,
                         participantCount = courseInfo.participantCount,
                         modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) }
                     )

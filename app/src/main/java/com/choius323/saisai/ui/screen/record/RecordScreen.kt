@@ -1,6 +1,5 @@
 package com.choius323.saisai.ui.screen.record
 
-import android.annotation.SuppressLint
 import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -46,6 +45,7 @@ import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @OptIn(ExperimentalPermissionsApi::class)
@@ -168,7 +168,6 @@ fun RecordScreenContent(
     }
 }
 
-@SuppressLint("DefaultLocale")
 @Composable
 private fun TimerText(
     startTime: Long,
@@ -198,7 +197,7 @@ private fun TimerText(
             val minutes = TimeUnit.SECONDS.toMinutes(elapsedTimeInSeconds) % 60
             val seconds = elapsedTimeInSeconds % 60
 
-            String.format("%02d:%02d:%02d", hours, minutes, seconds)
+            String.format(Locale.KOREA, "%02d:%02d:%02d", hours, minutes, seconds)
         }
     }
 

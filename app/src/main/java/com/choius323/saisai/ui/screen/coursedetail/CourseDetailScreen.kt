@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -14,7 +15,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
@@ -22,6 +25,7 @@ import com.choius323.saisai.ui.screen.map.MapScreen
 import com.choius323.saisai.ui.screen.map.MapUiEvent
 import com.choius323.saisai.ui.screen.map.MapViewModel
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -78,7 +82,9 @@ fun CourseDetailScreenContent(
         if (uiState.courseDetail != null) {
             CourseDetailDescription(
                 uiState.courseDetail,
-                modifier = Modifier.align(Alignment.BottomCenter),
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(horizontal = 18.dp, vertical = 32.dp),
                 onChallengeClick = { onEvent(CourseDetailUiEvent.CourseStartClicked) }
             )
         }
@@ -88,6 +94,7 @@ fun CourseDetailScreenContent(
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailScreenContentPreview() {
+    AndroidThreeTen.init(LocalContext.current)
     val sampleDetails = CourseDetail.sample
 
     SaiTheme {

@@ -20,7 +20,7 @@ data class CourseDetail(
             summary = "- 람사르 습지로 등록된 갯벌이 살아 숨쉬는 줄포만생태갯벌공원을 지나는 코스 \n- 다양한 조류와 염생 식물, 갯벌동물을 만날 수 있는 코스",
             level = Level.Medium,
             distance = 14.0,
-            estimatedTime = 270.0,
+            estimatedTime = 151.0,
             sigun = "전북 부안군",
             imageUrl = null,
             inProgressUserCount = 2,

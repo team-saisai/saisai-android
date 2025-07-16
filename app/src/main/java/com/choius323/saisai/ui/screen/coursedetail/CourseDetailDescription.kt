@@ -4,8 +4,10 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,17 +17,19 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsBike
 import androidx.compose.material.icons.filled.CheckCircleOutline
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -37,9 +41,11 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
-import com.choius323.saisai.ui.model.GpxPoint
-import com.choius323.saisai.ui.model.Level
+import com.choius323.saisai.ui.screen.course.ChallengeStatusBadge
+import com.choius323.saisai.ui.screen.home.EventBadge
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
+import org.threeten.bp.LocalDate
 
 @Composable
 fun CourseDetailDescription(
@@ -47,18 +53,33 @@ fun CourseDetailDescription(
     modifier: Modifier = Modifier,
     onChallengeClick: () -> Unit,
 ) {
-    Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(18.dp),
-        shape = RoundedCornerShape(18.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
+    val time by remember(detail.estimatedTime) {
+        derivedStateOf {
+            val hour = detail.estimatedTime.toInt() / 60
+            val minute = detail.estimatedTime.toInt() % 60
+            "${hour}h ${minute}m"
+        }
+    }
+
+    Column(modifier) {
         Row(
-            modifier = Modifier.padding(20.dp),
+            Modifier
+                .height(IntrinsicSize.Min)
+                .padding(start = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(5.dp)
+        ) {
+            ChallengeStatusBadge(LocalDate.of(2025, 9, 30))
+            EventBadge(Modifier.fillMaxHeight())
+        }
+        Spacer(Modifier.height(8.dp))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(IntrinsicSize.Min)
+                .clip(RoundedCornerShape(16.dp))
+                .background(Color(0xFF292929))
+                .padding(18.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Column(modifier = Modifier) {
@@ -71,11 +92,16 @@ fun CourseDetailDescription(
             Spacer(modifier = Modifier.weight(1f))
 
             // 우측 '도전하기' 버튼 영역
-            ChallengeButton(
-                modifier = Modifier
-                    .align(Alignment.Bottom),
-                onClick = onChallengeClick
-            )
+            Column(
+                Modifier.align(Alignment.Top),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                ChallengeButton(
+                    modifier = Modifier,
+                    onClick = onChallengeClick
+                )
+                SaiText(time, color = Color(0xFFC9FF66))
+            }
         }
     }
 }
@@ -135,7 +161,7 @@ private fun ParticipantInfoSection(challengerCount: Int, completedCount: Int) {
         )
         Spacer(modifier = Modifier.width(2.dp))
         SaiText(
-            text = "$challengerCount 도전중",
+            text = "${challengerCount}명 도전중",
             fontSize = 14.sp,
             color = Color(0xFF8032FD),
             fontWeight = FontWeight.SemiBold,
@@ -149,7 +175,7 @@ private fun ParticipantInfoSection(challengerCount: Int, completedCount: Int) {
         )
         Spacer(modifier = Modifier.width(2.dp))
         SaiText(
-            text = "$completedCount 완주",
+            text = "${completedCount}명 완주",
             fontSize = 14.sp,
             color = Color(0xFF8032FD),
             fontWeight = FontWeight.SemiBold,
@@ -187,24 +213,10 @@ private fun ChallengeButton(
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailDescriptionPreview() {
-    val sampleDetail = CourseDetail(
-        courseId = 236,
-        courseName = "올림픽대로코스",
-        summary = "conubia",
-        level = Level.Medium,
-        distance = 4.5,
-        estimatedTime = 25.3,
-        sigun = "sapien",
-        imageUrl = "",
-        inProgressUserCount = 9838,
-        completeUserCount = 8441,
-        gpxPointList = GpxPoint.gpxPointsSample.take(5)
-    )
-    SaiTheme() {
-        Surface(
-            Modifier.padding(10.dp),
-            color = MaterialTheme.colorScheme.surface
-        ) {
+    AndroidThreeTen.init(LocalContext.current)
+    val sampleDetail = CourseDetail.sample
+    SaiTheme(darkTheme = true) {
+        Surface {
             CourseDetailDescription(
                 detail = sampleDetail,
                 onChallengeClick = {},

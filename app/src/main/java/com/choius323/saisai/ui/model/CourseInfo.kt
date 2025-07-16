@@ -18,7 +18,7 @@ data class CourseInfo(
         val dummyItem = CourseInfo(
             courseId = 1,
             imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
-            endDate = LocalDate.now(),
+            endDate = LocalDate.of(2025, 7, 18),
             distance = "8.6km",
             difficulty = "하",
             themes = listOf("테마 1", "테마 2"),

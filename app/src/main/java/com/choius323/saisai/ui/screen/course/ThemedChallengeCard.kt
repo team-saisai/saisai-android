@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Fireplace
 import androidx.compose.material.icons.filled.FlashOn
+import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -27,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -36,6 +37,7 @@ import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseInfo
 import com.choius323.saisai.util.DateTimeFormat
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
 
 /**
@@ -78,6 +80,7 @@ private fun ChallengeImageHeader(imageUrl: String, endDate: LocalDate) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
+            .padding(12.dp)
             .height(200.dp)
     ) {
         AsyncImage(
@@ -148,22 +151,24 @@ fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
     val endDateStr = remember(endDate) { endDate.format(DateTimeFormat.monthDay) }
     Row(
         modifier = modifier
-            .padding(12.dp)
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color(0xFFF08080).copy(alpha = 0.9f))
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFCDE6666))
+            .padding(horizontal = 6.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
         Icon(
-            imageVector = Icons.Default.Fireplace,
+            imageVector = Icons.Outlined.LocalFireDepartment,
             contentDescription = "기간 아이콘",
             tint = Color.White,
             modifier = Modifier.size(20.dp)
         )
         SaiText(
-            text = "~ $endDateStr",
-            style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            text = "~$endDateStr",
+            style = TextStyle(
+                color = Color.White,
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp
+            )
         )
     }
 }
@@ -175,7 +180,6 @@ fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
 private fun EndedBadge(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .padding(12.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(Color.Gray.copy(alpha = 0.9f))
             .padding(horizontal = 12.dp, vertical = 8.dp),
@@ -254,6 +258,7 @@ fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
 @Composable
 fun ThemedChallengeCardOngoingPreview() {
     val sampleChallenge = CourseInfo.dummyItem
+    AndroidThreeTen.init(LocalContext.current)
     MaterialTheme {
         ThemedChallengeCard(courseInfo = sampleChallenge)
     }
@@ -262,7 +267,8 @@ fun ThemedChallengeCardOngoingPreview() {
 @Preview(showBackground = true, name = "종료된 챌린지")
 @Composable
 fun ThemedChallengeCardFinishedPreview() {
-    val sampleChallenge = CourseInfo.dummyItem
+    AndroidThreeTen.init(LocalContext.current)
+    val sampleChallenge = CourseInfo.dummyItem.copy(endDate = LocalDate.now().minusDays(1))
     MaterialTheme {
         ThemedChallengeCard(courseInfo = sampleChallenge)
     }

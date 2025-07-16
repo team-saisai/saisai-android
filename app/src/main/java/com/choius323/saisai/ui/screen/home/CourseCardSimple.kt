@@ -40,6 +40,7 @@ import coil3.compose.AsyncImage
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
+import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
@@ -56,7 +57,7 @@ fun CourseCardSimple(
     modifier: Modifier = Modifier,
     isEventActive: Boolean = false,
     reward: Int? = null,
-    level: Int? = null,
+    level: Level? = null,
     endDate: LocalDate? = null,
 ) {
     Card(
@@ -138,9 +139,9 @@ fun CourseCardSimple(
                             )
                         )
                         SaiText(
-                            text = level.toString(),
+                            text = level.displayText,
                             style = MaterialTheme.typography.bodyLarge.copy(
-                                color = Color(0xFFFFD700),
+                                color = level.color,
                                 fontWeight = FontWeight.Medium,
                                 fontSize = 12.sp
                             )

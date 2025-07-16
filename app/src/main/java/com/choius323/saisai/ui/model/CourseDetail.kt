@@ -4,7 +4,7 @@ data class CourseDetail(
     val courseId: Long,
     val courseName: String,
     val summary: String,
-    val level: Int,
+    val level: Level,
     val distance: Double, // km 단위로 표시 가정
     val estimatedTime: Double, // 분 단위로 표시 가정
     val sigun: String,
@@ -18,7 +18,7 @@ data class CourseDetail(
             courseId = 215,
             courseName = "서해랑길 44코스",
             summary = "- 람사르 습지로 등록된 갯벌이 살아 숨쉬는 줄포만생태갯벌공원을 지나는 코스 \n- 다양한 조류와 염생 식물, 갯벌동물을 만날 수 있는 코스",
-            level = 1,
+            level = Level.Medium,
             distance = 14.0,
             estimatedTime = 270.0,
             sigun = "전북 부안군",

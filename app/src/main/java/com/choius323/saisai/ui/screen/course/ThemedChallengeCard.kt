@@ -250,8 +250,6 @@ fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
     }
 }
 
-
-// Compose Preview를 위한 코드
 @Preview(showBackground = true, name = "진행 중인 챌린지")
 @Composable
 fun ThemedChallengeCardOngoingPreview() {

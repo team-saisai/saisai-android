@@ -21,6 +21,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,10 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -88,10 +92,15 @@ fun CourseListItemHorizontal(
                 )
 
                 // 거리 및 난이도
-                SaiText(
-                    text = "${course.distance}km · 난이도 ${course.level}", // level을 "하/중/상"으로 변환하는 로직 추가 가능
+                Text(
+                    buildAnnotatedString {
+                        append("${course.distance}km · 난이도 ")
+                        withStyle(SpanStyle(color = course.level.color)) {
+                            append(course.level.displayText)
+                        }
+                    },
                     fontSize = 12.sp,
-                    color = Color(155, 160, 165)
+                    color = Color.Gray
                 )
 
                 Spacer(modifier = Modifier.height(4.dp))

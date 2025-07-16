@@ -15,24 +15,30 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.DirectionsBike
 import androidx.compose.material.icons.filled.CheckCircleOutline
-import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.GpxPoint
+import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.theme.SaiTheme
 
 @Composable
@@ -81,10 +87,15 @@ private fun CourseInfoSection(detail: CourseDetail) {
             text = detail.courseName, fontSize = 20.sp, fontWeight = FontWeight.W500
         )
         Spacer(modifier = Modifier.height(4.dp))
-        SaiText(
-            text = "${detail.distance}km · 난이도 ${detail.level}",
+        Text(
+            buildAnnotatedString {
+                append("${detail.distance}km · 난이도 ")
+                withStyle(SpanStyle(color = detail.level.color)) {
+                    append(detail.level.displayText)
+                }
+            },
             fontSize = 12.sp,
-            color = Color.LightGray
+            color = Color.Gray
         )
     }
 }
@@ -117,7 +128,7 @@ private fun ParticipantInfoSection(challengerCount: Int, completedCount: Int) {
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
-            imageVector = Icons.Default.FlashOn,
+            painter = painterResource(R.drawable.outline_flash_on_24),
             contentDescription = "도전자 아이콘",
             tint = Color(0xFF8032FD),
             modifier = Modifier.size(18.dp)
@@ -180,7 +191,7 @@ fun CourseDetailDescriptionPreview() {
         courseId = 236,
         courseName = "올림픽대로코스",
         summary = "conubia",
-        level = 4193,
+        level = Level.Medium,
         distance = 4.5,
         estimatedTime = 25.3,
         sigun = "sapien",

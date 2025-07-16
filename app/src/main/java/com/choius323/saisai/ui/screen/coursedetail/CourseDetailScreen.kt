@@ -88,19 +88,7 @@ fun CourseDetailScreenContent(
 @Preview(showBackground = true)
 @Composable
 fun CourseDetailScreenContentPreview() {
-    val sampleDetails = CourseDetail(
-        courseId = 2163,
-        courseName = "한강나들이",
-        summary = "fusce",
-        level = 2,
-        distance = 4.5,
-        estimatedTime = 6.7,
-        sigun = "cursus",
-        imageUrl = "https://search.yahoo.com/search?p=definitionem",
-        inProgressUserCount = 73,
-        completeUserCount = 102,
-        gpxPointList = listOf()
-    )
+    val sampleDetails = CourseDetail.sample
 
     SaiTheme {
         Surface {

@@ -13,6 +13,7 @@ import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.GpxPoint
+import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RewardInfo
@@ -27,7 +28,7 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
                 courseId = courseId,
                 courseName = courseName,
                 summary = summary,
-                level = level,
+                level = Level.from(level),
                 distance = distance,
                 estimatedTime = estimatedTime,
                 sigun = sigun,
@@ -64,7 +65,7 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
         courseId = courseId,
         courseName = courseName,
         summary = summary,
-        level = level,
+        level = Level.from(level),
         distance = distance,
         estimatedTime = estimatedTime,
         sigun = sigun,
@@ -99,7 +100,7 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
         distance = distance,
         endedAt = LocalDate.parse(endedAt, DateTimeFormat.dateFormat),
         estimatedTime = estimatedTime,
-        level = level,
+        level = Level.from(level),
         participantCount = challengerCount,
         sigun = sigun,
         imageUrl = imageUrl,

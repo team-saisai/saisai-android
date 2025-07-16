@@ -1,3 +1,4 @@
+import com.google.protobuf.gradle.id
 import java.io.FileNotFoundException
 import java.util.Properties
 
@@ -6,6 +7,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.protobuf)
 }
 
 android {
@@ -63,6 +65,20 @@ android {
     buildFeatures {
         buildConfig = true
         compose = true
+    }
+}
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:3.25.3"
+    }
+    generateProtoTasks {
+        all().forEach { tasks ->
+            tasks.builtins {
+                id("java") {
+                    option("lite")
+                }
+            }
+        }
     }
 }
 
@@ -136,6 +152,9 @@ dependencies {
     // GMS
     implementation(libs.gms.services.location)
 
+    // Proto
+    implementation(libs.androidx.datastore.core)
+    implementation(libs.protobuf.javalite)
 
     // Testing
     testImplementation(libs.junit)

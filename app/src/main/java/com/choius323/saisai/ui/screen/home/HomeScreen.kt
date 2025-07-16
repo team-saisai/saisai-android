@@ -115,12 +115,8 @@ fun HomeScreenContent(
         )
         Spacer(Modifier.height(40.dp))
         recentChallenge?.apply {
-            CourseCardSimple(
-                modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseId)) },
-                imageUrl = imageUrl ?: "",
-                sigun = sigun,
-                distance = distance,
-                participantCount = 265
+            RecentCourseCard(
+                this, onClickCourse = { onEvent(HomeUiEvent.CourseClicked(it)) }
             )
             Spacer(Modifier.height(40.dp))
         }

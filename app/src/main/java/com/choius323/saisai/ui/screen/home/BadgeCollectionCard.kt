@@ -2,6 +2,7 @@ package com.choius323.saisai.ui.screen.home
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Spacer
@@ -62,13 +63,22 @@ fun BadgeCollectionCard(
 //                horizontalArrangement = Arrangement.SpaceBetween,
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
-                for (badge in badges) {
-                    BadgeItem(
-                        badgeInfo = badge,
-                        modifier = Modifier
-                            .weight(1f)
-                            .size(width = 60.dp, height = 76.dp)
-                    )
+                repeat(8) {
+                    val badge = badges.getOrNull(it)
+                    if (badge == null) {
+                        Box(
+                            Modifier
+                                .weight(1f)
+                                .size(width = 60.dp, height = 76.dp)
+                        )
+                    } else {
+                        BadgeItem(
+                            badgeInfo = badge,
+                            modifier = Modifier
+                                .weight(1f)
+                                .size(width = 60.dp, height = 76.dp)
+                        )
+                    }
                 }
             }
         }
@@ -115,7 +125,7 @@ private fun BadgeItem(
 @Preview(showBackground = true)
 @Composable
 fun BadgeCollectionCardPreview() {
-    val sampleBadges = List(10) { index ->
+    val sampleBadges = List(7) { index ->
         BadgeInfo(
             id = index,
             name = "뱃지 이름",

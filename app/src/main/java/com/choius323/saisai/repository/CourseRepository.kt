@@ -1,10 +1,12 @@
 package com.choius323.saisai.repository
 
+import com.choius323.saisai.data.course.local.CourseLocalDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
+import com.choius323.saisai.ui.model.RecentRide
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -13,14 +15,14 @@ import java.io.File
 
 interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
+    suspend fun getRecentRideCourse(): Flow<Result<RecentRide>>
+    suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
+    suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
+    suspend fun startCourse(courseId: Long): Flow<Result<Long>>
     suspend fun getAllCourses(
         page: Int,
         status: String? = null,
     ): Flow<Result<CoursePage>>
-
-    suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
-    suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
-    suspend fun startCourse(courseId: Long): Flow<Result<Long>>
     suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,
     ): Flow<Result<Unit>>
@@ -29,6 +31,7 @@ interface CourseRepository {
 class CourseRepositoryImpl(
     private val ioDispatcher: CoroutineDispatcher,
     private val courseRemoteDataSource: CourseRemoteDataSource,
+    private val courseLocalDataSource: CourseLocalDataSource,
 ) : CourseRepository {
     override suspend fun getRecentCourse(): Flow<Result<RecentCourse?>> =
         courseRemoteDataSource.getRecentCourse().map { result ->
@@ -36,6 +39,10 @@ class CourseRepositoryImpl(
                 responseDto.data?.toRecentCourse()
             }
         }.flowOn(ioDispatcher)
+
+    override suspend fun getRecentRideCourse(): Flow<Result<RecentRide>> {
+        TODO("Not yet implemented")
+    }
 
     override suspend fun getAllCourses(
         page: Int,

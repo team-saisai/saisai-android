@@ -3,13 +3,15 @@ package com.choius323.saisai.ui.screen.course
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ElevatedFilterChip
 import androidx.compose.material3.FilterChipDefaults
 import androidx.compose.material3.Surface
@@ -92,7 +94,7 @@ fun CourseScreenContent(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            items(uiState.courseList) { course ->
+            itemsIndexed(uiState.courseList, { _, course -> course.courseId }) { index, course ->
                 CourseListItemHorizontal(
                     Modifier
                         .fillMaxWidth()
@@ -105,6 +107,18 @@ fun CourseScreenContent(
                         ),
                     course = course
                 )
+                if (index == uiState.courseList.lastIndex && uiState.isLastPage.not() && uiState.isLoadingMore.not()) {
+                    onEvent(CourseListUiEvent.LoadMore)
+                }
+            }
+            if (uiState.isLoadingMore) {
+                item {
+                    Box(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
+                }
             }
         }
     }

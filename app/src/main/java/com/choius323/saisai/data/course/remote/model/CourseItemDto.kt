@@ -6,7 +6,6 @@ import kotlinx.serialization.Serializable
 data class CourseItemDto(
     val courseId: Long,
     val courseName: String,
-    val summary: String,
     val level: Int,
     val distance: Double,
     val estimatedTime: Double,
@@ -16,4 +15,7 @@ data class CourseItemDto(
     val courseFinisherCount: Int,
     val challengeStatus: String,
     val challengeEndedAt: String,
+    val isEventActive: Boolean,
+    val reward: Int,
+    val themeNames: List<String>,
 )

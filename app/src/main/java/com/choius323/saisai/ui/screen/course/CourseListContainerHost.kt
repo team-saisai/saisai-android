@@ -6,10 +6,14 @@ data class CourseListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val courseList: List<CourseListItem> = emptyList(),
+    val isLoadingMore: Boolean = false,
+    val isLastPage: Boolean = false,
+    val page: Int = 1,
 )
 
 sealed interface CourseListUiEvent {
     data class CourseClicked(val courseId: Long) : CourseListUiEvent
+    object LoadMore : CourseListUiEvent
 }
 
 sealed interface CourseListSideEffect {

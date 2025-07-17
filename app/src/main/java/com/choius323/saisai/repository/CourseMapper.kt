@@ -27,7 +27,6 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
             CourseListItem(
                 courseId = courseId,
                 courseName = courseName,
-                summary = summary,
                 level = Level.from(level),
                 distance = distance,
                 estimatedTime = estimatedTime,
@@ -37,6 +36,9 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
                 courseFinisherCount = courseFinisherCount,
                 challengeStatus = challengeStatus,
                 challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
+                isEventActive = isEventActive,
+                reward = reward,
+                themeList = themeNames,
             )
         }
     }

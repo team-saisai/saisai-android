@@ -5,7 +5,6 @@ import org.threeten.bp.LocalDate
 data class CourseListItem(
     val courseId: Long,
     val courseName: String,
-    val summary: String,
     val level: Level,
     val distance: Double,
     val estimatedTime: Double,
@@ -15,12 +14,14 @@ data class CourseListItem(
     val courseFinisherCount: Int,
     val challengeStatus: String,
     val challengeEndedAt: LocalDate,
+    val isEventActive: Boolean,
+    val reward: Int,
+    val themeList: List<String>,
 ) {
     companion object {
         val dummyItem1 = CourseListItem(
             courseId = 123,
             courseName = "한강 라이딩 코스",
-            summary = "서울의 아름다운 풍경을 따라",
             level = Level.from(2),
             distance = 15.5,
             estimatedTime = 1.5,
@@ -30,11 +31,13 @@ data class CourseListItem(
             courseFinisherCount = 9982,
             challengeStatus = "ENDED",
             challengeEndedAt = LocalDate.now().minusDays(3),
+            isEventActive = true,
+            reward = 1000,
+            themeList = listOf("공원", "강변"),
         )
         val dummyItem2 = CourseListItem(
             courseId = 813,
             courseName = "한강 라이딩 코스",
-            summary = "서울의 아름다운 풍경을 따라",
             level = Level.from(1),
             distance = 15.5,
             estimatedTime = 1.5,
@@ -44,11 +47,13 @@ data class CourseListItem(
             courseFinisherCount = 982,
             challengeStatus = "ONGOING",
             challengeEndedAt = LocalDate.now().plusDays(33),
+            isEventActive = false,
+            reward = 0,
+            themeList = listOf("야경"),
         )
         val dummyItem3 = CourseListItem(
             courseId = 13,
             courseName = "해운대 코스",
-            summary = "해운대의 아름다운 풍경을 따라",
             level = Level.from(3),
             distance = 15.5,
             estimatedTime = 1.5,
@@ -58,12 +63,14 @@ data class CourseListItem(
             courseFinisherCount = 982,
             challengeStatus = "ONGOING",
             challengeEndedAt = LocalDate.now().plusDays(7),
+            isEventActive = true,
+            reward = 500,
+            themeList = listOf("해변", "도시"),
         )
         val dummyItem4 = CourseListItem(
             courseId = 234,
             imageUrl = "https://placehold.co/600x400/2c2c2c/e0e0e0?text=Map+Image",
             courseName = "여의도 - 반포",
-            summary = "dapibus",
             level = Level.from(2),
             distance = 8.6,
             estimatedTime = 50.0,
@@ -72,6 +79,9 @@ data class CourseListItem(
             courseFinisherCount = 282,
             challengeStatus = "ONGOING",
             challengeEndedAt = LocalDate.now().plusDays(10),
+            isEventActive = false,
+            reward = 0,
+            themeList = listOf("공원"),
         )
     }
 }

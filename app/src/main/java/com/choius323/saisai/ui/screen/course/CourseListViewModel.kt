@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.course
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.usecase.GetAllCoursesUseCase
 import kotlinx.coroutines.flow.collectLatest
@@ -14,23 +15,53 @@ class CourseListViewModel(
         container(CourseListUiState())
 
     init {
-        fetchCourseList()
+        fetchCourseList(isLoadMore = false)
     }
 
     fun onEvent(event: CourseListUiEvent) = when (event) {
         is CourseListUiEvent.CourseClicked -> intent {
             postSideEffect(CourseListSideEffect.GoCourseDetail(event.courseId))
         }
+
+        is CourseListUiEvent.LoadMore -> fetchCourseList(true)
     }
 
-    private fun fetchCourseList() = intent {
+    private fun fetchCourseList(isLoadMore: Boolean = false) = intent {
+        Log.d(TAG, "fetchCourseList isLoadMore: $isLoadMore")
+        if (state.isLoading || state.isLastPage) return@intent
+
+        val nextPage: Int
+        if (isLoadMore) {
+            nextPage = state.page + 1
+            reduce { state.copy(isLoadingMore = true) }
+        } else {
+            nextPage = 1
+            reduce { state.copy(isLoading = true) }
+        }
+
         reduce { state.copy(isLoading = true) }
-        getCourseListUseCase(page = 1).collectLatest { result ->
-            result.onSuccess { courses ->
-                reduce { state.copy(courseList = courses.content, isLoading = false) }
+        getCourseListUseCase(page = nextPage).collectLatest { result ->
+            result.onSuccess { coursePage ->
+                reduce {
+                    state.copy(
+                        courseList = if (isLoadMore) state.courseList + coursePage.content else coursePage.content,
+                        isLoading = false,
+                        isLoadingMore = false,
+                        isLastPage = coursePage.isLastPage,
+                        page = nextPage
+                    )
+                }
             }.onFailure {
-                reduce { state.copy(isLoading = false, error = it.message ?: "Error") }
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                        isLoadingMore = false,
+                        error = it.message ?: "Error"
+                    )
+                }
             }
         }
     }
 }
+
+private const val TAG = "CourseListViewModel"

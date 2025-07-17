@@ -6,7 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -89,35 +92,57 @@ fun CourseScreenContent(
                 )
             }
         }
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
-        ) {
-            itemsIndexed(uiState.courseList, { _, course -> course.courseId }) { index, course ->
-                CourseListItemHorizontal(
-                    Modifier
-                        .fillMaxWidth()
-                        .clickable(
-                            onClick = {
-                                onEvent(
-                                    CourseListUiEvent.CourseClicked(course.courseId)
-                                )
-                            }
-                        ),
-                    course = course
-                )
-                if (index == uiState.courseList.lastIndex && uiState.isLastPage.not() && uiState.isLoadingMore.not()) {
-                    onEvent(CourseListUiEvent.LoadMore)
-                }
+        Spacer(Modifier.height(20.dp))
+        CourseListSection(
+            courseList = uiState.courseList,
+            isLoadingMore = uiState.isLoadingMore,
+            onEvent = onEvent
+        )
+    }
+    if (uiState.isLoading) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+        }
+    }
+}
+
+@Composable
+private fun CourseListSection(
+    courseList: List<CourseListItem>,
+    isLoadingMore: Boolean,
+    modifier: Modifier = Modifier,
+    onEvent: (CourseListUiEvent) -> Unit,
+) {
+    LazyColumn(
+        modifier = modifier
+            .fillMaxWidth(),
+        verticalArrangement = Arrangement.spacedBy(20.dp)
+    ) {
+        itemsIndexed(courseList, { _, course -> course.courseId }) { index, course ->
+            CourseListItemHorizontal(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable(
+                        onClick = {
+                            onEvent(
+                                CourseListUiEvent.CourseClicked(course.courseId)
+                            )
+                        }
+                    ),
+                course = course
+            )
+            if (index == courseList.lastIndex) {
+                onEvent(CourseListUiEvent.LoadMore)
             }
-            if (uiState.isLoadingMore) {
-                item {
-                    Box(modifier = Modifier
+        }
+        if (isLoadingMore) {
+            item {
+                Box(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .padding(16.dp)) {
-                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
-                    }
+                        .padding(16.dp)
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
                 }
             }
         }

@@ -13,7 +13,7 @@ data class CourseListUiState(
 
 sealed interface CourseListUiEvent {
     data class CourseClicked(val courseId: Long) : CourseListUiEvent
-    object LoadMore : CourseListUiEvent
+    data object LoadMore : CourseListUiEvent
 }
 
 sealed interface CourseListSideEffect {

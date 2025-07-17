@@ -23,7 +23,11 @@ class CourseListViewModel(
             postSideEffect(CourseListSideEffect.GoCourseDetail(event.courseId))
         }
 
-        is CourseListUiEvent.LoadMore -> fetchCourseList(true)
+        is CourseListUiEvent.LoadMore -> intent {
+            if (state.isLastPage.not() && state.isLoadingMore.not()) {
+                fetchCourseList(true)
+            }
+        }
     }
 
     private fun fetchCourseList(isLoadMore: Boolean = false) = intent {

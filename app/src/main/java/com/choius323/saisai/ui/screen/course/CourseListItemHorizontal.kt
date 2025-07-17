@@ -13,21 +13,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocalFireDepartment
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
@@ -40,119 +33,92 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
+import com.choius323.saisai.ui.screen.home.EventBadge
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
-import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
 fun CourseListItemHorizontal(
     modifier: Modifier = Modifier,
     course: CourseListItem,
 ) {
-    Card(
-        modifier = modifier.fillMaxWidth(),
-        shape = RectangleShape,
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .clip(CircleShape.copy(CornerSize(12.dp)))
+            .background(Color(0xFF2B2E31))
+            .height(IntrinsicSize.Min),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(
-            modifier = Modifier.height(IntrinsicSize.Max),
-            verticalAlignment = Alignment.CenterVertically
+        ImageSection(course)
+        Spacer(Modifier.width(4.dp))
+        Column(
+            modifier = Modifier
+                .weight(1f)
+                .padding(vertical = 18.dp),
+            verticalArrangement = Arrangement.Center
         ) {
-            // 1. 왼쪽 이미지 및 뱃지
-            Box(
-                modifier = Modifier.fillMaxHeight()
-            ) {
-                AsyncImage(
-                    model = course.imageUrl,
-                    contentDescription = "${course.courseName} 이미지",
-                    modifier = Modifier
-                        .size(width = 170.dp, height = 140.dp)
-                        .align(Alignment.Center),
-                    contentScale = ContentScale.Crop
-                )
-                ChallengeStatusBadge(course.challengeEndedAt)
-            }
+            SaiText(
+                text = course.courseName,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
+            )
+            Spacer(Modifier.height(4.dp))
+            SaiText(
+                buildAnnotatedString {
+                    append("${course.distance}km · 난이도 ")
+                    withStyle(SpanStyle(color = course.level.color)) {
+                        append(course.level.displayText)
+                    }
+                },
+                fontSize = 12.sp,
+                color = Color.Gray,
+            )
 
-            Spacer(Modifier.width(16.dp))
-            // 2. 오른쪽 정보 영역
-            Column(
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 8.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                SaiText(
-                    text = course.courseName,
-                    fontWeight = FontWeight.SemiBold,
-                    fontSize = 16.sp
-                )
+            Spacer(modifier = Modifier.height(10.dp))
 
-                // 거리 및 난이도
-                Text(
-                    buildAnnotatedString {
-                        append("${course.distance}km · 난이도 ")
-                        withStyle(SpanStyle(color = course.level.color)) {
-                            append(course.level.displayText)
-                        }
-                    },
-                    fontSize = 12.sp,
-                    color = Color.Gray
-                )
+            ThemeTags(listOf("테마1", "테마2"))
 
-                Spacer(modifier = Modifier.height(4.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-                // 테마 태그
-                ThemeTags(listOf("테마1", "테마2"))
-
-                Spacer(modifier = Modifier.height(6.dp))
-
-                // 도전자 및 완주자 정보
-                ParticipantInfo(
-                    challengerCount = course.courseChallengerCount,
-                    completedCount = course.courseFinisherCount,
-                )
-            }
+            ParticipantRewardInfo(
+                challengerCount = course.courseChallengerCount,
+                reward = course.reward,
+                isLong = true
+            )
         }
     }
 }
 
 @Composable
-private fun ChallengeStatusBadge(endTime: LocalDate?) {
-    if (endTime == null) return
-    val isFinished = endTime.isBefore(LocalDate.now())
-    val badgeText = if (isFinished) "챌린지 종료" else "~${
-        endTime.format(
-            DateTimeFormatter.ofPattern("M/d")
-        )
-    }"
-    val badgeColor =
-        if (isFinished) Color.Gray.copy(alpha = 0.9f) else Color(0xFFF08080).copy(alpha = 0.9f)
-
-    Row(
-        modifier = Modifier
-            .padding(5.dp)
-            .height(26.dp)
-            .clip(RoundedCornerShape(6.dp))
-            .background(badgeColor)
-            .padding(horizontal = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(2.dp)
+private fun ImageSection(
+    course: CourseListItem,
+    modifier: Modifier = Modifier,
+) {
+    Box(
+        modifier = modifier.fillMaxHeight()
     ) {
-        if (!isFinished) {
-            Icon(
-                imageVector = Icons.Default.LocalFireDepartment,
-                contentDescription = "기간 아이콘",
-                tint = Color.White,
-                modifier = Modifier.size(20.dp)
-            )
-        }
-        SaiText(
-            text = badgeText, color = Color.White, fontSize = 12.sp
+        AsyncImage(
+            model = course.imageUrl,
+            contentDescription = "${course.courseName} 이미지",
+            modifier = Modifier
+                .size(width = 170.dp, height = 140.dp)
+                .align(Alignment.Center),
+            contentScale = ContentScale.Crop
         )
+        Row(
+            Modifier
+                .height(IntrinsicSize.Min)
+                .padding(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            ChallengeStatusBadge(course.challengeEndedAt)
+            if (course.isEventActive) {
+                EventBadge(Modifier.fillMaxHeight())
+            }
+        }
     }
 }
 
@@ -167,7 +133,8 @@ fun CourseListItemHorizontalPreview() {
                 CourseListItemHorizontal(course = course)
                 CourseListItemHorizontal(
                     course = course.copy(
-                        challengeEndedAt = LocalDate.now().minusDays(7)
+                        challengeEndedAt = LocalDate.now().minusDays(7),
+                        isEventActive = false
                     )
                 )
                 CourseListItemHorizontal(

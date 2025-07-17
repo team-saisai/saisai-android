@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.FlashOn
 import androidx.compose.material.icons.outlined.LocalFireDepartment
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
+import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -28,17 +26,21 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseInfo
+import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.util.DateTimeFormat
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
+import java.text.DecimalFormat
 
 /**
  * 새로운 UI 디자인이 적용된 챌린지 카드 컴포넌트
@@ -49,26 +51,21 @@ fun ThemedChallengeCard(
     courseInfo: CourseInfo,
     modifier: Modifier = Modifier,
 ) {
-    Card(
+    Column(
         modifier = modifier
             .fillMaxWidth()
-            .padding(16.dp),
-        shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.surface
-        ),
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
+            .padding(16.dp)
+            .clip(RoundedCornerShape(16.dp))
+            .background(Color(0xFF2B2E31))
     ) {
-        Column {
-            // 상단 이미지 및 상태 배지
-            ChallengeImageHeader(
-                imageUrl = courseInfo.imageUrl,
-                endDate = courseInfo.endDate,
-            )
+        // 상단 이미지 및 상태 배지
+        ChallengeImageHeader(
+            imageUrl = courseInfo.imageUrl,
+            endDate = courseInfo.endDate,
+        )
 
-            // 하단 상세 정보 섹션
-            ChallengeDetails(courseInfo = courseInfo)
-        }
+        // 하단 상세 정보 섹션
+        ChallengeDetails(courseInfo = courseInfo)
     }
 }
 
@@ -136,9 +133,10 @@ private fun ChallengeDetails(courseInfo: CourseInfo) {
         Spacer(modifier = Modifier.height(16.dp))
 
         // 도전자 및 완주자 정보
-        ParticipantInfo(
+        ParticipantRewardInfo(
             challengerCount = courseInfo.challengerCount,
-            completedCount = courseInfo.completedCount
+            reward = courseInfo.completedCount,
+            isLong = false
         )
     }
 }
@@ -153,7 +151,7 @@ fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
             .background(Color(0xFCDE6666))
-            .padding(horizontal = 6.dp, vertical = 4.dp),
+            .padding(start = 4.dp, top = 3.dp, bottom = 3.dp, end = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Icon(
@@ -180,13 +178,14 @@ fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
 private fun EndedBadge(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
-            .clip(RoundedCornerShape(20.dp))
-            .background(Color.Gray.copy(alpha = 0.9f))
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .clip(RoundedCornerShape(8.dp))
+            .background(Color(0xFF37393C))
+            .padding(horizontal = 9.dp, vertical = 6.dp),
     ) {
         SaiText(
             text = "챌린지 종료",
-            style = TextStyle(color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            style = TextStyle(color = Color.White, fontSize = 12.sp),
+            fontWeight = FontWeight.Medium
         )
     }
 }
@@ -195,21 +194,20 @@ private fun EndedBadge(modifier: Modifier = Modifier) {
  * 챌린지 테마 태그들을 표시하는 컴포넌트
  */
 @Composable
-fun ThemeTags(themes: List<String>) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+fun ThemeTags(themes: List<String>, modifier: Modifier = Modifier) {
+    Row(horizontalArrangement = Arrangement.spacedBy(5.dp), modifier = modifier) {
         themes.forEach { theme ->
             Box(
                 modifier = Modifier
-                    .clip(RoundedCornerShape(8.dp))
-                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.8f))
-                    .padding(horizontal = 12.dp, vertical = 6.dp)
+                    .clip(RoundedCornerShape(4.dp))
+                    .background(Color(0xFF34383C))
+                    .padding(horizontal = 10.dp, vertical = 6.dp)
             ) {
                 SaiText(
                     text = theme,
-                    style = TextStyle(
-                        color = MaterialTheme.colorScheme.surface,
-                        fontWeight = FontWeight.Medium
-                    )
+                    color = Color.White,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Normal
                 )
             }
         }
@@ -220,37 +218,40 @@ fun ThemeTags(themes: List<String>) {
  * 도전자와 완주자 수를 표시하는 컴포넌트
  */
 @Composable
-fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
+fun ParticipantRewardInfo(challengerCount: Int, reward: Int?, isLong: Boolean) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         // 도전자 정보
         Icon(
-            imageVector = Icons.Default.FlashOn,
+            painter = painterResource(R.drawable.outline_flash_on_24),
             contentDescription = "도전 아이콘",
-            modifier = Modifier.size(24.dp),
+            modifier = Modifier.size(16.dp),
             tint = Color(0xFF8A2BE2)
         )
-        Spacer(modifier = Modifier.width(4.dp))
         SaiText(
-            text = "${challengerCount}명 도전 중",
-            color = MaterialTheme.colorScheme.onSurface,
-            fontSize = 12.sp,
+            text = "${challengerCount}명" + (if (isLong) " 도전중" else ""),
+            style = TextStyle(
+                color = Color(0xFF8A2BE2),
+                fontWeight = FontWeight.Medium,
+                fontSize = 12.sp,
+            )
         )
-
-        Spacer(modifier = Modifier.width(6.dp))
-
-        // 완주자 정보
-        Icon(
-            imageVector = Icons.Default.CheckCircle,
-            contentDescription = "완주 아이콘",
-            modifier = Modifier.size(24.dp),
-            tint = Color(0xFF8A2BE2)
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        SaiText(
-            text = "${completedCount}명 완주",
-            fontWeight = FontWeight.Bold,
-            fontSize = 12.sp,
-        )
+        if (reward != null) {
+            Spacer(Modifier.width(4.dp))
+            Icon(
+                imageVector = Icons.Outlined.StarOutline,
+                contentDescription = "리워드 아이콘",
+                modifier = Modifier.size(16.dp),
+                tint = Color(0xFF8A2BE2)
+            )
+            SaiText(
+                text = DecimalFormat("#,###").format(reward),
+                style = TextStyle(
+                    color = Color(0xFF8A2BE2),
+                    fontWeight = FontWeight.Medium,
+                    fontSize = 12.sp,
+                )
+            )
+        }
     }
 }
 
@@ -259,8 +260,10 @@ fun ParticipantInfo(challengerCount: Int, completedCount: Int) {
 fun ThemedChallengeCardOngoingPreview() {
     val sampleChallenge = CourseInfo.dummyItem
     AndroidThreeTen.init(LocalContext.current)
-    MaterialTheme {
-        ThemedChallengeCard(courseInfo = sampleChallenge)
+    SaiTheme {
+        Surface {
+            ThemedChallengeCard(courseInfo = sampleChallenge)
+        }
     }
 }
 
@@ -269,7 +272,9 @@ fun ThemedChallengeCardOngoingPreview() {
 fun ThemedChallengeCardFinishedPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleChallenge = CourseInfo.dummyItem.copy(endDate = LocalDate.now().minusDays(1))
-    MaterialTheme {
-        ThemedChallengeCard(courseInfo = sampleChallenge)
+    SaiTheme {
+        Surface {
+            ThemedChallengeCard(courseInfo = sampleChallenge)
+        }
     }
 }

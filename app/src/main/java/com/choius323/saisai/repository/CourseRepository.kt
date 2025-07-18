@@ -9,6 +9,7 @@ import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RecentRide
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 import java.io.File
@@ -19,10 +20,13 @@ interface CourseRepository {
     suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
     suspend fun startCourse(courseId: Long): Flow<Result<Long>>
+    suspend fun setRecentRide(recentRide: RecentRide)
+    suspend fun getRecentRide(): Flow<Result<RecentRide>>
     suspend fun getAllCourses(
         page: Int,
         status: String? = null,
     ): Flow<Result<CoursePage>>
+
     suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,
     ): Flow<Result<Unit>>
@@ -80,4 +84,16 @@ class CourseRepositoryImpl(
         courseRemoteDataSource.completeCourse(rideId, duration, distance, image).map { result ->
             result.mapCatching { responseDto -> responseDto.data }
         }.flowOn(ioDispatcher)
+
+    override suspend fun setRecentRide(recentRide: RecentRide) {
+        courseLocalDataSource.setRecentRideCourse(recentRide.toProto())
+    }
+
+    override suspend fun getRecentRide(): Flow<Result<RecentRide>> {
+        return courseLocalDataSource.getRecentRideCourse().map { result ->
+            Result.success(result.toDomainModel())
+        }.catch {
+            emit(Result.failure<RecentRide>(it))
+        }
+    }
 }

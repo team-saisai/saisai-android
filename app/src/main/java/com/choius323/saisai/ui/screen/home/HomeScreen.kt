@@ -35,7 +35,9 @@ import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
+import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.choius323.saisai.ui.theme.Typography
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -64,7 +66,7 @@ fun HomeScreen(
         viewModel.onEvent(HomeUiEvent.LoadData())
     }
     ProvideAppBar(navigationIcon = {
-        SaiText("사이사이", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+        SaiText("사이사이", style = Typography.AppTitle)
     }, actions = {
         Icon(Icons.Outlined.Notifications, contentDescription = "Notifications")
     })

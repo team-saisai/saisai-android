@@ -9,10 +9,9 @@ import kotlinx.coroutines.flow.map
 
 interface AccountRepository {
     suspend fun login(email: String, password: String): Flow<Result<AccountToken>>
-
     suspend fun reissueToken(): Flow<Result<AccountToken>>
-
     suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadge>>
+    suspend fun getUserInfo(): Flow<Result<String>>
 }
 
 class AccountRepositoryImpl(
@@ -41,6 +40,13 @@ class AccountRepositoryImpl(
         accountRemoteDataSource.getUserBadgeDetail(userBadgeId).map { result ->
             result.mapCatching { responseDto ->
                 responseDto.data.toUserBadge()
+            }
+        }
+
+    override suspend fun getUserInfo(): Flow<Result<String>> =
+        accountRemoteDataSource.getUserInfo().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.nickname
             }
         }
 }

@@ -4,6 +4,7 @@ import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.data.account.model.AccountTokenDto
 import com.choius323.saisai.data.account.model.LoginDto
 import com.choius323.saisai.data.account.model.UserBadgeDto
+import com.choius323.saisai.data.account.model.UserInformationDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.saiFetch
 import io.ktor.client.HttpClient
@@ -24,6 +25,7 @@ interface AccountRemoteDataSource {
 
     suspend fun reissueToken(): Flow<Result<SaiResponseDto<AccountTokenDto>>>
     suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<SaiResponseDto<UserBadgeDto>>>
+    suspend fun getUserInfo(): Flow<Result<SaiResponseDto<UserInformationDto>>>
 }
 
 class AccountRemoteDataSourceImpl(
@@ -47,6 +49,11 @@ class AccountRemoteDataSourceImpl(
 
     override suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<SaiResponseDto<UserBadgeDto>>> =
         saiFetch(client.get("badges/me/$userBadgeId"))
+
+    override suspend fun getUserInfo():
+            Flow<Result<SaiResponseDto<UserInformationDto>>> =
+        saiFetch<SaiResponseDto<UserInformationDto>>(client.get("my"))
+            .flowOn(ioDispatcher)
 }
 
 private const val TAG = "AccountRemoteDataSource"

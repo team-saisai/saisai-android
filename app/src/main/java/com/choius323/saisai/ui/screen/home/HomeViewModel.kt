@@ -4,6 +4,8 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.usecase.GetPopularChallengeUseCase
 import com.choius323.saisai.usecase.GetRecentCourseUseCase
+import com.choius323.saisai.usecase.GetUserInfoUseCase
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -12,6 +14,7 @@ import org.orbitmvi.orbit.viewmodel.container
 class HomeViewModel(
     private val getRecentCourseUseCase: GetRecentCourseUseCase,
     private val getPopularChallengeUseCase: GetPopularChallengeUseCase,
+    private val getUserInfoUseCase: GetUserInfoUseCase,
 ) : ViewModel(),
     ContainerHost<HomeUiState, HomeSideEffect> {
 
@@ -31,6 +34,7 @@ class HomeViewModel(
         reduce {
             state.copy(isLoading = true)
         }
+        getUserName()
         getRecentCourseUseCase().combine(getPopularChallengeUseCase()) { item1, item2 ->
             item1 to item2
         }.collect { (recentResult, popularResult) ->
@@ -52,9 +56,27 @@ class HomeViewModel(
                         isLoading = false, errorMessage = exception.message ?: "Unknown error"
                     )
                 }
-
             }
+        }
+    }
 
+    private fun getUserName() = intent {
+        if (state.name.isNullOrBlank()) {
+            getUserInfoUseCase().collectLatest { result ->
+                runCatching {
+                    val name = result.getOrThrow()
+                    reduce {
+                        state.copy(name = name)
+                    }
+                }.onFailure { exception ->
+                    Log.d(TAG, exception.toString())
+                    reduce {
+                        state.copy(
+                            errorMessage = exception.message ?: "Unknown error"
+                        )
+                    }
+                }
+            }
         }
     }
 }

@@ -5,6 +5,7 @@ import com.choius323.saisai.usecase.GetAllCoursesUseCase
 import com.choius323.saisai.usecase.GetCourseDetailUseCase
 import com.choius323.saisai.usecase.GetPopularChallengeUseCase
 import com.choius323.saisai.usecase.GetRecentCourseUseCase
+import com.choius323.saisai.usecase.GetUserInfoUseCase
 import com.choius323.saisai.usecase.ReissueTokenUseCase
 import com.choius323.saisai.usecase.SetRecentRideUseCase
 import org.koin.core.module.dsl.singleOf
@@ -20,4 +21,5 @@ val useCaseModule = module {
     singleOf(::ReissueTokenUseCase)
     singleOf(::GetRecentCourseUseCase)
     singleOf(::SetRecentRideUseCase)
+    singleOf(::GetUserInfoUseCase)
 }

@@ -1,5 +1,7 @@
 package com.choius323.saisai.ui.screen.coursedetail
 
+import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -24,16 +26,20 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -53,6 +59,12 @@ fun CourseDetailDescription(
     modifier: Modifier = Modifier,
     onChallengeClick: () -> Unit,
 ) {
+    var expanded by remember { mutableStateOf(false) }
+    val summaryText by remember(detail.summary) {
+        derivedStateOf {
+            AnnotatedString.fromHtml(detail.summary)
+        }
+    }
     val time by remember(detail.estimatedTime) {
         derivedStateOf {
             val hour = detail.estimatedTime.toInt() / 60
@@ -73,38 +85,56 @@ fun CourseDetailDescription(
             EventBadge(Modifier.fillMaxHeight())
         }
         Spacer(Modifier.height(8.dp))
-        Row(
+        Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(IntrinsicSize.Min)
                 .clip(RoundedCornerShape(16.dp))
-                .background(Color(0xFF292929))
-                .padding(18.dp),
-            verticalAlignment = Alignment.CenterVertically
+                .background(Color(0xE642464A))
+                .padding(18.dp)
+                .animateContentSize(animationSpec = tween(500)),
         ) {
-            Column(modifier = Modifier) {
-                CourseInfoSection(detail)
-                Spacer(modifier = Modifier.height(6.dp))
-                ThemeTagsSection(listOf("테마1", "테마2"))
-                Spacer(modifier = Modifier.height(18.dp))
-                ParticipantInfoSection(detail.inProgressUserCount, detail.completeUserCount)
-            }
-            Spacer(modifier = Modifier.weight(1f))
-
-            // 우측 '도전하기' 버튼 영역
-            Column(
-                Modifier.align(Alignment.Top),
-                horizontalAlignment = Alignment.CenterHorizontally
+            Row(
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                ChallengeButton(
-                    modifier = Modifier,
-                    onClick = onChallengeClick
-                )
-                SaiText(time, color = Color(0xFFC9FF66))
+                Column(modifier = Modifier) {
+                    CourseInfoSection(detail)
+                    Spacer(modifier = Modifier.height(6.dp))
+                    ThemeTagsSection(listOf("테마1", "테마2"))
+                    Spacer(modifier = Modifier.height(18.dp))
+                    ParticipantInfoSection(detail.inProgressUserCount, detail.completeUserCount)
+                }
+                Spacer(modifier = Modifier.weight(1f))
+
+                // 우측 '도전하기' 버튼 영역
+                Column(
+                    Modifier.align(Alignment.Top),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    ChallengeButton(
+                        modifier = Modifier,
+                        onClick = onChallengeClick
+                    )
+                    SaiText(time, color = Color(0xFFC9FF66))
+                }
             }
+            if (expanded) {
+                SaiText(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 24.dp),
+                    text = summaryText
+                )
+            }
+        }
+        CourseDetailDescriptionBottomButton(
+            expanded = expanded,
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
+            expanded = expanded.not()
         }
     }
 }
+
 
 @Composable
 private fun CourseInfoSection(detail: CourseDetail) {
@@ -210,7 +240,7 @@ private fun ChallengeButton(
     }
 }
 
-@Preview(showBackground = true)
+@Preview
 @Composable
 fun CourseDetailDescriptionPreview() {
     AndroidThreeTen.init(LocalContext.current)

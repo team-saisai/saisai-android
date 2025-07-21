@@ -76,7 +76,7 @@ fun RecordStateDescription(
                     .fillMaxWidth()
                     .height(5.dp)
                     .clip(CircleShape)
-                    .background(Color(0xFF51565B))
+                    .background(Color(0xE642464A))
             ) {
                 Box(
                     Modifier

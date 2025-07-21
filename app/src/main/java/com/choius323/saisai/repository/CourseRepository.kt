@@ -2,6 +2,7 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.local.CourseLocalDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
+import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.PopularChallengeListItem
@@ -22,6 +23,8 @@ interface CourseRepository {
     suspend fun startCourse(courseId: Long): Flow<Result<Long>>
     suspend fun setRecentRide(recentRide: RecentRide)
     suspend fun getRecentRide(): Flow<Result<RecentRide>>
+    suspend fun resumeRide(rideId: Long): Flow<Result<Unit>>
+    suspend fun pauseRide(rideId: Long, duration: Long, totalDistance: Double): Flow<Result<Unit>>
     suspend fun getAllCourses(
         page: Int,
         status: String? = null,
@@ -54,7 +57,6 @@ class CourseRepositoryImpl(
     ): Flow<Result<CoursePage>> =
         courseRemoteDataSource.getAllCourses(page, status).map { result ->
             result.mapCatching { responseDto ->
-                // DTO를 UI 모델로 변환
                 responseDto.toCoursePage()
             }
         }.flowOn(ioDispatcher)
@@ -96,4 +98,19 @@ class CourseRepositoryImpl(
             emit(Result.failure<RecentRide>(it))
         }
     }
+
+    override suspend fun resumeRide(rideId: Long): Flow<Result<Unit>> =
+        courseRemoteDataSource.resumeRide(rideId).map { result ->
+            result.mapCatching {}
+        }.flowOn(ioDispatcher)
+
+    override suspend fun pauseRide(
+        rideId: Long,
+        duration: Long,
+        totalDistance: Double,
+    ): Flow<Result<Unit>> =
+        courseRemoteDataSource.pauseRide(rideId, PauseRideDto(duration, totalDistance))
+            .map { result ->
+                result.mapCatching { }
+            }.flowOn(ioDispatcher)
 }

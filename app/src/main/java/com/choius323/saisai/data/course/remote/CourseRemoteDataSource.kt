@@ -3,8 +3,10 @@ package com.choius323.saisai.data.course.remote
 import android.webkit.MimeTypeMap
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
+import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
+import com.choius323.saisai.data.course.remote.model.RideIdDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import io.ktor.client.HttpClient
 import io.ktor.client.request.forms.MultiPartFormDataContent
@@ -25,9 +27,15 @@ interface CourseRemoteDataSource {
         status: String?,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
+    suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun getCourseDetail(courseId: Long): Flow<Result<SaiResponseDto<CourseDetailDto>>>
     suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
     suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<Long>>>
+    suspend fun pauseRide(
+        rideId: Long,
+        pauseRideDto: PauseRideDto,
+    ): Flow<Result<SaiResponseDto<RideIdDto>>>
+
     suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,
     ): Flow<Result<SaiResponseDto<Unit>>>
@@ -78,4 +86,15 @@ class CourseRemoteDataSourceImpl(
                 )
             })
     }
+
+    override suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =
+        saiFetch(client.patch("rides/$rideId/resume"))
+
+    override suspend fun pauseRide(
+        rideId: Long,
+        pauseRideDto: PauseRideDto,
+    ): Flow<Result<SaiResponseDto<RideIdDto>>> =
+        saiFetch(client.patch("rides/$rideId/pause") {
+            setBody(pauseRideDto)
+        })
 }

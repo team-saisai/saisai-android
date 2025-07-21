@@ -166,7 +166,7 @@ val dataModule = module {
         )
     }
     single<AccountLocalDataSource> { AccountLocalDataSourceImpl(get()) }
-    single<AccountRepository> { AccountRepositoryImpl(get()) }
+    single<AccountRepository> { AccountRepositoryImpl(get(), get()) }
 }
 
 private const val TAG = "DataModule"

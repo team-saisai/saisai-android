@@ -1,7 +1,7 @@
 package com.choius323.saisai.repository
 
+import com.choius323.saisai.data.account.AccountLocalDataSource
 import com.choius323.saisai.data.account.AccountRemoteDataSource
-import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.data.course.remote.model.UserBadge
 import com.choius323.saisai.ui.model.AccountToken
 import kotlinx.coroutines.flow.Flow
@@ -16,13 +16,14 @@ interface AccountRepository {
 
 class AccountRepositoryImpl(
     private val accountRemoteDataSource: AccountRemoteDataSource,
+    private val accountLocalDataSource: AccountLocalDataSource,
 ) : AccountRepository {
     override suspend fun login(
         email: String, password: String,
     ): Flow<Result<AccountToken>> = accountRemoteDataSource.login(email, password).map { result ->
         result.mapCatching { responseDto ->
             responseDto.data.toAccountToken().apply {
-                SessionManager.onLoginSuccess(accessToken, refreshToken)
+                accountLocalDataSource.saveTokens(accessToken, refreshToken)
             }
         }
     }
@@ -31,7 +32,7 @@ class AccountRepositoryImpl(
         accountRemoteDataSource.reissueToken().map { result ->
             result.mapCatching { responseDto ->
                 responseDto.data.toAccountToken().apply {
-                    SessionManager.onLoginSuccess(accessToken, refreshToken)
+                    accountLocalDataSource.saveTokens(accessToken, refreshToken)
                 }
             }
         }

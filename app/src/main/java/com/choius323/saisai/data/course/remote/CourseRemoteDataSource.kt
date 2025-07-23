@@ -14,6 +14,7 @@ import io.ktor.client.request.forms.formData
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
+import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.Headers
 import io.ktor.http.HttpHeaders
@@ -30,7 +31,7 @@ interface CourseRemoteDataSource {
     suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun getCourseDetail(courseId: Long): Flow<Result<SaiResponseDto<CourseDetailDto>>>
     suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
-    suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<Long>>>
+    suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun pauseRide(
         rideId: Long,
         pauseRideDto: PauseRideDto,
@@ -62,8 +63,8 @@ class CourseRemoteDataSourceImpl(
     override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>> =
         saiFetch(client.get("challenges/popular"))
 
-    override suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<Long>>> =
-        saiFetch(client.patch("courses/$courseId/rides"))
+    override suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =
+        saiFetch(client.post("courses/$courseId/rides"))
 
     override suspend fun completeCourse(
         rideId: Long, duration: Long, distance: Double, image: File,

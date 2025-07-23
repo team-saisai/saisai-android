@@ -77,7 +77,7 @@ class CourseRepositoryImpl(
 
     override suspend fun startCourse(courseId: Long): Flow<Result<Long>> =
         courseRemoteDataSource.startCourse(courseId).map { result ->
-            result.mapCatching { responseDto -> responseDto.data }
+            result.mapCatching { responseDto -> responseDto.data.rideId }
         }.flowOn(ioDispatcher)
 
     override suspend fun completeCourse(

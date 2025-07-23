@@ -128,11 +128,31 @@ class RecordViewModel(
 
     private fun endRecording() = intent {
         delay(300)
-        reduce {
-            state.copy(
-                isRecording = false,
-                isCameraTracking = false,
-            )
+        val courseDetail = state.courseDetail ?: return@intent
+        reduce { state.copy(isLoading = true) }
+        courseRepository.completeCourse(
+            courseDetail.courseId,
+            System.currentTimeMillis() - state.startTime,
+            state.totalRideDistance,
+            null
+        ).collectLatest { result ->
+            result.onSuccess {
+                reduce {
+                    state.copy(
+                        isRecording = false,
+                        isCameraTracking = false,
+                        isShowCompleteDialog = true,
+                        isLoading = false,
+                    )
+                }
+            }.onFailure {
+                reduce {
+                    state.copy(
+                        isLoading = false,
+                    )
+                }
+                postSideEffect(RecordSideEffect.ShowToast(it.message ?: "코스 추적에 실패했습니다."))
+            }
         }
     }
 }

@@ -42,7 +42,19 @@ fun MainNavController(
             })
         }
         composable<MainNavItem.Record> { backStackEntry ->
-            RecordScreen(modifier.fillMaxSize()) {
+            RecordScreen(
+                modifier.fillMaxSize(),
+                goHome = {
+                    navController.navigate(MainNavItem.BottomNavItem.Home) {
+                        popUpTo(MainNavItem.BottomNavItem.Home) { inclusive = true }
+                    }
+                },
+                goCourseDetail = {
+                    navController.navigate(MainNavItem.CourseDetail(it)) {
+                        popUpTo(MainNavItem.CourseDetail)
+                    }
+                },
+            ) {
                 navController.upPress()
             }
         }

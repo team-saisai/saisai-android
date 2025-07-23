@@ -31,7 +31,7 @@ interface CourseRepository {
     ): Flow<Result<CoursePage>>
 
     suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double, image: File,
+        rideId: Long, duration: Long, distance: Double, image: File?,
     ): Flow<Result<Unit>>
 }
 
@@ -81,7 +81,7 @@ class CourseRepositoryImpl(
         }.flowOn(ioDispatcher)
 
     override suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double, image: File,
+        rideId: Long, duration: Long, distance: Double, image: File?,
     ): Flow<Result<Unit>> =
         courseRemoteDataSource.completeCourse(rideId, duration, distance, image).map { result ->
             result.mapCatching { responseDto -> responseDto.data }

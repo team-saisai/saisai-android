@@ -12,6 +12,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -52,9 +53,9 @@ import java.util.concurrent.TimeUnit
 @Composable
 fun RecordScreen(
     modifier: Modifier = Modifier,
-    // courseDetail: CourseDetail?,
-    viewModel: RecordViewModel = koinViewModel(
-    ),
+    viewModel: RecordViewModel = koinViewModel(),
+    goHome: () -> Unit,
+    goCourseDetail: (Long) -> Unit,
     onBack: () -> Unit,
 ) {
     val context = LocalContext.current
@@ -138,6 +139,26 @@ fun RecordScreen(
         modifier = modifier,
         onEvent = viewModel::onEvent,
     )
+    if (uiState.isShowCompleteDialog) {
+        val courseDetail = uiState.courseDetail
+        if (courseDetail != null) {
+            println("isShowCompleteDialog: ${uiState.isShowCompleteDialog}")
+            RideCompleteDialog(
+                courseDetail.imageUrl,
+                courseDetail.courseName,
+                uiState.totalRideDistance,
+                endTime = uiState.startTime,
+                modifier = modifier.fillMaxSize(),
+                goHome = goHome,
+                goCourseDetail = { goCourseDetail(courseDetail.courseId) }
+            )
+        } else {
+            Toast.makeText(context, "코스 정보가 없습니다.", Toast.LENGTH_SHORT).show()
+        }
+    }
+    if (uiState.isLoading) {
+        CircularProgressIndicator(modifier.fillMaxSize())
+    }
 }
 
 @OptIn(ExperimentalPermissionsApi::class)

@@ -38,7 +38,7 @@ interface CourseRemoteDataSource {
     ): Flow<Result<SaiResponseDto<RideIdDto>>>
 
     suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double, image: File,
+        rideId: Long, duration: Long, distance: Double, image: File?,
     ): Flow<Result<SaiResponseDto<Unit>>>
 }
 
@@ -67,10 +67,10 @@ class CourseRemoteDataSourceImpl(
         saiFetch(client.post("courses/$courseId/rides"))
 
     override suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double, image: File,
+        rideId: Long, duration: Long, distance: Double, image: File?,
     ): Flow<Result<SaiResponseDto<Unit>>> {
         val mimeType =
-            MimeTypeMap.getSingleton().getMimeTypeFromExtension(image.extension) ?: "image/*"
+            MimeTypeMap.getSingleton().getMimeTypeFromExtension(image?.extension) ?: "image/*"
         return saiFetch(
             client.patch("rides/$rideId/complete") {
                 setBody(
@@ -78,14 +78,24 @@ class CourseRemoteDataSourceImpl(
                         formData {
                             append("duration", duration)
                             append("actualDistance", distance)
-                            append(
-                                "completedImage", image.readBytes(), Headers.build {
-                                    append(HttpHeaders.ContentType, mimeType)
-                                    append(HttpHeaders.ContentDisposition, "filename=${image.name}")
-                                })
-                        })
+                            if (image != null) {
+                                append(
+                                    "completedImage",
+                                    image.readBytes(),
+                                    Headers.build {
+                                        append(HttpHeaders.ContentType, mimeType)
+                                        append(
+                                            HttpHeaders.ContentDisposition,
+                                            "filename=${image.name}"
+                                        )
+                                    }
+                                )
+                            }
+                        }
+                    )
                 )
-            })
+            }
+        )
     }
 
     override suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =

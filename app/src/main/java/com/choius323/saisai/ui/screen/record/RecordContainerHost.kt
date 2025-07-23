@@ -18,6 +18,7 @@ data class RecordUiState(
     val projectedPoint: LatLng? = null,
     val nowLatLng: LatLng? = null,
     val rideId: Long = 0,
+    val isShowCompleteDialog: Boolean = false,
 ) {
     val route: List<GpxPoint>
         get() = courseDetail?.gpxPointList ?: emptyList()

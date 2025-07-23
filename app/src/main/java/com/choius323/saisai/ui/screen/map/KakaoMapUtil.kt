@@ -79,9 +79,10 @@ fun KakaoMap?.createLabel(start: LatLng, end: LatLng) {
 
 fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
     val layer = this?.labelManager?.layer ?: return
-    layer.getLabel(DIRECTION_LABEL)?.moveTo(latLng) ?: run {
-        layer.addLabel(LabelOptions.from(DIRECTION_LABEL, latLng).setStyles(directionStyle))
-    }
+    val label = layer.getLabel(DIRECTION_LABEL) ?: layer.addLabel(
+        LabelOptions.from(DIRECTION_LABEL, latLng).setStyles(directionStyle)
+    )
+    label.moveTo(latLng)
 }
 
 private const val START_LABEL = "Start"

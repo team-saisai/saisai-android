@@ -104,7 +104,7 @@ private fun RecordMapSetting(
         kakaoMap.moveCamera(latLngList)
     }
     LaunchedEffect(uiState.nowLatLng) {
-        if (uiState.nowLatLng != null && uiState.isRecording) {
+        if (uiState.nowLatLng != null) {
             kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
@@ -117,10 +117,8 @@ private fun RecordMapSetting(
         }
     }
     ObserveLocation(
-        uiState.isRecording,
         permissionGranted = uiState.permissionGranted,
         callbackLocation = { location ->
-            println("callback $location")
             onEvent(
                 RecordUiEvent.SetNowLatLng(
                     LatLng.from(

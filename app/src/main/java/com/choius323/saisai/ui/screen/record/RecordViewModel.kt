@@ -76,16 +76,9 @@ class RecordViewModel(
 
     private fun startRecording(event: RecordUiEvent.StartRecording) = intent {
         reduce { state.copy(isLoading = true) }
-        println("isRecording: ${state.isRecording}, startTime: ${state.startTime}, permissionGranted: ${event.isPermissionGranted}")
         when {
-            event.isPermissionGranted.not() -> {
-                postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
-            }
-
-            state.isRecording -> {
-                postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
-            }
-
+            event.isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
+            state.isRecording -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
             state.route.isNotEmpty() &&
                     calculateDistance(event.nowLatLng, state.route.first().toLatLng()) < 25
                 -> {
@@ -113,8 +106,9 @@ class RecordViewModel(
     }
 
     private fun setNowLatLng(event: RecordUiEvent.SetNowLatLng) = intent {
-        if (state.isRecording.not()) return@intent
+        if (state.permissionGranted.not()) return@intent
         reduce { state.copy(nowLatLng = event.latLng) }
+        if (state.isRecording.not()) return@intent
         val rideSnapshot = updateUserLocation(event.latLng, state.segmentIndex, state.route)
         if (rideSnapshot != null) {
             reduce {

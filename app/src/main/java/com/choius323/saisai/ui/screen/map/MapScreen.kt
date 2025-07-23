@@ -89,7 +89,6 @@ fun MapScreen(
         }
     }
     ObserveLocation(
-        uiState.isTracking,
         permissionGranted = uiState.permissionGranted,
         callbackLocation = { location ->
             println("callback $location")
@@ -136,15 +135,11 @@ private fun MapScreen(
     LaunchedEffect(kakaoMap, uiState.route) {
         updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
-        if (uiState.isTracking) {
-            kakaoMap.drawRoute(latLngList, Color(0xFFC9FF66).toArgb())
-        } else {
-            kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
-        }
+        kakaoMap.drawRoute(latLngList, Color(0xFFC9FF66).toArgb())
         kakaoMap.moveCamera(latLngList)
     }
     LaunchedEffect(uiState.nowLatLng) {
-        if (uiState.nowLatLng != null && uiState.isTracking) {
+        if (uiState.nowLatLng != null) {
             kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
@@ -221,7 +216,6 @@ fun rememberMapView(setKakaoMap: (KakaoMap) -> Unit): MapView {
 @SuppressLint("MissingPermission")
 @Composable
 fun ObserveLocation(
-    isTracking: Boolean,
     permissionGranted: Boolean,
     callbackLocation: (location: Location) -> Unit,
 ) {
@@ -238,8 +232,8 @@ fun ObserveLocation(
     val fusedLocationClient = remember {
         LocationServices.getFusedLocationProviderClient(context)
     }
-    LifecycleResumeEffect(isTracking, permissionGranted) {
-        if (isTracking && permissionGranted) {
+    LifecycleResumeEffect(permissionGranted) {
+        if (permissionGranted) {
             val locationRequest = LocationRequest.Builder(
                 Priority.PRIORITY_HIGH_ACCURACY, 1000
             ).build()

@@ -74,6 +74,10 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
         inProgressUserCount = challengerCount,
         completeUserCount = finisherCount,
         gpxPointList = gpxPointDtoList.map(GpxPointDto::toGpxPoint),
+        rideId = rideId,
+        challengeStatus = challengeStatus,
+        challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
+        isEventActive = isEventActive,
     )
 }
 

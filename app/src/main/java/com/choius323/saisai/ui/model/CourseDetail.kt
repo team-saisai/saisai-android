@@ -1,5 +1,7 @@
 package com.choius323.saisai.ui.model
 
+import org.threeten.bp.LocalDate
+
 data class CourseDetail(
     val courseId: Long,
     val courseName: String,
@@ -11,6 +13,10 @@ data class CourseDetail(
     val imageUrl: String?,
     val inProgressUserCount: Int,
     val completeUserCount: Int,
+    val rideId: Int?,
+    val challengeStatus: String,
+    val challengeEndedAt: LocalDate,
+    val isEventActive: Boolean,
     val gpxPointList: List<GpxPoint>,
 ) {
     companion object {
@@ -68,7 +74,11 @@ data class CourseDetail(
                     segmentDistance = 24.3319520161327,
                     totalDistance = 0.12105047957286462
                 )
-            )
+            ),
+            challengeStatus = "ONGOING",
+            challengeEndedAt = LocalDate.of(2026, 5, 13),
+            isEventActive = true,
+            rideId = 1
         )
     }
 }

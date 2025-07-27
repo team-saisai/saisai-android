@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
@@ -147,35 +148,40 @@ fun ThemeTags(themes: List<String>, modifier: Modifier = Modifier) {
  * 도전자와 완주자 수를 표시하는 컴포넌트
  */
 @Composable
-fun ParticipantRewardInfo(challengerCount: Int, reward: Int?, isLong: Boolean) {
+fun ParticipantRewardInfo(
+    challengerCount: Int,
+    reward: Int?,
+    isLong: Boolean,
+    iconSize: Dp = 15.dp,
+) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         // 도전자 정보
         Icon(
             painter = painterResource(R.drawable.outline_flash_on_24),
             contentDescription = "도전 아이콘",
-            modifier = Modifier.size(16.dp),
-            tint = Color(0xFF8A2BE2)
+            modifier = Modifier.size(iconSize),
+            tint = Color(0xFF9783FF)
         )
         SaiText(
             text = "${challengerCount}명" + (if (isLong) " 도전중" else ""),
             style = TextStyle(
-                color = Color(0xFF8A2BE2),
+                color = Color(0xFF9783FF),
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp,
             )
         )
-        if (reward != null) {
+        if (reward != null && reward > 0) {
             Spacer(Modifier.width(4.dp))
             Icon(
                 imageVector = Icons.Outlined.StarOutline,
                 contentDescription = "리워드 아이콘",
-                modifier = Modifier.size(16.dp),
-                tint = Color(0xFF8A2BE2)
+                modifier = Modifier.size(iconSize),
+                tint = Color(0xFF9783FF)
             )
             SaiText(
                 text = DecimalFormat("#,###").format(reward),
                 style = TextStyle(
-                    color = Color(0xFF8A2BE2),
+                    color = Color(0xFF9783FF),
                     fontWeight = FontWeight.Medium,
                     fontSize = 12.sp,
                 )

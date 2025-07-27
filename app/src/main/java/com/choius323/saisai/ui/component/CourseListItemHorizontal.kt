@@ -1,13 +1,13 @@
 package com.choius323.saisai.ui.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,6 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.BookmarkBorder
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.model.CourseListItem
+import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.screen.course.ParticipantRewardInfo
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -45,7 +49,7 @@ fun CourseListItemHorizontal(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .clip(CircleShape.copy(CornerSize(12.dp)))
+            .clip(CircleShape.copy(CornerSize(16.dp)))
             .background(Color(0xFF2B2E31))
             .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
@@ -55,27 +59,12 @@ fun CourseListItemHorizontal(
         Column(
             modifier = Modifier
                 .weight(1f)
-                .padding(vertical = 18.dp),
+                .padding(top = 12.dp, bottom = 18.dp, end = 10.dp),
             verticalArrangement = Arrangement.Center
         ) {
-            SaiText(
-                text = course.courseName,
-                fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp
-            )
-            Spacer(Modifier.height(4.dp))
-            SaiText(
-                buildAnnotatedString {
-                    append("${course.distance}km · 난이도 ")
-                    withStyle(SpanStyle(color = course.level.color)) {
-                        append(course.level.displayText)
-                    }
-                },
-                fontSize = 12.sp,
-                color = Color.Gray,
-            )
+            TitleSection(course.courseName, course.distance, course.level)
 
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(Modifier.weight(1f))
 
             ParticipantRewardInfo(
                 challengerCount = course.courseChallengerCount,
@@ -91,14 +80,12 @@ private fun ImageSection(
     course: CourseListItem,
     modifier: Modifier = Modifier,
 ) {
-    Box(
-        modifier = modifier.fillMaxHeight()
-    ) {
+    Box(modifier = modifier) {
         AsyncImage(
             model = course.imageUrl,
             contentDescription = "${course.courseName} 이미지",
             modifier = Modifier
-                .size(width = 170.dp, height = 140.dp)
+                .size(width = 160.dp, height = 132.dp)
                 .align(Alignment.Center),
             contentScale = ContentScale.Crop
         )
@@ -106,6 +93,42 @@ private fun ImageSection(
             course.challengeEndedAt,
             isEvent = course.isEventActive,
             modifier = Modifier.padding(6.dp)
+        )
+    }
+}
+
+@Composable
+fun TitleSection(
+    courseName: String,
+    distance: Double,
+    level: Level,
+    modifier: Modifier = Modifier,
+) {
+    Row(modifier) {
+        Column(Modifier.weight(1f)) {
+            SaiText(
+                text = courseName,
+                fontWeight = FontWeight.SemiBold,
+                fontSize = 16.sp
+            )
+            Spacer(Modifier.height(4.dp))
+            SaiText(
+                buildAnnotatedString {
+                    append("${distance}km · 난이도 ")
+                    withStyle(SpanStyle(color = level.color)) {
+                        append(level.displayText)
+                    }
+                },
+                fontSize = 12.sp,
+                color = Color.Gray,
+            )
+        }
+        Icon(
+            Icons.Outlined.BookmarkBorder,
+            contentDescription = "북마크",
+            modifier = Modifier
+                .size(26.dp)
+                .clickable {/*TODO: 북마크*/ },
         )
     }
 }

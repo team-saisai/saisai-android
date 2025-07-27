@@ -128,9 +128,9 @@ fun HomeScreenContent(
         if (trendChallenges.isNotEmpty()) {
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(trendChallenges) { courseInfo ->
-                    CourseCardSimple(
+                    CourseListItemVertical(
                         imageUrl = courseInfo.imageUrl ?: "",
-                        sigun = courseInfo.sigun,
+                        courseName = courseInfo.courseName,
                         distance = courseInfo.distance,
                         level = courseInfo.level,
                         isEventActive = courseInfo.isEventActive,
@@ -157,9 +157,9 @@ fun HomeScreenContent(
         if (aroundChallenges.isNotEmpty()) {
             LazyRow() {
                 items(aroundChallenges) { courseInfo ->
-                    CourseCardSimple(
+                    CourseListItemVertical(
                         imageUrl = courseInfo.imageUrl ?: "",
-                        sigun = courseInfo.sigun,
+                        courseName = courseInfo.courseName,
                         distance = courseInfo.distance,
                         level = courseInfo.level,
                         participantCount = 125,

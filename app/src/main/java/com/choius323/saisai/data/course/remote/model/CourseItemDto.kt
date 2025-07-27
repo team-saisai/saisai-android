@@ -17,5 +17,4 @@ data class CourseItemDto(
     val challengeEndedAt: String,
     val isEventActive: Boolean,
     val reward: Int,
-    val themeNames: List<String>,
 )

@@ -22,6 +22,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
+import com.choius323.saisai.ui.component.FullScreenLoading
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -32,7 +33,7 @@ fun LoginScreen(
     viewModel: LoginViewModel = koinViewModel(),
     goHome: () -> Unit,
 ) {
-    val uiState = viewModel.collectAsState()
+    val uiState by viewModel.collectAsState()
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is LoginSideEffect.LoginSuccess -> goHome()
@@ -40,10 +41,13 @@ fun LoginScreen(
     }
 
     LoginScreenContent(
-        uiState = uiState.value,
+        uiState = uiState,
         modifier = modifier,
         onEvent = viewModel::onEvent
     )
+    if (uiState.isLoading) {
+        FullScreenLoading()
+    }
 }
 
 @Composable

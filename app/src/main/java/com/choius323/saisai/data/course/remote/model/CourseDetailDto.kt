@@ -9,15 +9,16 @@ data class CourseDetailDto(
     val courseName: String,
     val summary: String,
     val level: Int,
-    val distance: Double,
-    val estimatedTime: Double,
+    val distance: Double, // km
+    val estimatedTime: Double, // 분
     val sigun: String,
-    val imageUrl: String?,
+    val imageUrl: String? = null,
     val challengerCount: Int, // 챌린지 참여자 수
-    val hasUncompletedRide: Boolean,
-    @SerialName("themeNames")
-    val themeList: List<String>,
     val finisherCount: Int, // 완주 수
+    val rideId: Int?,
+    val challengeStatus: String,
+    val challengeEndedAt: String,
+    val isEventActive: Boolean,
     @SerialName("gpxPoints")
     val gpxPointDtoList: List<GpxPointDto> = emptyList(),
 )

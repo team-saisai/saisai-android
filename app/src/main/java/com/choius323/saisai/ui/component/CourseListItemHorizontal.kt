@@ -1,4 +1,4 @@
-package com.choius323.saisai.ui.screen.course
+package com.choius323.saisai.ui.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -31,9 +31,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
-import com.choius323.saisai.ui.screen.home.EventBadge
+import com.choius323.saisai.ui.screen.course.ParticipantRewardInfo
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
@@ -78,10 +77,6 @@ fun CourseListItemHorizontal(
 
             Spacer(modifier = Modifier.height(10.dp))
 
-            ThemeTags(listOf("테마1", "테마2"))
-
-            Spacer(modifier = Modifier.height(20.dp))
-
             ParticipantRewardInfo(
                 challengerCount = course.courseChallengerCount,
                 reward = course.reward,
@@ -107,18 +102,11 @@ private fun ImageSection(
                 .align(Alignment.Center),
             contentScale = ContentScale.Crop
         )
-        Row(
-            Modifier
-                .height(IntrinsicSize.Min)
-                .padding(6.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
-        ) {
-            ChallengeStatusBadge(course.challengeEndedAt)
-            if (course.isEventActive) {
-                EventBadge(Modifier.fillMaxHeight())
-            }
-        }
+        ChallengeStatusBadge(
+            course.challengeEndedAt,
+            isEvent = course.isEventActive,
+            modifier = Modifier.padding(6.dp)
+        )
     }
 }
 

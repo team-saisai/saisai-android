@@ -1,13 +1,10 @@
 package com.choius323.saisai.ui.screen.home
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,7 +13,6 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -26,7 +22,6 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -38,14 +33,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.R
+import com.choius323.saisai.ui.component.ChallengeStatusBadge
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
-import org.threeten.bp.LocalDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import java.text.DecimalFormat
 
 @Composable
@@ -84,25 +78,12 @@ fun CourseCardSimple(
                     contentScale = ContentScale.Crop
                 )
 
-                Row(
-                    Modifier
-                        .padding(vertical = 6.dp, horizontal = 6.dp)
-                        .height(IntrinsicSize.Min),
-                    horizontalArrangement = Arrangement.spacedBy(4.dp),
-                ) {
-                    // 날짜 정보 배지
-                    if (endDate != null) {
-                        DateBadge(
-                            date = endDate.format(
-                                DateTimeFormatter.ofPattern(
-                                    if (endDate.year == LocalDateTime.now().year) "MM/dd" else "yyyy/MM/dd"
-                                )
-                            ),
-                        )
-                    }
-                    if (isEventActive) {
-                        EventBadge(Modifier.fillMaxHeight())
-                    }
+                if (endDate != null) {
+                    ChallengeStatusBadge(
+                        endDate = endDate,
+                        isEvent = isEventActive,
+                        modifier = Modifier.padding(vertical = 6.dp, horizontal = 6.dp)
+                    )
                 }
             }
 
@@ -193,54 +174,6 @@ fun CourseCardSimple(
     }
 }
 
-@Composable
-private fun DateBadge(
-    date: String, modifier: Modifier = Modifier,
-) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFCDE6666))
-            .padding(horizontal = 6.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.LocalFireDepartment,
-            contentDescription = "기간 아이콘",
-            tint = Color.White,
-            modifier = Modifier.size(20.dp)
-        )
-        SaiText(
-            text = "~$date",
-            style = TextStyle(
-                color = Color.White,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp
-            )
-        )
-    }
-}
-
-@Composable
-fun EventBadge(modifier: Modifier = Modifier) {
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFF8069FD))
-            .padding(horizontal = 6.dp, vertical = 4.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        SaiText(
-            text = "이벤트",
-            style = TextStyle(
-                color = Color.White,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp
-            )
-        )
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun CourseCardSimplePreview() {
@@ -262,16 +195,6 @@ fun CourseCardSimplePreview() {
                     modifier = Modifier
                 )
             }
-        }
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun DateBadgePreview() {
-    SaiTheme {
-        Surface {
-            DateBadge(date = "6/31")
         }
     }
 }

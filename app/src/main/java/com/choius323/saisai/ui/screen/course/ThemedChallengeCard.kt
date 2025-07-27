@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.LocalFireDepartment
 import androidx.compose.material.icons.outlined.StarOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -34,10 +32,10 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.R
+import com.choius323.saisai.ui.component.ChallengeStatusBadge
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseInfo
 import com.choius323.saisai.ui.theme.SaiTheme
-import com.choius323.saisai.util.DateTimeFormat
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
 import java.text.DecimalFormat
@@ -92,22 +90,6 @@ private fun ChallengeImageHeader(imageUrl: String, endDate: LocalDate) {
 }
 
 /**
- * 챌린지 진행 상태에 따라 다른 배지를 보여주는 컴포넌트
- */
-@Composable
-fun ChallengeStatusBadge(
-    endDate: LocalDate,
-    modifier: Modifier = Modifier,
-) {
-    val isFinished = remember(endDate) { endDate.isBefore(LocalDate.now()) }
-    if (isFinished) {
-        EndedBadge(modifier)
-    } else {
-        DateBadge(endDate = endDate, modifier = modifier)
-    }
-}
-
-/**
  * 카드 하단의 상세 정보를 표시하는 컴포넌트
  */
 @Composable
@@ -125,11 +107,7 @@ private fun ChallengeDetails(courseInfo: CourseInfo) {
             )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
-
         // 테마 태그
-        ThemeTags(themes = courseInfo.themes)
-
         Spacer(modifier = Modifier.height(16.dp))
 
         // 도전자 및 완주자 정보
@@ -137,55 +115,6 @@ private fun ChallengeDetails(courseInfo: CourseInfo) {
             challengerCount = courseInfo.challengerCount,
             reward = courseInfo.completedCount,
             isLong = false
-        )
-    }
-}
-
-/**
- * 진행 중인 챌린지의 종료 날짜를 표시하는 배지
- */
-@Composable
-fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
-    val endDateStr = remember(endDate) { endDate.format(DateTimeFormat.monthDay) }
-    Row(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFCDE6666))
-            .padding(start = 4.dp, top = 3.dp, bottom = 3.dp, end = 9.dp),
-        verticalAlignment = Alignment.CenterVertically,
-    ) {
-        Icon(
-            imageVector = Icons.Outlined.LocalFireDepartment,
-            contentDescription = "기간 아이콘",
-            tint = Color.White,
-            modifier = Modifier.size(20.dp)
-        )
-        SaiText(
-            text = "~$endDateStr",
-            style = TextStyle(
-                color = Color.White,
-                fontWeight = FontWeight.Medium,
-                fontSize = 12.sp
-            )
-        )
-    }
-}
-
-/**
- * 종료된 챌린지를 표시하는 배지
- */
-@Composable
-private fun EndedBadge(modifier: Modifier = Modifier) {
-    Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFF37393C))
-            .padding(horizontal = 9.dp, vertical = 6.dp),
-    ) {
-        SaiText(
-            text = "챌린지 종료",
-            style = TextStyle(color = Color.White, fontSize = 12.sp),
-            fontWeight = FontWeight.Medium
         )
     }
 }

@@ -38,7 +38,6 @@ fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
                 challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
                 isEventActive = isEventActive,
                 reward = reward,
-                themeList = themeNames,
             )
         }
     }

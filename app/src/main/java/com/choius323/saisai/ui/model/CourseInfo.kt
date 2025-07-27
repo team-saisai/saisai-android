@@ -11,7 +11,6 @@ data class CourseInfo(
     val distance: String,
     val difficulty: String,
     val challengerCount: Int,
-    val themes: List<String> = emptyList(),
     val completedCount: Int = 0,
 ) {
     companion object {
@@ -21,7 +20,6 @@ data class CourseInfo(
             endDate = LocalDate.of(2025, 7, 18),
             distance = "8.6km",
             difficulty = "하",
-            themes = listOf("테마 1", "테마 2"),
             challengerCount = 207,
             completedCount = 412,
             startPlace = "여의대로",

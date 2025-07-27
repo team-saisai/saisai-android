@@ -6,10 +6,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -45,10 +43,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.R
+import com.choius323.saisai.ui.component.ChallengeStatusBadge
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
-import com.choius323.saisai.ui.screen.course.ChallengeStatusBadge
-import com.choius323.saisai.ui.screen.home.EventBadge
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
@@ -74,16 +71,11 @@ fun CourseDetailDescription(
     }
 
     Column(modifier) {
-        Row(
-            Modifier
-                .height(IntrinsicSize.Min)
-                .padding(start = 12.dp),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.spacedBy(5.dp)
-        ) {
-            ChallengeStatusBadge(LocalDate.of(2025, 9, 30))
-            EventBadge(Modifier.fillMaxHeight())
-        }
+        ChallengeStatusBadge(
+            LocalDate.of(2025, 9, 30),
+            isEvent = true,
+            modifier = Modifier.padding(start = 12.dp)
+        )
         Spacer(Modifier.height(8.dp))
         Column(
             modifier = Modifier
@@ -98,9 +90,7 @@ fun CourseDetailDescription(
             ) {
                 Column(modifier = Modifier) {
                     CourseInfoSection(detail)
-                    Spacer(modifier = Modifier.height(6.dp))
-                    ThemeTagsSection(listOf("테마1", "테마2"))
-                    Spacer(modifier = Modifier.height(18.dp))
+                    Spacer(modifier = Modifier.height(20.dp))
                     ParticipantInfoSection(detail.inProgressUserCount, detail.completeUserCount)
                 }
                 Spacer(modifier = Modifier.weight(1f))

@@ -16,7 +16,6 @@ data class CourseListItem(
     val challengeEndedAt: LocalDate,
     val isEventActive: Boolean,
     val reward: Int,
-    val themeList: List<String>,
 ) {
     companion object {
         val dummyItem1 = CourseListItem(
@@ -33,7 +32,6 @@ data class CourseListItem(
             challengeEndedAt = LocalDate.now().minusDays(3),
             isEventActive = true,
             reward = 1000,
-            themeList = listOf("공원", "강변"),
         )
         val dummyItem2 = CourseListItem(
             courseId = 813,
@@ -49,7 +47,6 @@ data class CourseListItem(
             challengeEndedAt = LocalDate.now().plusDays(33),
             isEventActive = false,
             reward = 0,
-            themeList = listOf("야경"),
         )
         val dummyItem3 = CourseListItem(
             courseId = 13,
@@ -65,7 +62,6 @@ data class CourseListItem(
             challengeEndedAt = LocalDate.now().plusDays(7),
             isEventActive = true,
             reward = 500,
-            themeList = listOf("해변", "도시"),
         )
         val dummyItem4 = CourseListItem(
             courseId = 234,
@@ -81,7 +77,6 @@ data class CourseListItem(
             challengeEndedAt = LocalDate.now().plusDays(10),
             isEventActive = false,
             reward = 0,
-            themeList = listOf("공원"),
         )
     }
 }

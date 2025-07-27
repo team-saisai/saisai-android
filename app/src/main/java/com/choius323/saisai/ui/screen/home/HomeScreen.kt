@@ -29,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.choius323.saisai.ui.component.CourseListItemVertical
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.BadgeInfo
@@ -163,7 +164,8 @@ fun HomeScreenContent(
                         distance = courseInfo.distance,
                         level = courseInfo.level,
                         participantCount = 125,
-                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) }
+                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
+                        endDate = courseInfo.challengeEndedAt
                     )
                 }
             }

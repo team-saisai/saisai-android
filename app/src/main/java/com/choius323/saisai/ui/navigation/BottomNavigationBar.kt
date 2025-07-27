@@ -12,10 +12,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.choius323.saisai.ui.theme.SaiColor
 
 @Composable
 fun BottomNavigationBar(
@@ -66,11 +66,11 @@ fun BottomNavigationBar(
                     Icon(
                         painter = painterResource(screen.iconRes),
                         contentDescription = screen.name,
-                        tint = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
+                        tint = if (isSelected) SaiColor.White else MaterialTheme.colorScheme.onSurface
                     )
                     Text(
                         screen::class.simpleName ?: "",
-                        color = if (isSelected) Color.White else MaterialTheme.colorScheme.onSurface
+                        color = if (isSelected) SaiColor.White else MaterialTheme.colorScheme.onSurface
                     )
                 }
             }

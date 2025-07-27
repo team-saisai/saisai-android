@@ -19,7 +19,6 @@ import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.Size
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Outline
 import androidx.compose.ui.graphics.Path
 import androidx.compose.ui.graphics.Shape
@@ -29,6 +28,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Density
 import androidx.compose.ui.unit.LayoutDirection
 import com.choius323.saisai.R
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import kotlin.math.atan
 import kotlin.math.tan
@@ -60,7 +60,7 @@ fun CourseDetailDescriptionBottomButton(
         Icon(
             painter = painterResource(R.drawable.icon_arrow_down),
             contentDescription = if (expanded) "접기" else "펼치기",
-            tint = Color.White,
+            tint = SaiColor.White,
             modifier = Modifier.rotate(if (expanded) 180f else 0f)
         )
     }

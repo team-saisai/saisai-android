@@ -25,6 +25,7 @@ object SaiColor {
     val Gray60 = Color(0xFF676D72)
     val Gray70 = Color(0xFF51565B)
     val Gray80 = Color(0xFF34383C)
+    val Gray85 = Color(0xFF202326)
     val Gray90 = Color(0xFF1D2023)
     val Gray100 = Color(0xFF000000)
     val Black = Gray100
@@ -32,7 +33,7 @@ object SaiColor {
     // Brand
     val Lime = Color(0xFFC9FF66)
     val Purple = Color(0xFF573BF5)
-    val LitePurple = Color(0xFF8069FD)
+    val LightPurple = Color(0xFF8069FD)
 
     // System Colors
     val SystemRed = Color(0xFFFF5252)

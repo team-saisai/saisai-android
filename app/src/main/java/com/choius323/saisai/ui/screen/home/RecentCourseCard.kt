@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.RecentCourse
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -86,14 +87,15 @@ fun RecentCourseCard(
             // "최근 코스" 타이틀
             SaiText(
                 text = "최근 코스",
-                color = Color.Gray,
+                color = SaiColor.Gray40,
                 fontSize = 12.sp,
+                fontWeight = FontWeight.W500
             )
             SaiText(
                 text = recentCourse.courseName,
-                color = Color.White,
-                fontSize = 20.sp,
-                fontWeight = FontWeight.SemiBold
+                color = SaiColor.White,
+                fontSize = 18.sp,
+                fontWeight = FontWeight.W500
             )
             Spacer(modifier = Modifier.height(30.dp))
 
@@ -101,7 +103,7 @@ fun RecentCourseCard(
             Column {
                 SaiText(
                     text = recentCourse.recentDateAt.format(DateTimeFormatter.ofPattern("yyyy.MM.dd")),
-                    color = Color(0xFF51565B),
+                    color = SaiColor.Gray70,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                 )
@@ -112,7 +114,7 @@ fun RecentCourseCard(
                         }
                         withStyle(
                             style = SpanStyle(
-                                color = Color(0xFFC9FF66),
+                                color = SaiColor.Lime,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -124,7 +126,7 @@ fun RecentCourseCard(
                         }
                         withStyle(
                             style = SpanStyle(
-                                color = Color(0xFFC9FF66),
+                                color = SaiColor.Lime,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.Bold
                             )
@@ -145,12 +147,12 @@ fun RecentCourseCard(
                 .padding(end = 12.dp, bottom = 18.dp),
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = Color(0xFF573BF5)
+                containerColor = SaiColor.Purple
             )
         ) {
             Text(
                 text = if (isCompleted) "다시 도전하기" else "이어하기",
-                color = Color.White,
+                color = SaiColor.White,
                 fontWeight = FontWeight.Bold,
                 fontSize = 12.sp,
             )

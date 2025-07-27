@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 
 @Composable
@@ -43,12 +44,11 @@ fun RecordStateDescription(
     modifier: Modifier = Modifier,
 ) {
     val courseDetail = remember { uiState.courseDetail }
-    val green = remember { Color(0xFFC9FF66) }
     if (courseDetail == null) return
     val distance by remember(uiState.totalRideDistance) {
         derivedStateOf {
             buildAnnotatedString {
-                withStyle(SpanStyle(color = green)) {
+                withStyle(SpanStyle(color = SaiColor.Lime)) {
                     append("${uiState.totalRideDistance}")
                 }
                 append(" / ${courseDetail.distance}km")
@@ -76,13 +76,13 @@ fun RecordStateDescription(
                     .fillMaxWidth()
                     .height(5.dp)
                     .clip(CircleShape)
-                    .background(Color(0xE642464A))
+                    .background(Color(0xFF42464A).copy(alpha = 0.9f))
             ) {
                 Box(
                     Modifier
                         .fillMaxWidth((uiState.totalRideDistance / courseDetail.distance).toFloat())
                         .fillMaxHeight()
-                        .background(green)
+                        .background(SaiColor.Lime)
                 )
             }
             Spacer(Modifier.height(20.dp))

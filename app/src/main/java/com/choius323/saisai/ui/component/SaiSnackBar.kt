@@ -14,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.choius323.saisai.ui.theme.SaiColor
 
 @Composable
 fun SaiSnackBar(
@@ -25,7 +26,7 @@ fun SaiSnackBar(
         modifier = Modifier
             .fillMaxWidth()
             .background(
-                color = Color.Gray,
+                color = SaiColor.Gray40,
                 shape = RoundedCornerShape(size = 12.dp)
             )
             .padding(12.dp)
@@ -42,7 +43,7 @@ fun SaiSnackBar(
         SaiText(
             text = messageTxt,
             style = MaterialTheme.typography.bodyMedium.copy(
-                color = Color.Black
+                color = SaiColor.Black
             )
         )
     }

@@ -7,14 +7,15 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import com.choius323.saisai.ui.theme.SaiColor
+import com.choius323.saisai.ui.theme.SaiOpacity
 
 @Composable
 fun FullScreenLoading(modifier: Modifier = Modifier) {
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(Color.Black.copy(alpha = 0.5f)),
+            .background(SaiColor.Black.copy(alpha = SaiOpacity.Medium)),
         contentAlignment = Alignment.Center
     ) {
         CircularProgressIndicator()

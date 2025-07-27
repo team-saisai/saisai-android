@@ -37,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -73,7 +74,7 @@ fun RideCompleteDialog(
                 Modifier
                     .clip(RoundedCornerShape(20.dp))
                     .width(IntrinsicSize.Min)
-                    .background(Color(0xFF1D2023)),
+                    .background(SaiColor.Gray90),
             ) {
                 AsyncImage(
                     modifier = Modifier
@@ -89,13 +90,14 @@ fun RideCompleteDialog(
                 goHome,
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0x14FFFFFF),
-                    contentColor = Color.White
+                    contentColor = SaiColor.White
                 )
             ) {
                 SaiText("홈으로 이동하기", fontSize = 16.sp)
             }
         }
     }
+    // TODO: 뒤로가기 이벤트에 goCourseDetail 등록
 }
 
 @Composable
@@ -103,12 +105,11 @@ private fun RideCompleteDescription(
     courseName: String,
     distance: Double,
     time: Long,
-    shareResult: () -> Unit = {},
     modifier: Modifier = Modifier,
 ) {
     Row(
         modifier
-            .background(Color(0xFF1D2023))
+            .background(SaiColor.Gray90)
             .fillMaxWidth()
             .padding(top = 19.dp, bottom = 28.dp, start = 20.dp, end = 20.dp),
         verticalAlignment = Alignment.Bottom,
@@ -118,7 +119,7 @@ private fun RideCompleteDescription(
             Row(verticalAlignment = Alignment.CenterVertically) {
                 SaiText(
                     "총 ${String.format(Locale.KOREA, "%.1f", distance)}km",
-                    color = Color(0xFF9BA0A5),
+                    color = SaiColor.Gray40,
                     fontSize = 14.sp
                 )
                 Spacer(Modifier.width(7.dp))
@@ -131,7 +132,7 @@ private fun RideCompleteDescription(
             "SNS 공유",
             Modifier
                 .size(24.dp)
-                .clickable(onClick = shareResult, onClickLabel = "SNS 공유")
+                .clickable(onClick = {/* TODO: SNS 공유*/ }, onClickLabel = "SNS 공유")
         )
     }
 }
@@ -150,7 +151,7 @@ private fun TimeText(
             String.format(Locale.KOREA, "%02d:%02d:%02d", hours, minutes, seconds)
         }
     }
-    SaiText(timeFormatted, color = Color(0xFF8069FD), fontSize = 14.sp, modifier = modifier)
+    SaiText(timeFormatted, color = SaiColor.LightPurple, fontSize = 14.sp, modifier = modifier)
 }
 
 @Preview(showBackground = true)

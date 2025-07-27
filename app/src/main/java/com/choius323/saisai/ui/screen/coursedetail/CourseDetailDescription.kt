@@ -46,6 +46,7 @@ import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.ChallengeStatusBadge
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
@@ -104,7 +105,7 @@ fun CourseDetailDescription(
                         modifier = Modifier,
                         onClick = onChallengeClick
                     )
-                    SaiText(time, color = Color(0xFFC9FF66))
+                    SaiText(time, color = SaiColor.Lime)
                 }
             }
             if (expanded) {
@@ -141,7 +142,7 @@ private fun CourseInfoSection(detail: CourseDetail) {
                 }
             },
             fontSize = 12.sp,
-            color = Color.Gray
+            color = SaiColor.Gray40
         )
     }
 }
@@ -211,7 +212,7 @@ private fun ChallengeButton(
     Column(
         modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFFC9FF66))
+            .background(SaiColor.Lime)
             .padding(vertical = 12.dp, horizontal = 5.5.dp)
             .clickable(onClick = onClick),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -219,12 +220,12 @@ private fun ChallengeButton(
         Icon(
             imageVector = Icons.AutoMirrored.Default.DirectionsBike,
             contentDescription = "도전하기 아이콘",
-            tint = Color.Black
+            tint = SaiColor.Black
         )
         Spacer(modifier = Modifier.height(4.dp))
         SaiText(
             text = "도전하기", style = MaterialTheme.typography.labelMedium.copy(
-                color = Color.Black, fontWeight = FontWeight.SemiBold
+                color = SaiColor.Black, fontWeight = FontWeight.SemiBold
             )
         )
     }

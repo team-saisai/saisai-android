@@ -12,7 +12,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -30,6 +29,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.coroutineScope
+import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
@@ -157,7 +157,7 @@ fun RecordScreen(
         }
     }
     if (uiState.isLoading) {
-        CircularProgressIndicator(modifier.fillMaxSize())
+        FullScreenLoading()
     }
 }
 

@@ -32,6 +32,7 @@ import com.choius323.saisai.ui.screen.map.drawRoute
 import com.choius323.saisai.ui.screen.map.moveCamera
 import com.choius323.saisai.ui.screen.map.rememberMapView
 import com.choius323.saisai.ui.screen.map.updateMapData
+import com.choius323.saisai.ui.theme.SaiColor
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapView
@@ -64,7 +65,7 @@ fun RecordMapSection(
                     .align(Alignment.TopEnd)
                     .offset(x = (-8).dp, y = 24.dp)
                     .size(24.dp)
-                    .background(Color.Black)
+                    .background(SaiColor.Black)
                     .clip(CircleShape)
                     .clickable(
                         onClick = {
@@ -97,7 +98,7 @@ private fun RecordMapSetting(
         updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
         if (uiState.isRecording) {
-            kakaoMap.drawRoute(latLngList, Color(0xFFC9FF66).toArgb())
+            kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
         } else {
             kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
         }

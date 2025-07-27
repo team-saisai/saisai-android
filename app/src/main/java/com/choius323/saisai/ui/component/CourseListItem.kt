@@ -39,6 +39,7 @@ import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.screen.course.ParticipantRewardInfo
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
@@ -166,7 +167,7 @@ private fun TitleSection(
                     }
                 },
                 fontSize = 12.sp,
-                color = Color.Gray,
+                color = SaiColor.Gray40,
             )
         }
         Icon(

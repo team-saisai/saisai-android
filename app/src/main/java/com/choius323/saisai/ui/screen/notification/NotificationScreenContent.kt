@@ -33,6 +33,7 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.Notification
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
@@ -101,7 +102,7 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
                     SaiText(
                         text = notification.date.format(DateTimeFormatter.ofPattern("yyyy. MM. dd")),
                         fontSize = 12.sp,
-                        color = Color(0xFF51565B)
+                        color = SaiColor.Gray70
                     )
                     Spacer(modifier = Modifier.height(4.dp))
                     SaiText(
@@ -117,14 +118,14 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
                     Box(
                         modifier = Modifier
                             .size(6.dp)
-                            .background(Color(0xFFC9FF66), CircleShape)
+                            .background(SaiColor.Lime, CircleShape)
                     )
                 } else {
                     Spacer(modifier = Modifier.width(8.dp))
                 }
                 Spacer(Modifier.width(22.dp))
             }
-            HorizontalDivider(thickness = 1.dp, color = Color(0xFF34383C))
+            HorizontalDivider(thickness = 1.dp, color = SaiColor.Gray80)
         }
     }
 }

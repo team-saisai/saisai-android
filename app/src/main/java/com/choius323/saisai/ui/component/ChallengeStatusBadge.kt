@@ -23,6 +23,7 @@ import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.util.DateTimeFormat
 import org.threeten.bp.LocalDate
 
@@ -69,13 +70,13 @@ private fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
         Icon(
             imageVector = Icons.Outlined.LocalFireDepartment,
             contentDescription = "기간 아이콘",
-            tint = Color.Companion.White,
+            tint = SaiColor.White,
             modifier = Modifier.Companion.size(20.dp)
         )
         SaiText(
             text = "~$endDateStr",
             style = TextStyle(
-                color = Color.Companion.White,
+                color = SaiColor.White,
                 fontWeight = FontWeight.Companion.Medium,
                 fontSize = 12.sp
             )
@@ -96,7 +97,7 @@ private fun EndedBadge(modifier: Modifier = Modifier) {
     ) {
         SaiText(
             text = "챌린지 종료",
-            style = TextStyle(color = Color.White, fontSize = 12.sp),
+            style = TextStyle(color = SaiColor.White, fontSize = 12.sp),
             fontWeight = FontWeight.Medium
         )
     }
@@ -107,14 +108,14 @@ private fun EventBadge(modifier: Modifier = Modifier) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFF8069FD))
+            .background(SaiColor.LightPurple)
             .padding(horizontal = 6.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         SaiText(
             text = "이벤트",
             style = TextStyle(
-                color = Color.White,
+                color = SaiColor.White,
                 fontWeight = FontWeight.Medium,
                 fontSize = 12.sp
             )

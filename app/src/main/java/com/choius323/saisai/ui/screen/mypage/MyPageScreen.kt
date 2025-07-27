@@ -38,6 +38,7 @@ import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.theme.AppTitle
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.ui.theme.Typography
 import kotlinx.coroutines.launch
@@ -83,7 +84,7 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
             modifier = Modifier
                 .size(106.dp)
                 .clip(CircleShape)
-                .border(1.4.dp, Color(0xFF51565B), CircleShape)
+                .border(1.4.dp, SaiColor.Gray70, CircleShape)
                 .background(Color.Transparent),
             contentAlignment = Alignment.Center
         ) {
@@ -91,7 +92,7 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
                 painter = painterResource(id = R.drawable.icon_user_mono),
                 contentDescription = "Profile Image",
                 modifier = Modifier.size(44.dp),
-                tint = Color(0xFF34383C)
+                tint = SaiColor.Gray80
             )
         }
         Spacer(Modifier.height(22.dp))
@@ -105,7 +106,7 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
                 imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
                 contentDescription = "Edit Profile",
                 modifier = Modifier.size(24.dp),
-                tint = Color.White
+                tint = SaiColor.White
             )
         }
 
@@ -113,7 +114,7 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
         SaiText(
             text = email,
             fontSize = 14.sp,
-            color = Color(0xFF9BA0A5),
+            color = SaiColor.Gray40,
             fontWeight = FontWeight.W300
         )
     }
@@ -142,15 +143,15 @@ private fun AchievementItem(value: String, type: String, modifier: Modifier = Mo
         Box(
             modifier = Modifier
                 .size(44.dp)
-                .border(width = 1.dp, color = Color(0xFF51565B), shape = CircleShape)
+                .border(width = 1.dp, color = SaiColor.Gray70, shape = CircleShape)
         )
         SaiText(
             text = buildAnnotatedString {
-                withStyle(SpanStyle(Color(0xFFC9FF66))) {
+                withStyle(SpanStyle(SaiColor.Lime)) {
                     append("$value ")
                 }
                 append(type)
-            }, fontSize = 14.sp, fontWeight = FontWeight.Normal, color = Color.White
+            }, fontSize = 14.sp, fontWeight = FontWeight.Normal, color = SaiColor.White
         )
     }
 }
@@ -182,12 +183,12 @@ private fun MenuItem(text: String, modifier: Modifier = Modifier, onClick: () ->
             .padding(start = 12.dp, end = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        SaiText(text = text, fontSize = 15.sp, color = Color.White, fontWeight = FontWeight.W400)
+        SaiText(text = text, fontSize = 15.sp, color = SaiColor.White, fontWeight = FontWeight.W400)
         Spacer(modifier = Modifier.weight(1f))
         Icon(
             imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
             contentDescription = "$text 메뉴",
-            tint = Color.White,
+            tint = SaiColor.White,
             modifier = Modifier.size(24.dp)
         )
     }

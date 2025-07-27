@@ -25,7 +25,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
@@ -34,6 +33,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.choius323.saisai.ui.component.ComposableLifecycle
 import com.choius323.saisai.ui.component.HandlePermissionActions
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.util.locationPermissions
 import com.choius323.saisai.util.postNotificationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
@@ -135,7 +135,7 @@ private fun MapScreen(
     LaunchedEffect(kakaoMap, uiState.route) {
         updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
-        kakaoMap.drawRoute(latLngList, Color(0xFFC9FF66).toArgb())
+        kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
         kakaoMap.moveCamera(latLngList)
     }
     LaunchedEffect(uiState.nowLatLng) {
@@ -165,7 +165,7 @@ private fun MapScreen(
                     .align(Alignment.TopEnd)
                     .offset(x = (-8).dp, y = 24.dp)
                     .size(24.dp)
-                    .background(Color.Black)
+                    .background(SaiColor.Black)
                     .clip(CircleShape)
                     .clickable(onClick = {
                         onEvent(

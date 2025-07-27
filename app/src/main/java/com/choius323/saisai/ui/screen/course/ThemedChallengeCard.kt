@@ -36,6 +36,7 @@ import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.ChallengeStatusBadge
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseInfo
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.threeten.bp.LocalDate
@@ -130,12 +131,12 @@ fun ThemeTags(themes: List<String>, modifier: Modifier = Modifier) {
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(4.dp))
-                    .background(Color(0xFF34383C))
+                    .background(SaiColor.Gray80)
                     .padding(horizontal = 10.dp, vertical = 6.dp)
             ) {
                 SaiText(
                     text = theme,
-                    color = Color.White,
+                    color = SaiColor.White,
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal
                 )

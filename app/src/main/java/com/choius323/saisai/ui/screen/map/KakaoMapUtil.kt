@@ -1,9 +1,9 @@
 package com.choius323.saisai.ui.screen.map
 
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.model.GpxPoint
+import com.choius323.saisai.ui.theme.SaiColor
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraAnimation
@@ -23,7 +23,7 @@ fun updateMapData(map: KakaoMap?, route: List<GpxPoint>) {
     map.moveCamera(latLngList)
 }
 
-fun KakaoMap?.drawRoute(route: List<LatLng>, color: Int = Color(0xFFC9FF66).toArgb()) {
+fun KakaoMap?.drawRoute(route: List<LatLng>, color: Int = SaiColor.Lime.toArgb()) {
     val layer = this?.routeLineManager?.layer ?: return
     if (route.size < 2) return
     layer.removeAll()
@@ -48,7 +48,7 @@ fun KakaoMap?.drawRideRoute(route: List<GpxPoint>, startIndex: Int, endIndex: In
 }
 
 @JvmName("drawRouteWithGpxPoints")
-fun KakaoMap?.drawRoute(route: List<GpxPoint>, color: Int = Color(0xFFC9FF66).toArgb()) {
+fun KakaoMap?.drawRoute(route: List<GpxPoint>, color: Int = SaiColor.Lime.toArgb()) {
     drawRoute(route.map(GpxPoint::toLatLng), color)
 }
 
@@ -95,6 +95,6 @@ private val endStyle: LabelStyles =
     LabelStyles.from(END_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
 private val directionStyle: LabelStyles =
     LabelStyles.from(DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_direction_label))
-private val rideLineStyle = RouteLineStyle.from(LINE_WIDTH, Color(0xFFC9FF66).toArgb())
+private val rideLineStyle = RouteLineStyle.from(LINE_WIDTH, SaiColor.Lime.toArgb())
 
 private const val LINE_WIDTH = 20f

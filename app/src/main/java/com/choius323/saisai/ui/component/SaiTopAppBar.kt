@@ -3,12 +3,11 @@ package com.choius323.saisai.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
@@ -64,20 +63,24 @@ private fun SaiTopAppBar(
 ) {
     Box(
         modifier
-            .padding(vertical = 18.dp, horizontal = 22.dp)
-            .height(IntrinsicSize.Min)
+            .fillMaxWidth()
+            .height(60.dp)
             .background(Color.Transparent),
+        contentAlignment = Alignment.Center
     ) {
         Box(Modifier.align(Alignment.Center)) {
             title()
         }
         Row(
-            Modifier.fillMaxWidth(),
+            Modifier
+                .fillMaxWidth()
+                .align(Alignment.Center),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
         ) {
             navigationIcon()
-            Row(horizontalArrangement = Arrangement.End) {
+            Spacer(Modifier.weight(1f))
+            Row {
                 actions()
             }
         }

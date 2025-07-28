@@ -6,5 +6,5 @@ import kotlinx.serialization.Serializable
 data class UserBadgeDto(
     val userBadgeId: Long,
     val badgeName: String,
-    val badgeImageUrl: String,
+    val badgeImageUrl: String? = null,
 )

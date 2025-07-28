@@ -1,5 +1,6 @@
 package com.choius323.saisai.data.course.remote
 
+import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
 import com.choius323.saisai.data.course.remote.model.PauseRideDto

@@ -2,16 +2,18 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.account.AccountLocalDataSource
 import com.choius323.saisai.data.account.AccountRemoteDataSource
-import com.choius323.saisai.data.course.remote.model.UserBadge
 import com.choius323.saisai.ui.model.AccountToken
+import com.choius323.saisai.ui.model.UserBadge
+import com.choius323.saisai.ui.model.UserBadgeDetail
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
 
 interface AccountRepository {
     suspend fun login(email: String, password: String): Flow<Result<AccountToken>>
     suspend fun reissueToken(): Flow<Result<AccountToken>>
-    suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadge>>
+    suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadgeDetail>>
     suspend fun getUserInfo(): Flow<Result<String>>
+    suspend fun getUserBadgeList(): Flow<Result<List<UserBadge>>>
 }
 
 class AccountRepositoryImpl(
@@ -37,10 +39,10 @@ class AccountRepositoryImpl(
             }
         }
 
-    override suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadge>> =
+    override suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadgeDetail>> =
         accountRemoteDataSource.getUserBadgeDetail(userBadgeId).map { result ->
             result.mapCatching { responseDto ->
-                responseDto.data.toUserBadge()
+                responseDto.data.toUserBadgeDetail()
             }
         }
 
@@ -48,6 +50,13 @@ class AccountRepositoryImpl(
         accountRemoteDataSource.getUserInfo().map { result ->
             result.mapCatching { responseDto ->
                 responseDto.data.nickname
+            }
+        }
+
+    override suspend fun getUserBadgeList(): Flow<Result<List<UserBadge>>> =
+        accountRemoteDataSource.getUserBadgeList().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toUserBadgeList()
             }
         }
 }

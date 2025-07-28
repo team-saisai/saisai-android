@@ -1,8 +1,8 @@
 package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.local.CourseLocalDataSource
-import com.choius323.saisai.data.course.remote.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
+import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CoursePage

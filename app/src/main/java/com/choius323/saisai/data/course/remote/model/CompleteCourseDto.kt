@@ -1,4 +1,4 @@
-package com.choius323.saisai.data.course.remote
+package com.choius323.saisai.data.course.remote.model
 
 data class CompleteCourseDto(
     val duration: Long,

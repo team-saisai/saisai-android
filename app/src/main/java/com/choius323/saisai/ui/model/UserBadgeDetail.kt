@@ -1,10 +1,10 @@
-package com.choius323.saisai.data.course.remote.model
+package com.choius323.saisai.ui.model
 
 import org.threeten.bp.LocalDate
 
-data class UserBadge(
+data class UserBadgeDetail(
     val name: String,
     val description: String,
-    val imageUrl: String,
+    val imageUrl: String?,
     val acquiredDate: LocalDate,
 )

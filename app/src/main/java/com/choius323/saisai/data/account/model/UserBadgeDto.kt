@@ -4,8 +4,7 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class UserBadgeDto(
+    val userBadgeId: Long,
     val badgeName: String,
-    val badgeDescription: String,
-    val badgeImage: String,
-    val acquiredAt: String,
+    val badgeImageUrl: String,
 )

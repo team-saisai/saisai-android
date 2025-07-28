@@ -1,7 +1,6 @@
 package com.choius323.saisai.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
@@ -43,7 +42,7 @@ fun MainNavController(
         }
         composable<MainNavItem.Record> { backStackEntry ->
             RecordScreen(
-                modifier.fillMaxSize(),
+                Modifier.fillMaxSize(),
                 goHome = {
                     navController.navigate(MainNavItem.BottomNavItem.Home) {
                         popUpTo(MainNavItem.BottomNavItem.Home) { inclusive = true }
@@ -63,9 +62,7 @@ fun MainNavController(
         }
         composable<MainNavItem.CourseDetail> { backStackEntry ->
             CourseDetailScreen(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .statusBarsPadding(),
+                modifier = Modifier.fillMaxSize(),
                 goRecordScreen = { navController.navigate(MainNavItem.Record(it)) },
                 goBack = { navController.upPress() }
             )

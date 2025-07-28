@@ -1,6 +1,7 @@
 package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.course.local.CourseLocalDataSource
+import com.choius323.saisai.data.course.remote.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.ui.model.CourseDetail
@@ -13,7 +14,6 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
-import java.io.File
 
 interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
@@ -31,7 +31,7 @@ interface CourseRepository {
     ): Flow<Result<CoursePage>>
 
     suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double, image: File?,
+        rideId: Long, duration: Long, distance: Double,
     ): Flow<Result<Unit>>
 }
 
@@ -81,9 +81,10 @@ class CourseRepositoryImpl(
         }.flowOn(ioDispatcher)
 
     override suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double, image: File?,
+        rideId: Long, duration: Long, distance: Double,
     ): Flow<Result<Unit>> =
-        courseRemoteDataSource.completeCourse(rideId, duration, distance, image).map { result ->
+        courseRemoteDataSource.completeCourse(rideId, CompleteCourseDto(duration, distance))
+            .map { result ->
             result.mapCatching { responseDto -> responseDto.data }
         }.flowOn(ioDispatcher)
 

@@ -36,7 +36,7 @@ class RecordViewModel(
                         )
                     }
                 }.onFailure {
-                    reduce { state.copy(error = it.message, isLoading = false) }
+                    reduce { state.copy(isLoading = false) }
                     postSideEffect(RecordSideEffect.ShowToast("코스 정보를 가져오는데 실패했습니다."))
                 }
             }
@@ -47,6 +47,8 @@ class RecordViewModel(
         is RecordUiEvent.ClickedStart -> clickStart(event)
         is RecordUiEvent.SetNowLatLng -> setNowLatLng(event)
         is RecordUiEvent.StartRecording -> startRecording(event)
+        RecordUiEvent.StopRecording -> stopRecording()
+        RecordUiEvent.ResumeRecording -> resumeRecording()
         is RecordUiEvent.SetPermissionGranted -> intent {
             reduce { state.copy(permissionGranted = event.isGranted) }
         }
@@ -62,6 +64,7 @@ class RecordViewModel(
         is RecordUiEvent.SetCameraTracking -> intent {
             reduce { state.copy(isCameraTracking = event.isCameraTracking) }
         }
+
 
     }
 
@@ -119,22 +122,21 @@ class RecordViewModel(
                 )
             }
             if (rideSnapshot.segmentIndex == state.courseDetail?.gpxPointList?.lastIndex) {
-                endRecording()
+                completeRecording()
             }
         } else {
-            reduce { state.copy(error = "코스 추적에 실패했습니다.") }
+            postSideEffect(RecordSideEffect.ShowToast("코스 추적에 실패했습니다."))
         }
     }
 
-    private fun endRecording() = intent {
+    private fun completeRecording() = intent {
         delay(300)
         val courseDetail = state.courseDetail ?: return@intent
         reduce { state.copy(isLoading = true) }
         courseRepository.completeCourse(
             courseDetail.courseId,
             System.currentTimeMillis() - state.startTime,
-            state.totalRideDistance,
-            null
+            state.totalRideDistance
         ).collectLatest { result ->
             result.onSuccess {
                 reduce {
@@ -151,8 +153,16 @@ class RecordViewModel(
                         isLoading = false,
                     )
                 }
-                postSideEffect(RecordSideEffect.ShowToast(it.message ?: "코스 추적에 실패했습니다."))
+                postSideEffect(RecordSideEffect.ShowToast(it.message ?: "완주 정보를 서버에 보내지 못했습니다."))
             }
         }
+    }
+
+    private fun stopRecording() = intent {
+        //TODO: 로직 추가
+    }
+
+    private fun resumeRecording() = intent {
+        //TODO: 로직 추가
     }
 }

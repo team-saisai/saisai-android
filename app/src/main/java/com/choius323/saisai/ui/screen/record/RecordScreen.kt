@@ -58,6 +58,7 @@ fun RecordScreen(
     goCourseDetail: (Long) -> Unit,
     onBack: () -> Unit,
 ) {
+    ChangeStatusBarIconsColor()
     val context = LocalContext.current
     ProvideAppBar(
         navigationIcon = {

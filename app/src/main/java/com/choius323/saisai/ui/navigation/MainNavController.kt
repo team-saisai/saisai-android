@@ -8,10 +8,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.choius323.saisai.ui.screen.course.CourseScreen
-import com.choius323.saisai.ui.screen.coursedetail.CourseDetailScreen
+import com.choius323.saisai.ui.screen.course_detail.CourseDetailScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
 import com.choius323.saisai.ui.screen.login.LoginScreen
-import com.choius323.saisai.ui.screen.mypage.MyPageScreen
+import com.choius323.saisai.ui.screen.my_page.MyPageScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
 
 @Stable

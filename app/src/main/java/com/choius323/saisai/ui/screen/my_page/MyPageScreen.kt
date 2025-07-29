@@ -1,4 +1,4 @@
-package com.choius323.saisai.ui.screen.mypage
+package com.choius323.saisai.ui.screen.my_page
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

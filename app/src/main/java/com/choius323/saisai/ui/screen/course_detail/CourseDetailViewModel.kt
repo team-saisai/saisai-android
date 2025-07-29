@@ -1,4 +1,4 @@
-package com.choius323.saisai.ui.screen.coursedetail
+package com.choius323.saisai.ui.screen.course_detail
 
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel

@@ -2,7 +2,7 @@ package com.choius323.saisai.di
 
 import com.choius323.saisai.ui.MainViewModel
 import com.choius323.saisai.ui.screen.course.CourseListViewModel
-import com.choius323.saisai.ui.screen.coursedetail.CourseDetailViewModel
+import com.choius323.saisai.ui.screen.course_detail.CourseDetailViewModel
 import com.choius323.saisai.ui.screen.home.HomeViewModel
 import com.choius323.saisai.ui.screen.login.LoginViewModel
 import com.choius323.saisai.ui.screen.map.MapViewModel

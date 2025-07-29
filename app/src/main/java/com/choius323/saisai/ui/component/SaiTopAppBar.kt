@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.List
@@ -65,6 +66,7 @@ private fun SaiTopAppBar(
         modifier
             .fillMaxWidth()
             .height(60.dp)
+            .padding(start = 24.dp, end = 14.dp)
             .background(Color.Transparent),
         contentAlignment = Alignment.Center
     ) {

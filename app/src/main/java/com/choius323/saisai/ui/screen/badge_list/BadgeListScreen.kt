@@ -1,6 +1,7 @@
 package com.choius323.saisai.ui.screen.badge_list
 
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -32,6 +34,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
@@ -60,11 +63,20 @@ fun BadgeListScreen(
         }
     }
     ProvideAppBar(navigationIcon = {
-        Icon(Icons.AutoMirrored.Default.ArrowBack, null)
+        Icon(
+            Icons.AutoMirrored.Default.ArrowBack,
+            "뒤로 가기",
+            modifier = Modifier
+                .size(24.dp)
+                .clickable(onClick = goBack)
+        )
     }, title = {
         SaiText("나의 뱃지", fontWeight = FontWeight.W500, fontSize = 18.sp)
     })
     BadgeListScreenContent(uiState, modifier, viewModel::onEvent)
+    if (uiState.isLoading) {
+        FullScreenLoading()
+    }
 }
 
 @Composable

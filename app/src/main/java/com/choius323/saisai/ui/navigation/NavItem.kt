@@ -45,4 +45,10 @@ sealed interface MainNavItem : NavItem {
 
     @Serializable
     data class CourseDetail(val courseId: Long) : MainNavItem
+
+    @Serializable
+    data object BadgeList : MainNavItem
+
+    @Serializable
+    data object NotificationList : MainNavItem
 }

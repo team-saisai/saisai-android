@@ -49,6 +49,7 @@ import org.threeten.bp.LocalDate
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
+    goNotificationList: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
     goToDetail: (Long) -> Unit,
 ) {

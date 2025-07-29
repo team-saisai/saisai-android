@@ -8,24 +8,28 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
 import androidx.compose.material.icons.outlined.Notifications
+import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -33,49 +37,104 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.choius323.saisai.R
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.ui.theme.Typography
 import kotlinx.coroutines.launch
+import org.orbitmvi.orbit.compose.collectAsState
+import org.orbitmvi.orbit.compose.collectSideEffect
 import java.text.DecimalFormat
 
 @Composable
-fun MyPageScreen(modifier: Modifier = Modifier) {
+fun MyPageScreen(
+    modifier: Modifier = Modifier,
+    viewModel: MyPageViewModel = viewModel(),
+    goProfile: () -> Unit,
+    goBadgeAchievement: () -> Unit,
+    goSetting: () -> Unit,
+    goNotificationList: () -> Unit,
+    goBookmarkCourses: () -> Unit,
+    goRodeListCourse: () -> Unit,
+    goRewardHistory: () -> Unit,
+) {
+    val uiState by viewModel.collectAsState()
+    val context = LocalContext.current
+    viewModel.collectSideEffect { sideEffect ->
+        when (sideEffect) {
+            is MyPageSideEffect.ShowToast -> {
+                context.SaiToast(sideEffect.message)
+            }
+
+            MyPageSideEffect.GoProfile -> goProfile()
+            MyPageSideEffect.GoBadgeAchievement -> goBadgeAchievement()
+            MyPageSideEffect.GoSetting -> goSetting()
+            MyPageSideEffect.GoNotification -> goNotificationList()
+            MyPageSideEffect.GoBookmarkCourses -> goBookmarkCourses()
+            MyPageSideEffect.GoRodeListCourses -> goRodeListCourse()
+            MyPageSideEffect.GoRewardHistory -> goRewardHistory()
+        }
+    }
     ProvideAppBar(
         navigationIcon = {
             SaiText("Mypage", style = Typography.AppTitle)
         },
         actions = {
-            Icon(Icons.Outlined.Notifications, contentDescription = "Notifications")
+            Icon(
+                Icons.Outlined.Notifications, contentDescription = "Notifications",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(onClick = goNotificationList)
+            )
         }
     )
-    MyPageScreenContent(modifier)
+    MyPageScreenContent(uiState, modifier, viewModel::onEvent)
 }
 
 @Composable
-fun MyPageScreenContent(modifier: Modifier = Modifier) {
+fun MyPageScreenContent(
+    uiState: MyPageUiState,
+    modifier: Modifier = Modifier,
+    onEvent: (MyPageUiEvent) -> Unit,
+) {
     Column(
         modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 25.dp),
+            .padding(horizontal = 25.dp)
+            .verticalScroll(rememberScrollState()),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(36.dp))
-        ProfileSection(nickname = "델라", email = "saisai@naver.com")
-        Spacer(Modifier.height(36.dp))
-        AchievementSection()
+        ProfileSection(nickname = uiState.name, email = uiState.email, onClickProfile = {
+            onEvent(
+                MyPageUiEvent.OnClickProfile
+            )
+        })
+        Spacer(Modifier.height(28.dp))
+        AchievementSection(
+            onEvent = onEvent,
+            rideCount = uiState.rideCount,
+            bookmarkCount = uiState.bookmarkCount,
+            rewardPoint = uiState.rewardPoint,
+            badgeCount = uiState.badgeCount,
+            modifier = Modifier
+        )
         Spacer(Modifier.height(32.dp))
         MenuSection()
     }
 }
 
 @Composable
-private fun ProfileSection(nickname: String, email: String, modifier: Modifier = Modifier) {
+private fun ProfileSection(
+    nickname: String,
+    email: String,
+    modifier: Modifier = Modifier,
+    onClickProfile: () -> Unit,
+) {
     Column(
         modifier = modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -89,7 +148,7 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
             contentAlignment = Alignment.Center
         ) {
             Icon(
-                painter = painterResource(id = R.drawable.icon_user_mono),
+                Icons.Rounded.Person,
                 contentDescription = "Profile Image",
                 modifier = Modifier.size(44.dp),
                 tint = SaiColor.Gray80
@@ -98,7 +157,7 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
         Spacer(Modifier.height(22.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable { /* 프로필 수정 화면으로 이동 */ }
+            modifier = Modifier.clickable(onClick = onClickProfile)
         ) {
             SaiText(text = nickname, fontSize = 24.sp, fontWeight = FontWeight.Medium)
             Spacer(Modifier.size(4.dp))
@@ -121,15 +180,37 @@ private fun ProfileSection(nickname: String, email: String, modifier: Modifier =
 }
 
 @Composable
-private fun AchievementSection(modifier: Modifier = Modifier) {
+private fun AchievementSection(
+    rideCount: Int,
+    bookmarkCount: Int,
+    rewardPoint: Int,
+    badgeCount: Int,
+    modifier: Modifier = Modifier,
+    onEvent: (MyPageUiEvent) -> Unit,
+) {
     Row(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
         horizontalArrangement = Arrangement.SpaceAround,
         verticalAlignment = Alignment.Top
     ) {
-        AchievementItem("132 ", "코스")
-        AchievementItem("24 ", "코스")
-        AchievementItem("${DecimalFormat("#,###").format(1280)} ", "P")
+        AchievementItem(
+            "$rideCount ",
+            "코스",
+            modifier = Modifier.clickable { onEvent(MyPageUiEvent.OnClickRideCourses) })
+        AchievementItem(
+            "$bookmarkCount ",
+            "코스",
+            modifier = Modifier.clickable { onEvent(MyPageUiEvent.OnClickBookmarkCourses) })
+        AchievementItem(
+            "${DecimalFormat("#,###").format(rewardPoint)} ",
+            "P",
+            modifier = Modifier.clickable { onEvent(MyPageUiEvent.OnClickRewardHistory) })
+        AchievementItem(
+            "$badgeCount",
+            " / 9",
+            modifier = Modifier.clickable { onEvent(MyPageUiEvent.OnClickBadgeAchievement) })
     }
 }
 
@@ -198,6 +279,8 @@ private fun MenuItem(text: String, modifier: Modifier = Modifier, onClick: () ->
 @Composable
 private fun MyPageScreenContentPreview() {
     SaiTheme {
-        MyPageScreenContent()
+        Surface {
+            MyPageScreenContent(MyPageUiState(name = "사용자")) {}
+        }
     }
 }

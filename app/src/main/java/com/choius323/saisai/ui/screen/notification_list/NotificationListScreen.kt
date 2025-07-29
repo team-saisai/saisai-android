@@ -1,14 +1,13 @@
-package com.choius323.saisai.ui.screen.notification
+package com.choius323.saisai.ui.screen.notification_list
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.aspectRatio
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -17,7 +16,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -31,22 +33,40 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.Notification
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
-import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
 @Composable
-fun NotificationScreen(
+fun NotificationListScreen(
     modifier: Modifier = Modifier,
+    goBack: () -> Unit = {},
 ) {
-
+    ProvideAppBar(
+        navigationIcon = {
+            Icon(
+                Icons.AutoMirrored.Default.ArrowBackIos,
+                "뒤로 가기",
+                modifier = Modifier
+                    .size(24.dp)
+                    .clickable(onClick = goBack)
+            )
+        }
+    )
+    NotificationListScreenContent(
+        notifications = listOf(
+            Notification.sample1, Notification.sample2, Notification.sample3,
+            Notification.sample4, Notification.sample5, Notification.sample6
+        ),
+        modifier = modifier
+    )
 }
 
 @Composable
-fun NotificationScreenContent(
+fun NotificationListScreenContent(
     notifications: List<Notification>,
     modifier: Modifier = Modifier,
 ) {
@@ -54,9 +74,9 @@ fun NotificationScreenContent(
         modifier = modifier
             .padding(start = 22.dp)
     ) {
-        items(notifications) { noti ->
+        items(notifications) { notification ->
             NotificationItem(
-                notification = noti,
+                notification = notification,
                 modifier = Modifier
             )
         }
@@ -80,9 +100,7 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
             model = notification.imageUrl,
             contentDescription = "알림 이미지",
             modifier = Modifier
-                .fillMaxHeight() // Row의 높이에 맞춥니다.
-                .padding(vertical = 20.dp)
-                .aspectRatio(1f) // 1:1 비율을 유지합니다.
+                .size(42.dp)
                 .clip(CircleShape)
                 .background(Color.LightGray),
             contentScale = ContentScale.Crop
@@ -92,7 +110,7 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
         Column {
             Row(
                 verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.padding(vertical = 20.dp)
+                modifier = Modifier.padding(vertical = 21.dp)
             ) {
                 Column(
                     modifier = Modifier
@@ -109,19 +127,17 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
                         text = notification.content,
                         fontSize = 15.sp,
                         color = MaterialTheme.colorScheme.onSurface,
-                        maxLines = 1,
+                        maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
                 }
-                Spacer(modifier = Modifier.width(16.dp))
                 if (notification.unread) {
+                    Spacer(Modifier.width(16.dp))
                     Box(
                         modifier = Modifier
                             .size(6.dp)
                             .background(SaiColor.Lime, CircleShape)
                     )
-                } else {
-                    Spacer(modifier = Modifier.width(8.dp))
                 }
                 Spacer(Modifier.width(22.dp))
             }
@@ -134,17 +150,13 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
 @Composable
 fun NotificationScreenContentPreview() {
     val sampleNotifications = listOf(
-        Notification(LocalDate.of(2025, 7, 7), null, "새로운 챌린지가 시작되었어요!", false),
-        Notification(LocalDate.of(2025, 7, 7), null, "코스 완주를 축하합니다!!!!! 뱃지를 확인해보세요.", false),
-        Notification(LocalDate.of(2025, 7, 6), null, "주간 랭킹이 갱신되었습니다.", true),
-        Notification(LocalDate.of(2025, 7, 5), null, "친구가 회원님을 팔로우하기 시작했습니다.", true),
-        Notification(LocalDate.of(2025, 7, 4), null, "새로운 이벤트에 참여해보세요!", false),
-        Notification(LocalDate.of(2025, 7, 3), null, "회원님의 기록이 정상적으로 저장되었습니다.", true),
+        Notification.sample1, Notification.sample2, Notification.sample3,
+        Notification.sample4, Notification.sample5, Notification.sample6
     )
 
     SaiTheme {
         Surface {
-            NotificationScreenContent(notifications = sampleNotifications)
+            NotificationListScreenContent(notifications = sampleNotifications)
         }
     }
 }

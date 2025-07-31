@@ -10,6 +10,7 @@ import com.choius323.saisai.usecase.PauseRideUseCase
 import com.choius323.saisai.usecase.ReissueTokenUseCase
 import com.choius323.saisai.usecase.ResumeRideUseCase
 import com.choius323.saisai.usecase.SetRecentRideUseCase
+import com.choius323.saisai.usecase.ToggleBookmarkCourseUseCase
 import org.koin.core.module.dsl.singleOf
 import org.koin.dsl.module
 
@@ -26,4 +27,5 @@ val useCaseModule = module {
     singleOf(::GetUserInfoUseCase)
     singleOf(::ResumeRideUseCase)
     singleOf(::PauseRideUseCase)
+    singleOf(::ToggleBookmarkCourseUseCase)
 }

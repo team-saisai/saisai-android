@@ -1,5 +1,6 @@
 package com.choius323.saisai.data.course.remote
 
+import com.choius323.saisai.data.course.remote.model.BookmarkDto
 import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
@@ -9,6 +10,7 @@ import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.RideIdDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
 import io.ktor.client.request.patch
@@ -27,6 +29,8 @@ interface CourseRemoteDataSource {
     suspend fun getCourseDetail(courseId: Long): Flow<Result<SaiResponseDto<CourseDetailDto>>>
     suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
     suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
+    suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
+    suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
     suspend fun pauseRide(
         rideId: Long,
         pauseRideDto: PauseRideDto,
@@ -80,4 +84,10 @@ class CourseRemoteDataSourceImpl(
         saiFetch(client.patch("rides/$rideId/pause") {
             setBody(pauseRideDto)
         })
+
+    override suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
+        saiFetch(client.post("courses/$courseId/bookmarks"))
+
+    override suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
+        saiFetch(client.delete("courses/$courseId/bookmarks"))
 }

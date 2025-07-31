@@ -23,16 +23,20 @@ class CourseListViewModel(
             postSideEffect(CourseListSideEffect.GoCourseDetail(event.courseId))
         }
 
-        is CourseListUiEvent.LoadMore -> intent {
-            if (state.isLastPage.not() && state.isLoadingMore.not()) {
-                fetchCourseList(true)
-            }
+        is CourseListUiEvent.OnClickCourseType -> intent {
+            reduce { state.copy(selectedCourseType = event.courseType) }
         }
+
+        is CourseListUiEvent.OnClickSortType -> intent {
+            reduce { state.copy(selectedSort = event.sort) }
+        }
+
+        is CourseListUiEvent.LoadMore -> fetchCourseList(true)
     }
 
     private fun fetchCourseList(isLoadMore: Boolean = false) = intent {
         Log.d(TAG, "fetchCourseList isLoadMore: $isLoadMore")
-        if (state.isLoading || state.isLastPage) return@intent
+        if (state.isLoading || state.isLoadingMore || state.isLastPage) return@intent
 
         val nextPage: Int
         if (isLoadMore) {
@@ -60,9 +64,9 @@ class CourseListViewModel(
                     state.copy(
                         isLoading = false,
                         isLoadingMore = false,
-                        error = it.message ?: "Error"
                     )
                 }
+                postSideEffect(CourseListSideEffect.ShowToast(it.message ?: "목록을 불러오지 못했습니다."))
             }
         }
     }

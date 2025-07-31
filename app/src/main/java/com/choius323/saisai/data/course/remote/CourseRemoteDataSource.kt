@@ -45,49 +45,53 @@ class CourseRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : CourseRemoteDataSource {
     override suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>> =
-        saiFetch(client.get("my/rides"))
+        saiFetch { client.get("my/rides") }
 
     override suspend fun getAllCourses(
         page: Int,
         status: String?,
-    ): Flow<Result<SaiResponseDto<CourseDataDto>>> = saiFetch(client.get("courses") {
-        parameter("page", "$page")
-        if (status != null) parameter("status", status)
-    })
+    ): Flow<Result<SaiResponseDto<CourseDataDto>>> = saiFetch {
+        client.get("courses") {
+            parameter("page", "$page")
+            if (status != null) parameter("status", status)
+        }
+    }
 
     override suspend fun getCourseDetail(
         courseId: Long,
-    ): Flow<Result<SaiResponseDto<CourseDetailDto>>> = saiFetch(client.get("courses/$courseId"))
+    ): Flow<Result<SaiResponseDto<CourseDetailDto>>> = saiFetch { client.get("courses/$courseId") }
 
     override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>> =
-        saiFetch(client.get("challenges/popular"))
+        saiFetch { client.get("challenges/popular") }
 
     override suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =
-        saiFetch(client.post("courses/$courseId/rides"))
+        saiFetch { client.post("courses/$courseId/rides") }
 
     override suspend fun completeCourse(
         rideId: Long, completeCourseDto: CompleteCourseDto,
     ): Flow<Result<SaiResponseDto<Unit>>> =
-        saiFetch(
+        saiFetch {
             client.patch("rides/$rideId/complete") {
                 setBody(completeCourseDto)
             }
-        )
+        }
 
     override suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =
-        saiFetch(client.patch("rides/$rideId/resume"))
+        saiFetch { client.patch("rides/$rideId/resume") }
 
     override suspend fun pauseRide(
         rideId: Long,
         pauseRideDto: PauseRideDto,
     ): Flow<Result<SaiResponseDto<RideIdDto>>> =
-        saiFetch(client.patch("rides/$rideId/pause") {
-            setBody(pauseRideDto)
-        })
+        saiFetch {
+            client.patch("rides/$rideId/pause") {
+                setBody(pauseRideDto)
+            }
+        }
 
     override suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
-        saiFetch(client.post("courses/$courseId/bookmarks"))
+        saiFetch { client.post("courses/$courseId/bookmarks") }
 
     override suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
-        saiFetch(client.delete("courses/$courseId/bookmarks"))
+        saiFetch { client.delete("courses/$courseId/bookmarks") }
 }

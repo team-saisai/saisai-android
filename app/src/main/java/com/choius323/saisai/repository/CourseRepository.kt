@@ -99,7 +99,7 @@ class CourseRepositoryImpl(
             Result.success(result.toDomainModel())
         }.catch {
             emit(Result.failure<RecentRide>(it))
-        }
+        }.flowOn(ioDispatcher)
     }
 
     override suspend fun resumeRide(rideId: Long): Flow<Result<Unit>> =

@@ -160,13 +160,12 @@ val dataModule = module {
     }
     single<AccountRemoteDataSource> {
         AccountRemoteDataSourceImpl(
-            get(named(IO_DISPATCHER)),
             get(named(SAI_CLIENT)),
             get(named(DEFAULT_CLIENT))
         )
     }
     single<AccountLocalDataSource> { AccountLocalDataSourceImpl(get()) }
-    single<AccountRepository> { AccountRepositoryImpl(get(), get()) }
+    single<AccountRepository> { AccountRepositoryImpl(get(), get(), get(named(IO_DISPATCHER))) }
 }
 
 private const val TAG = "DataModule"

@@ -14,9 +14,7 @@ import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
-import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flowOn
 
 interface AccountRemoteDataSource {
     suspend fun login(
@@ -31,7 +29,6 @@ interface AccountRemoteDataSource {
 }
 
 class AccountRemoteDataSourceImpl(
-    private val ioDispatcher: CoroutineDispatcher,
     private val client: HttpClient,
     private val defaultClient: HttpClient,
 ) : AccountRemoteDataSource {
@@ -39,26 +36,28 @@ class AccountRemoteDataSourceImpl(
         email: String,
         password: String,
     ): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
-        saiFetch<SaiResponseDto<AccountTokenDto>>(defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/login") {
+        saiFetch<SaiResponseDto<AccountTokenDto>> {
+            defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/login") {
             setBody(LoginDto(email, password))
-        }).flowOn(ioDispatcher)
+            }
+        }
 
     override suspend fun reissueToken(
-    ): Flow<Result<SaiResponseDto<AccountTokenDto>>> = saiFetch<SaiResponseDto<AccountTokenDto>>(
+    ): Flow<Result<SaiResponseDto<AccountTokenDto>>> = saiFetch<SaiResponseDto<AccountTokenDto>> {
         defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/reissue") {
             header(HttpHeaders.Authorization, "Bearer ${SessionManager.refreshToken.value}")
-        }).flowOn(ioDispatcher)
+        }
+    }
 
     override suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<SaiResponseDto<UserBadgeDetailDto>>> =
-        saiFetch(client.get("badges/me/$userBadgeId"))
+        saiFetch { client.get("badges/me/$userBadgeId") }
 
     override suspend fun getUserInfo():
             Flow<Result<SaiResponseDto<UserInformationDto>>> =
-        saiFetch<SaiResponseDto<UserInformationDto>>(client.get("my"))
-            .flowOn(ioDispatcher)
+        saiFetch<SaiResponseDto<UserInformationDto>> { client.get("my") }
 
     override suspend fun getUserBadgeList(): Flow<Result<SaiResponseDto<List<UserBadgeDto>>>> =
-        saiFetch(client.get("badges/me"))
+        saiFetch { client.get("badges/me") }
 }
 
 private const val TAG = "AccountRemoteDataSource"

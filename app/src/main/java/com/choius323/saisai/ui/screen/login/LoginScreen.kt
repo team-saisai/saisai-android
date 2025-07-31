@@ -18,11 +18,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.FullScreenLoading
+import com.choius323.saisai.ui.component.SaiToast
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -34,9 +36,13 @@ fun LoginScreen(
     goHome: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
+    val context = LocalContext.current
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is LoginSideEffect.LoginSuccess -> goHome()
+            is LoginSideEffect.ShowToast -> {
+                context.SaiToast(sideEffect.message)
+            }
         }
     }
 

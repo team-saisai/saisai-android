@@ -23,12 +23,8 @@ class LoginViewModel(
                     result.onSuccess {
                         postSideEffect(LoginSideEffect.LoginSuccess)
                     }.onFailure {
-                        reduce {
-                            state.copy(
-                                isLoading = false,
-                                error = it.message ?: "Unknown Error"
-                            )
-                        }
+                        reduce { state.copy(isLoading = false) }
+                        postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
                     }
                 }
             } else {
@@ -57,7 +53,8 @@ class LoginViewModel(
             result.onSuccess {
                 postSideEffect(LoginSideEffect.LoginSuccess)
             }.onFailure {
-                reduce { state.copy(isLoading = false, error = it.message ?: "Unknown Error") }
+                reduce { state.copy(isLoading = false) }
+                postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
             }
         }
     }

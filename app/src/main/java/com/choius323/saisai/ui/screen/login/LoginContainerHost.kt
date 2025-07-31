@@ -14,5 +14,6 @@ sealed interface LoginUiEvent {
 }
 
 sealed interface LoginSideEffect {
-    object LoginSuccess : LoginSideEffect
+    data object LoginSuccess : LoginSideEffect
+    data class ShowToast(val message: String) : LoginSideEffect
 }

@@ -1,4 +1,4 @@
-package com.choius323.saisai.ui.screen.course
+package com.choius323.saisai.ui.screen.course_list
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -33,7 +33,7 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
 @Composable
-fun CourseScreen(
+fun CourseListScreen(
     modifier: Modifier = Modifier,
     viewModel: CourseListViewModel = koinViewModel(),
     onClickCourse: (Long) -> Unit,
@@ -52,11 +52,11 @@ fun CourseScreen(
         }
     }
 
-    CourseScreenContent(uiState, modifier, viewModel::onEvent)
+    CourseListScreenContent(uiState, modifier, viewModel::onEvent)
 }
 
 @Composable
-fun CourseScreenContent(
+fun CourseListScreenContent(
     uiState: CourseListUiState,
     modifier: Modifier = Modifier,
     onEvent: (CourseListUiEvent) -> Unit,
@@ -132,7 +132,7 @@ private fun CourseListSection(
 
 @Preview
 @Composable
-private fun CourseScreenContentPreview() {
+private fun CourseListScreenContentPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleCourseList = listOf(
         CourseListItem.dummyItem1,
@@ -141,7 +141,7 @@ private fun CourseScreenContentPreview() {
     )
     SaiTheme {
         Surface {
-            CourseScreenContent(
+            CourseListScreenContent(
                 uiState = CourseListUiState(
                     courseList = sampleCourseList
                 ),

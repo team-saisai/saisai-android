@@ -8,8 +8,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.choius323.saisai.ui.screen.badge_list.BadgeListScreen
-import com.choius323.saisai.ui.screen.course.CourseScreen
 import com.choius323.saisai.ui.screen.course_detail.CourseDetailScreen
+import com.choius323.saisai.ui.screen.course_list.CourseListScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
 import com.choius323.saisai.ui.screen.login.LoginScreen
 import com.choius323.saisai.ui.screen.my_page.MyPageScreen
@@ -39,7 +39,7 @@ fun MainNavController(
             )
         }
         composable<MainNavItem.BottomNavItem.Course> { backStackEntry ->
-            CourseScreen(modifier.fillMaxSize(), onClickCourse = { courseId ->
+            CourseListScreen(modifier.fillMaxSize(), onClickCourse = { courseId ->
                 navController.navigate(MainNavItem.CourseDetail(courseId))
             })
         }

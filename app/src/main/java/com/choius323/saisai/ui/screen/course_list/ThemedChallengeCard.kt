@@ -1,4 +1,4 @@
-package com.choius323.saisai.ui.screen.course
+package com.choius323.saisai.ui.screen.course_list
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

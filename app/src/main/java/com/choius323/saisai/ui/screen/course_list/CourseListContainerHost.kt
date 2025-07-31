@@ -1,4 +1,4 @@
-package com.choius323.saisai.ui.screen.course
+package com.choius323.saisai.ui.screen.course_list
 
 import com.choius323.saisai.ui.model.CourseListItem
 

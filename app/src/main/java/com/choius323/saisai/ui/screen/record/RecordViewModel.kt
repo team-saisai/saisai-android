@@ -159,10 +159,10 @@ class RecordViewModel(
     }
 
     private fun stopRecording() = intent {
-        //TODO: 로직 추가
+        // TODO: 로직 추가
     }
 
     private fun resumeRecording() = intent {
-        //TODO: 로직 추가
+        // TODO: 로직 추가
     }
 }

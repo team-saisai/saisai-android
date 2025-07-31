@@ -87,8 +87,8 @@ class CourseRepositoryImpl(
     ): Flow<Result<Unit>> =
         courseRemoteDataSource.completeCourse(rideId, CompleteCourseDto(duration, distance))
             .map { result ->
-            result.mapCatching { responseDto -> responseDto.data }
-        }.flowOn(ioDispatcher)
+                result.mapCatching { responseDto -> responseDto.data }
+            }.flowOn(ioDispatcher)
 
     override suspend fun setRecentRide(recentRide: RecentRide) {
         courseLocalDataSource.setRecentRideCourse(recentRide.toProto())

@@ -157,7 +157,7 @@ fun HomeScreenContent(
                 .padding(bottom = 16.dp)
         )
         if (aroundChallenges.isNotEmpty()) {
-            LazyRow() {
+            LazyRow {
                 items(aroundChallenges) { courseInfo ->
                     CourseListItemVertical(
                         imageUrl = courseInfo.imageUrl ?: "",
@@ -223,8 +223,8 @@ fun HomeScreenContentPreview() {
 @Preview(showBackground = true, name = "HomeScreenContent Preview (No Contents Challenge)")
 @Composable
 fun HomeScreenContentPreviewNoContents() {
-    val dummyCourses = emptyList<CourseListItem>()
-    val dummyBadges = emptyList<BadgeInfo>()
+    emptyList<CourseListItem>()
+    emptyList<BadgeInfo>()
 
     SaiTheme {
         Scaffold { innerPadding ->

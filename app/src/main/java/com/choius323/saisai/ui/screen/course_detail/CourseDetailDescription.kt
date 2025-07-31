@@ -233,7 +233,7 @@ private fun ChallengeButton(
 
 @Preview
 @Composable
-fun CourseDetailDescriptionPreview() {
+private fun CourseDetailDescriptionPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleDetail = CourseDetail.sample
     SaiTheme(darkTheme = true) {

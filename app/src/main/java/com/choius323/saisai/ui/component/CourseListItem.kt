@@ -208,7 +208,7 @@ private fun CourseInformationSection(
 
 @Preview
 @Composable
-fun CourseListItemHorizontalPreview() {
+private fun CourseListItemHorizontalPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val course = CourseListItem.dummyItem1
     SaiTheme {

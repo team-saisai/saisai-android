@@ -36,6 +36,7 @@ class CourseDetailViewModel(
         is CourseDetailUiEvent.CourseStartClicked -> intent {
             postSideEffect(CourseDetailSideEffect.StartCourse(courseId))
         }
+
         is CourseDetailUiEvent.BackClicked -> intent {
             postSideEffect(CourseDetailSideEffect.GoBack)
         }

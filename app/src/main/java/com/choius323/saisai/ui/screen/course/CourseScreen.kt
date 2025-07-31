@@ -107,9 +107,7 @@ private fun CourseListSection(
                     .fillMaxWidth()
                     .clickable(
                         onClick = {
-                            onEvent(
-                                CourseListUiEvent.CourseClicked(course.courseId)
-                            )
+                            onEvent(CourseListUiEvent.CourseClicked(course.courseId))
                         }
                     ),
                 course = course

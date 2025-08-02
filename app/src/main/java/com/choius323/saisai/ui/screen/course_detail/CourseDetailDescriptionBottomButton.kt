@@ -39,13 +39,12 @@ fun CourseDetailDescriptionBottomButton(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    val interactionSource = remember { MutableInteractionSource() }
     Box(
         modifier = modifier
             .width(IntrinsicSize.Min)
             .height(IntrinsicSize.Min)
             .clickable(
-                interactionSource = interactionSource,
+                interactionSource = remember { MutableInteractionSource() },
                 indication = null,
                 onClick = onClick
             ),
@@ -61,7 +60,9 @@ fun CourseDetailDescriptionBottomButton(
             painter = painterResource(R.drawable.icon_arrow_down),
             contentDescription = if (expanded) "접기" else "펼치기",
             tint = SaiColor.White,
-            modifier = Modifier.rotate(if (expanded) 180f else 0f)
+            modifier = Modifier
+                .rotate(if (expanded) 180f else 0f)
+                .align(Alignment.TopCenter)
         )
     }
 }

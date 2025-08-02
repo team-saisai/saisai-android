@@ -6,6 +6,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -98,14 +99,14 @@ fun CourseDetailDescription(
 
                 // 우측 '도전하기' 버튼 영역
                 Column(
-                    Modifier.align(Alignment.Top),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    Modifier
+                        .align(Alignment.Top)
+                        .width(IntrinsicSize.Max),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
-                    ChallengeButton(
-                        modifier = Modifier,
-                        onClick = onChallengeClick
-                    )
-                    SaiText(time, color = SaiColor.Lime)
+                    ChallengeButton(modifier = Modifier, onClick = onChallengeClick)
+                    Spacer(Modifier.height(6.dp))
+                    SaiText(time, color = SaiColor.Lime, maxLines = 1)
                 }
             }
             if (expanded) {
@@ -177,28 +178,28 @@ private fun ParticipantInfoSection(challengerCount: Int, completedCount: Int) {
         Icon(
             painter = painterResource(R.drawable.outline_flash_on_24),
             contentDescription = "도전자 아이콘",
-            tint = Color(0xFF8032FD),
+            tint = SaiColor.LightPurple,
             modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.width(2.dp))
         SaiText(
             text = "${challengerCount}명 도전중",
             fontSize = 14.sp,
-            color = Color(0xFF8032FD),
+            color = SaiColor.LightPurple,
             fontWeight = FontWeight.SemiBold,
         )
         Spacer(modifier = Modifier.width(12.dp))
         Icon(
             imageVector = Icons.Default.CheckCircleOutline,
             contentDescription = "완주자 아이콘",
-            tint = Color(0xFF8032FD),
+            tint = SaiColor.LightPurple,
             modifier = Modifier.size(18.dp)
         )
         Spacer(modifier = Modifier.width(2.dp))
         SaiText(
             text = "${completedCount}명 완주",
             fontSize = 14.sp,
-            color = Color(0xFF8032FD),
+            color = SaiColor.LightPurple,
             fontWeight = FontWeight.SemiBold,
         )
     }
@@ -211,6 +212,7 @@ private fun ChallengeButton(
 ) {
     Column(
         modifier
+            .fillMaxWidth()
             .clip(RoundedCornerShape(16.dp))
             .background(SaiColor.Lime)
             .padding(vertical = 12.dp, horizontal = 5.5.dp)
@@ -224,9 +226,10 @@ private fun ChallengeButton(
         )
         Spacer(modifier = Modifier.height(4.dp))
         SaiText(
-            text = "도전하기", style = MaterialTheme.typography.labelMedium.copy(
+            text = "도전하기",
+            style = MaterialTheme.typography.labelMedium.copy(
                 color = SaiColor.Black, fontWeight = FontWeight.SemiBold
-            )
+            ),
         )
     }
 }

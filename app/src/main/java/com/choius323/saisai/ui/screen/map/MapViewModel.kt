@@ -30,54 +30,16 @@ class MapViewModel(
             is MapUiEvent.SetShowPermissionDialog -> intent {
                 reduce { state.copy(isShowPermissionDialog = event.isShow) }
             }
-
-            is MapUiEvent.SetCameraTracking -> intent {
-                reduce { state.copy(isCameraTracking = event.isCameraTracking) }
-            }
-
-            MapUiEvent.StartRecording -> startRecording()
         }
     }
 
     private fun setIsTracking(event: MapUiEvent.SetIsTracking) = intent {
         reduce {
-            state.copy(
-                isCourseStarted = true,
-                isTracking = true,
-                isCameraTracking = true,
-                segmentIndex = 0,
-            )
+            state.copy(isTracking = true)
         }
-    }
-
-    private fun startRecording() = intent {
-        postSideEffect(MapSideEffect.PermissionCheck)
-        if (state.permissionGranted.not()) {
-            postSideEffect(MapSideEffect.PermissionRequest)
-            return@intent
-        } else if (state.isCourseStarted) {
-            return@intent
-        }
-        onEvent(MapUiEvent.SetIsTracking(true))
     }
 
     private fun setNowLatLng(event: MapUiEvent.SetNowLatLng) = intent {
         reduce { state.copy(nowLatLng = event.latLng) }
-        val rideSnapshot = updateUserLocation(event.latLng, state.segmentIndex, state.route)
-        if (rideSnapshot != null) {
-            if (rideSnapshot.segmentIndex != state.route.lastIndex) {
-                reduce {
-                    state.copy(
-                        segmentIndex = rideSnapshot.segmentIndex,
-                        totalRideDistance = rideSnapshot.totalDistance,
-                        projectedPoint = rideSnapshot.projectedPoint,
-                    )
-                }
-            } else {
-                // TODO: Record 종료
-            }
-        } else {
-            reduce { state.copy(error = "코스 추적에 실패했습니다.") }
-        }
     }
 }

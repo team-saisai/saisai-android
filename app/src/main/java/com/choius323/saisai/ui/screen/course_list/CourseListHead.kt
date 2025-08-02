@@ -176,7 +176,7 @@ private fun SortDropDown(
         ) {
             sortList.forEachIndexed { index, item ->
                 CourseSortDropDownItem(
-                    sort = selected,
+                    sort = item,
                     isSelected = index == CourseSort.valueOf(selected.name).ordinal,
                     modifier = Modifier,
                     onSelect = {

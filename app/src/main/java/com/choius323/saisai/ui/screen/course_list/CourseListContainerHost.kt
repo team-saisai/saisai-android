@@ -20,6 +20,7 @@ sealed interface CourseListUiEvent {
     data object LoadMore : CourseListUiEvent
     data class OnClickCourseType(val courseType: CourseType) : CourseListUiEvent
     data class OnClickSortType(val sort: CourseSort) : CourseListUiEvent
+    data class OnClickBookmark(val courseId: Long, val isBookmarked: Boolean) : CourseListUiEvent
 }
 
 sealed interface CourseListSideEffect {

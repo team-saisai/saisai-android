@@ -3,6 +3,7 @@ package com.choius323.saisai.repository
 import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
+import com.choius323.saisai.data.course.remote.model.CourseItemDto
 import com.choius323.saisai.data.course.remote.model.GpxPointDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
@@ -21,38 +22,32 @@ import com.choius323.saisai.util.DateTimeFormat
 import org.threeten.bp.LocalDate
 
 
-fun SaiResponseDto<CourseDataDto>.toCoursePage(): CoursePage {
-    val content = data.content.map { courseItemDto ->
-        courseItemDto.run {
-            CourseListItem(
-                courseId = courseId,
-                courseName = courseName,
-                level = Level.from(level),
-                distance = distance,
-                estimatedTime = estimatedTime,
-                sigun = sigun,
-                imageUrl = imageUrl,
-                courseChallengerCount = courseChallengerCount,
-                courseFinisherCount = courseFinisherCount,
-                challengeStatus = challengeStatus,
-                challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
-                isEventActive = isEventActive,
-                reward = reward,
-            )
-        }
-    }
+fun SaiResponseDto<CourseDataDto>.toCoursePage() = CoursePage(
+    content = data.content.map(CourseItemDto::toCourseListItem),
+    totalElements = data.totalElements,
+    totalPages = data.totalPages,
+    currentPageNumber = data.number,
+    pageSize = data.size,
+    isFirstPage = data.first,
+    isLastPage = data.last,
+    isEmpty = data.empty
+)
 
-    return CoursePage(
-        content = content,
-        totalElements = data.totalElements,
-        totalPages = data.totalPages,
-        currentPageNumber = data.number,
-        pageSize = data.size,
-        isFirstPage = data.first,
-        isLastPage = data.last,
-        isEmpty = data.empty
-    )
-}
+fun CourseItemDto.toCourseListItem() = CourseListItem(
+    courseId = courseId,
+    courseName = courseName,
+    level = Level.from(level),
+    distance = distance,
+    estimatedTime = estimatedTime,
+    sigun = sigun,
+    imageUrl = imageUrl,
+    participantsCount = participantsCount,
+    challengeStatus = challengeStatus,
+    challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
+    isEventActive = isEventActive,
+    reward = reward,
+    isBookmarked = isBookmarked,
+)
 
 fun ChallengeInfoDto?.toChallengeInfo() = this?.run {
     ChallengeInfo(

@@ -114,7 +114,10 @@ private fun CourseListSection(
                             onEvent(CourseListUiEvent.CourseClicked(course.courseId))
                         }
                     ),
-                course = course
+                course = course,
+                onClickBookmark = {
+                    onEvent(CourseListUiEvent.OnClickBookmark(course.courseId, course.isBookmarked))
+                }
             )
             if (index == courseList.lastIndex) {
                 onEvent(CourseListUiEvent.LoadMore)

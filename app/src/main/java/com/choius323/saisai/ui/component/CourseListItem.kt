@@ -18,6 +18,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -48,6 +49,7 @@ import org.threeten.bp.LocalDate
 fun CourseListItemHorizontal(
     modifier: Modifier = Modifier,
     course: CourseListItem,
+    onClickBookmark: () -> Unit,
 ) {
     Row(
         modifier = modifier
@@ -68,12 +70,14 @@ fun CourseListItemHorizontal(
             courseName = course.courseName,
             distance = course.distance,
             level = course.level,
-            participantCount = course.courseChallengerCount,
+            participantCount = course.participantsCount,
             reward = course.reward,
             isLong = true,
+            isBookmarked = course.isBookmarked,
             modifier = Modifier
                 .weight(1f)
                 .padding(top = 12.dp, bottom = 18.dp, end = 10.dp),
+            onClickBookmark = onClickBookmark,
         )
     }
 }
@@ -81,15 +85,17 @@ fun CourseListItemHorizontal(
 
 @Composable
 fun CourseListItemVertical(
-    imageUrl: String,
+    imageUrl: Any?,
     courseName: String,
     distance: Double,
     participantCount: Int,
     level: Level,
     modifier: Modifier = Modifier,
+    isBookmarked: Boolean,
     isEventActive: Boolean = false,
     reward: Int = 0,
     endDate: LocalDate,
+    onClickBookmark: () -> Unit,
 ) {
     Column(
         modifier = modifier
@@ -115,10 +121,40 @@ fun CourseListItemVertical(
             participantCount = participantCount,
             reward = reward,
             isLong = false,
+            isBookmarked = isBookmarked,
             modifier = Modifier
                 .padding(horizontal = 12.dp)
                 .padding(bottom = 18.dp),
+            onClickBookmark = onClickBookmark
         )
+    }
+}
+
+@Composable
+private fun CourseInformationSection(
+    courseName: String,
+    distance: Double,
+    level: Level,
+    participantCount: Int,
+    reward: Int,
+    isLong: Boolean,
+    isBookmarked: Boolean,
+    modifier: Modifier = Modifier,
+    onClickBookmark: () -> Unit,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        TitleSection(courseName, distance, level, isBookmarked, onClickBookmark = onClickBookmark)
+
+        Spacer(
+            modifier = Modifier
+                .weight(1f)
+                .heightIn(min = 10.dp)
+        )
+
+        // 현재 도전 인원 정보
+        ParticipantRewardInfo(participantCount, reward, isLong)
     }
 }
 
@@ -149,7 +185,9 @@ private fun TitleSection(
     courseName: String,
     distance: Double,
     level: Level,
+    isBookmarked: Boolean,
     modifier: Modifier = Modifier,
+    onClickBookmark: () -> Unit,
 ) {
     Row(modifier) {
         Column(Modifier.weight(1f)) {
@@ -171,38 +209,12 @@ private fun TitleSection(
             )
         }
         Icon(
-            Icons.Outlined.BookmarkBorder,
+            if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
             contentDescription = "북마크",
             modifier = Modifier
                 .size(26.dp)
-                .clickable {/*TODO: 북마크*/ },
+                .clickable(onClick = onClickBookmark),
         )
-    }
-}
-
-@Composable
-private fun CourseInformationSection(
-    courseName: String,
-    distance: Double,
-    level: Level,
-    participantCount: Int,
-    reward: Int,
-    isLong: Boolean,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-    ) {
-        TitleSection(courseName, distance, level)
-
-        Spacer(
-            modifier = Modifier
-                .weight(1f)
-                .heightIn(min = 10.dp)
-        )
-
-        // 현재 도전 인원 정보
-        ParticipantRewardInfo(participantCount, reward, isLong)
     }
 }
 
@@ -210,22 +222,12 @@ private fun CourseInformationSection(
 @Composable
 private fun CourseListItemHorizontalPreview() {
     AndroidThreeTen.init(LocalContext.current)
-    val course = CourseListItem.dummyItem1
     SaiTheme {
         Surface {
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                CourseListItemHorizontal(course = course)
-                CourseListItemHorizontal(
-                    course = course.copy(
-                        challengeEndedAt = LocalDate.now().minusDays(7),
-                        isEventActive = false
-                    )
-                )
-                CourseListItemHorizontal(
-                    course = course.copy(
-                        challengeEndedAt = LocalDate.now().plusDays(7)
-                    )
-                )
+                CourseListItemHorizontal(course = CourseListItem.dummyItem1) {}
+                CourseListItemHorizontal(course = CourseListItem.dummyItem2) {}
+                CourseListItemHorizontal(course = CourseListItem.dummyItem3) {}
             }
         }
     }
@@ -235,21 +237,23 @@ private fun CourseListItemHorizontalPreview() {
 @Composable
 fun CourseListItemPreview() {
     AndroidThreeTen.init(LocalContext.current)
-    val sampleChallenge = CourseListItem.dummyItem4
+    val courseListItem = CourseListItem.dummyItem4
 
     SaiTheme {
         Surface {
-            sampleChallenge.apply {
+            courseListItem.apply {
                 CourseListItemVertical(
-                    imageUrl = imageUrl ?: "",
+                    imageUrl = imageUrl,
                     courseName = courseName,
                     distance = distance,
                     level = level,
-                    participantCount = 671,
-                    isEventActive = true,
-                    reward = 1200,
-                    endDate = LocalDate.now().plusDays(7L),
-                    modifier = Modifier
+                    participantCount = participantsCount,
+                    isEventActive = isEventActive,
+                    reward = reward,
+                    endDate = challengeEndedAt,
+                    modifier = Modifier,
+                    isBookmarked = isBookmarked,
+                    onClickBookmark = {}
                 )
             }
         }

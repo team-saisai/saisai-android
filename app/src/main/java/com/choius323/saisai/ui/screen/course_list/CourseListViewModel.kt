@@ -3,6 +3,7 @@ package com.choius323.saisai.ui.screen.course_list
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.usecase.GetAllCoursesUseCase
+import com.choius323.saisai.usecase.ToggleBookmarkCourseUseCase
 import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -10,6 +11,7 @@ import org.orbitmvi.orbit.viewmodel.container
 
 class CourseListViewModel(
     private val getCourseListUseCase: GetAllCoursesUseCase,
+    private val toggleBookmarkCourseUseCase: ToggleBookmarkCourseUseCase,
 ) : ViewModel(), ContainerHost<CourseListUiState, CourseListSideEffect> {
     override val container: Container<CourseListUiState, CourseListSideEffect> =
         container(CourseListUiState())
@@ -32,6 +34,7 @@ class CourseListViewModel(
         }
 
         is CourseListUiEvent.LoadMore -> fetchCourseList(true)
+        is CourseListUiEvent.OnClickBookmark -> toggleBookmark(event.courseId, event.isBookmarked)
     }
 
     private fun fetchCourseList(isLoadMore: Boolean = false) = intent {
@@ -67,6 +70,31 @@ class CourseListViewModel(
                     )
                 }
                 postSideEffect(CourseListSideEffect.ShowToast(it.message ?: "목록을 불러오지 못했습니다."))
+            }
+        }
+    }
+
+    private fun toggleBookmark(courseId: Long, isBookmarked: Boolean) = intent {
+        reduce { state.copy(isLoading = true) }
+        toggleBookmarkCourseUseCase(courseId, isBookmarked).collectLatest { result ->
+            result.onSuccess { changedBookmark ->
+                reduce {
+                    state.copy(
+                        courseList = state.courseList.map { course ->
+                            if (course.courseId == courseId) {
+                                course.copy(isBookmarked = changedBookmark)
+                            } else {
+                                course
+                            }
+                        },
+                        isLoading = false
+                    )
+                }
+            }.onFailure {
+                reduce {
+                    state.copy(isLoading = false)
+                }
+                postSideEffect(CourseListSideEffect.ShowToast(it.message ?: "북마크를 변경하지 못했습니다."))
             }
         }
     }

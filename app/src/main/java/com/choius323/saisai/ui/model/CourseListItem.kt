@@ -10,8 +10,8 @@ data class CourseListItem(
     val estimatedTime: Double,
     val sigun: String,
     val imageUrl: String?,
-    val courseChallengerCount: Int,
-    val courseFinisherCount: Int,
+    val participantsCount: Int,
+    val isBookmarked: Boolean,
     val challengeStatus: String,
     val challengeEndedAt: LocalDate,
     val isEventActive: Boolean,
@@ -26,11 +26,11 @@ data class CourseListItem(
             estimatedTime = 1.5,
             sigun = "서울",
             imageUrl = "https://example.com/image.jpg",
-            courseChallengerCount = 4757,
-            courseFinisherCount = 9982,
+            participantsCount = 9982,
             challengeStatus = "ENDED",
             challengeEndedAt = LocalDate.now().minusDays(3),
             isEventActive = true,
+            isBookmarked = false,
             reward = 1000,
         )
         val dummyItem2 = CourseListItem(
@@ -41,11 +41,11 @@ data class CourseListItem(
             estimatedTime = 1.5,
             sigun = "서울",
             imageUrl = "https://example.com/image.jpg",
-            courseChallengerCount = 57,
-            courseFinisherCount = 982,
+            participantsCount = 982,
             challengeStatus = "ONGOING",
             challengeEndedAt = LocalDate.now().plusDays(33),
             isEventActive = false,
+            isBookmarked = true,
             reward = 0,
         )
         val dummyItem3 = CourseListItem(
@@ -56,11 +56,11 @@ data class CourseListItem(
             estimatedTime = 1.5,
             sigun = "부산",
             imageUrl = "https://example.com/image.jpg",
-            courseChallengerCount = 757,
-            courseFinisherCount = 982,
+            participantsCount = 982,
             challengeStatus = "ONGOING",
             challengeEndedAt = LocalDate.now().plusDays(7),
             isEventActive = true,
+            isBookmarked = true,
             reward = 500,
         )
         val dummyItem4 = CourseListItem(
@@ -71,11 +71,11 @@ data class CourseListItem(
             distance = 8.6,
             estimatedTime = 50.0,
             sigun = "서울시 강남구",
-            courseChallengerCount = 57,
-            courseFinisherCount = 282,
+            participantsCount = 282,
             challengeStatus = "ONGOING",
             challengeEndedAt = LocalDate.now().plusDays(10),
             isEventActive = false,
+            isBookmarked = false,
             reward = 0,
         )
     }

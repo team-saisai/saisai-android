@@ -4,8 +4,8 @@ import com.choius323.saisai.data.course.remote.model.BookmarkDto
 import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
+import com.choius323.saisai.data.course.remote.model.CourseItemDto
 import com.choius323.saisai.data.course.remote.model.PauseRideDto
-import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.RideIdDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
@@ -27,7 +27,7 @@ interface CourseRemoteDataSource {
 
     suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun getCourseDetail(courseId: Long): Flow<Result<SaiResponseDto<CourseDetailDto>>>
-    suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>>
+    suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<CourseItemDto>>>>
     suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
     suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
@@ -61,7 +61,7 @@ class CourseRemoteDataSourceImpl(
         courseId: Long,
     ): Flow<Result<SaiResponseDto<CourseDetailDto>>> = saiFetch { client.get("courses/$courseId") }
 
-    override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<PopularChallengeItemDto>>>> =
+    override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<CourseItemDto>>>> =
         saiFetch { client.get("challenges/popular") }
 
     override suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =

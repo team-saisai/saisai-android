@@ -5,8 +5,8 @@ import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.ui.model.CourseDetail
+import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
-import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RecentRide
 import kotlinx.coroutines.CoroutineDispatcher
@@ -19,7 +19,7 @@ interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
     suspend fun getRecentRideCourse(): Flow<Result<RecentRide>>
     suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
-    suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>>
+    suspend fun getPopularChallenge(): Flow<Result<List<CourseListItem>>>
     suspend fun startCourse(courseId: Long): Flow<Result<Long>>
     suspend fun setRecentRide(recentRide: RecentRide)
     suspend fun getRecentRide(): Flow<Result<RecentRide>>
@@ -70,10 +70,10 @@ class CourseRepositoryImpl(
             }
         }.flowOn(ioDispatcher)
 
-    override suspend fun getPopularChallenge(): Flow<Result<List<PopularChallengeListItem>>> =
+    override suspend fun getPopularChallenge(): Flow<Result<List<CourseListItem>>> =
         courseRemoteDataSource.getPopularChallenge().map { result ->
             result.mapCatching { responseDto ->
-                responseDto.data.map { it.toPopularChallengeListItem() }
+                responseDto.data.map { it.toCourseListItem() }
             }
         }.flowOn(ioDispatcher)
 

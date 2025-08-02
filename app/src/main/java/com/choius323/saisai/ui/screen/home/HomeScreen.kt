@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.CourseListItemVertical
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
-import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -58,9 +58,8 @@ fun HomeScreen(
 
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is HomeSideEffect.GoToDetail -> {
-                goToDetail(sideEffect.courseId)
-            }
+            is HomeSideEffect.GoToDetail -> goToDetail(sideEffect.courseId)
+            is HomeSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
         }
     }
 
@@ -102,7 +101,7 @@ fun HomeScreenContent(
     location: String,
     temperature: String,
     recentChallenge: RecentCourse?,
-    trendChallenges: List<PopularChallengeListItem>,
+    trendChallenges: List<CourseListItem>,
     aroundChallenges: List<CourseListItem>,
     badges: List<BadgeInfo>,
     modifier: Modifier = Modifier,
@@ -136,10 +135,19 @@ fun HomeScreenContent(
                         distance = courseInfo.distance,
                         level = courseInfo.level,
                         isEventActive = courseInfo.isEventActive,
-                        endDate = courseInfo.endedAt,
+                        endDate = courseInfo.challengeEndedAt,
                         reward = courseInfo.reward,
-                        participantCount = courseInfo.participantCount,
-                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) }
+                        participantCount = courseInfo.participantsCount,
+                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
+                        isBookmarked = courseInfo.isBookmarked,
+                        onClickBookmark = {
+                            onEvent(
+                                HomeUiEvent.OnClickBookmark(
+                                    courseInfo.courseId,
+                                    courseInfo.isBookmarked
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -166,7 +174,16 @@ fun HomeScreenContent(
                         level = courseInfo.level,
                         participantCount = 125,
                         modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
-                        endDate = courseInfo.challengeEndedAt
+                        endDate = courseInfo.challengeEndedAt,
+                        isBookmarked = courseInfo.isBookmarked,
+                        onClickBookmark = {
+                            onEvent(
+                                HomeUiEvent.OnClickBookmark(
+                                    courseInfo.courseId,
+                                    courseInfo.isBookmarked
+                                )
+                            )
+                        }
                     )
                 }
             }
@@ -191,10 +208,6 @@ fun HomeScreenContentPreview() {
         BadgeInfo(2, "100km 돌파", "badge2.url"),
         BadgeInfo(3, "산악왕", "badge3.url")
     )
-    val dummyTrendChallenges = listOf(
-        PopularChallengeListItem.dummyItem1,
-        PopularChallengeListItem.dummyItem2,
-    )
     val dummyRecentCourse = RecentCourse(
         courseName = "Chase McDonald",
         distance = 24.25,
@@ -211,7 +224,7 @@ fun HomeScreenContentPreview() {
             location = "서울시 강남구",
             temperature = "25°C",
             recentChallenge = dummyRecentCourse,
-            trendChallenges = dummyTrendChallenges,
+            trendChallenges = dummyCourses.take(2),
             aroundChallenges = dummyCourses.takeLast(2),
             badges = dummyBadges,
             modifier = Modifier.padding(all = 0.dp),

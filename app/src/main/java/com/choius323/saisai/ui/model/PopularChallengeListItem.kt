@@ -5,17 +5,17 @@ import org.threeten.bp.LocalDate
 
 data class PopularChallengeListItem(
     val courseId: Long,
-    val challengeStatus: String,
     val courseName: String,
-    val distance: Double,
-    val endedAt: LocalDate,
-    val estimatedTime: Double,
     val level: Level,
-    val participantCount: Int,
+    val distance: Double,
+    val estimatedTime: Double,
     val sigun: String,
+    val imageUrl: String? = null,
+    val participantCount: Int,
+    val challengeStatus: String,
+    val endedAt: LocalDate,
     val isEventActive: Boolean,
     val reward: Int,
-    val imageUrl: String? = null,
 ) {
     companion object {
         val dummyItem1 = PopularChallengeListItem(

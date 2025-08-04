@@ -185,7 +185,9 @@ fun RecordScreenContent(
         }
         RecordStateDescription(
             uiState = uiState,
-            modifier = Modifier.align(Alignment.BottomCenter)
+            modifier = Modifier.align(Alignment.BottomCenter),
+            toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },
+            toggleExpanded = { onEvent(RecordUiEvent.OnToggleExpandedSummary) }
         )
     }
 }

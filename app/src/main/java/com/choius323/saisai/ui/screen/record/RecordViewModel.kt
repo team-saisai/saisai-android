@@ -47,8 +47,20 @@ class RecordViewModel(
         is RecordUiEvent.ClickedStart -> clickStart(event)
         is RecordUiEvent.SetNowLatLng -> setNowLatLng(event)
         is RecordUiEvent.StartRecording -> startRecording(event)
-        RecordUiEvent.StopRecording -> stopRecording()
+        RecordUiEvent.StopRecording -> pauseRecording()
         RecordUiEvent.ResumeRecording -> resumeRecording()
+        RecordUiEvent.OnClickToggleRecording -> intent {
+            if (state.isPaused) {
+                resumeRecording()
+            } else {
+                pauseRecording()
+            }
+        }
+
+        RecordUiEvent.OnToggleExpandedSummary -> intent {
+            reduce { state.copy(isExpandedSummary = state.isExpandedSummary.not()) }
+        }
+
         is RecordUiEvent.SetPermissionGranted -> intent {
             reduce { state.copy(permissionGranted = event.isGranted) }
         }
@@ -64,7 +76,6 @@ class RecordViewModel(
         is RecordUiEvent.SetCameraTracking -> intent {
             reduce { state.copy(isCameraTracking = event.isCameraTracking) }
         }
-
 
     }
 
@@ -158,11 +169,36 @@ class RecordViewModel(
         }
     }
 
-    private fun stopRecording() = intent {
-        // TODO: 로직 추가
+    private fun pauseRecording() = intent {
+        reduce { state.copy(isLoading = true) }
+        courseRepository.pauseRide(
+            state.courseDetail?.courseId ?: return@intent,
+            System.currentTimeMillis() - state.startTime,
+            state.totalRideDistance,
+        ).collectLatest { result ->
+            result.onSuccess {
+                reduce { state.copy(isPaused = true, isLoading = false) }
+            }.onFailure {
+                postSideEffect(RecordSideEffect.ShowToast(it.message ?: "주행 정보를 서버에 전송하지 못했습니다."))
+                reduce { state.copy(isLoading = false) }
+            }
+        }
     }
 
     private fun resumeRecording() = intent {
-        // TODO: 로직 추가
+        reduce { state.copy(isLoading = true) }
+        courseRepository.resumeRide(state.courseDetail?.courseId ?: return@intent)
+            .collectLatest { result ->
+                result.onSuccess {
+                    reduce { state.copy(isPaused = false, isLoading = false) }
+                }.onFailure {
+                    postSideEffect(
+                        RecordSideEffect.ShowToast(
+                            it.message ?: "주행 정보를 서버에 전송하지 못했습니다."
+                        )
+                    )
+                    reduce { state.copy(isLoading = false) }
+                }
+            }
     }
 }

@@ -51,4 +51,7 @@ sealed interface MainNavItem : NavItem {
 
     @Serializable
     data object NotificationList : MainNavItem
+
+    @Serializable
+    data object BookmarkList : MainNavItem
 }

@@ -30,11 +30,25 @@ class MyPageViewModel(
 
     // TODO: 이벤트 로직 추가
     fun onEvent(event: MyPageUiEvent) = when (event) {
-        MyPageUiEvent.OnClickProfile -> {}
-        MyPageUiEvent.OnClickSetting -> {}
-        MyPageUiEvent.OnClickRideCourses -> {}
-        MyPageUiEvent.OnClickBookmarkCourses -> {}
-        MyPageUiEvent.OnClickRewardHistory -> {}
+        MyPageUiEvent.OnClickProfile -> intent {
+            postSideEffect(MyPageSideEffect.GoProfile)
+        }
+
+        MyPageUiEvent.OnClickSetting -> intent {
+            postSideEffect(MyPageSideEffect.GoSetting)
+        }
+
+        MyPageUiEvent.OnClickRideCourses -> intent {
+            postSideEffect(MyPageSideEffect.GoRodeListCourses)
+        }
+
+        MyPageUiEvent.OnClickBookmarkCourses -> intent {
+            postSideEffect(MyPageSideEffect.GoBookmarkCourses)
+        }
+
+        MyPageUiEvent.OnClickRewardHistory -> intent {
+            postSideEffect(MyPageSideEffect.GoRewardHistory)
+        }
         MyPageUiEvent.OnClickBadgeAchievement -> intent {
             postSideEffect(MyPageSideEffect.GoBadgeAchievement)
         }

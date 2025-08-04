@@ -1,13 +1,17 @@
 package com.choius323.saisai.ui.navigation
 
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.Stable
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.choius323.saisai.ui.component.TopAppBarHeight
 import com.choius323.saisai.ui.screen.badge_list.BadgeListScreen
+import com.choius323.saisai.ui.screen.bookmark_courses.BookmarkCoursesScreen
 import com.choius323.saisai.ui.screen.course_detail.CourseDetailScreen
 import com.choius323.saisai.ui.screen.course_list.CourseListScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
@@ -67,7 +71,7 @@ fun MainNavController(
                 goBadgeAchievement = { navController.navigate(MainNavItem.BadgeList) },
                 goSetting = {},
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
-                goBookmarkCourses = {},
+                goBookmarkCourses = { navController.navigate(MainNavItem.BookmarkList) },
                 goRodeListCourse = {},
                 goRewardHistory = {},
             )
@@ -98,6 +102,15 @@ fun MainNavController(
         composable<MainNavItem.NotificationList> { backStackEntry ->
             NotificationListScreen(
                 modifier = modifier.fillMaxSize(),
+                goBack = { navController.upPress() }
+            )
+        }
+        composable<MainNavItem.BookmarkList> { backStackEntry ->
+            BookmarkCoursesScreen(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = TopAppBarHeight)
+                    .fillMaxSize(),
                 goBack = { navController.upPress() }
             )
         }

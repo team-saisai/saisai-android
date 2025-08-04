@@ -22,7 +22,7 @@ import kotlinx.coroutines.flow.Flow
 interface CourseRemoteDataSource {
     suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>>
     suspend fun getAllCourses(
-        page: Int, status: String?,
+        page: Int, courseType: String, sort: String,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
     suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
@@ -50,11 +50,13 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun getAllCourses(
         page: Int,
-        status: String?,
+        courseType: String,
+        sort: String,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>> = saiFetch {
         client.get("courses") {
-            parameter("page", "$page")
-            if (status != null) parameter("status", status)
+            parameter("page", page)
+            parameter("type", courseType)
+            parameter("sort", sort)
         }
     }
 

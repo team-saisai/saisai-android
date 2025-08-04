@@ -27,10 +27,12 @@ class CourseListViewModel(
 
         is CourseListUiEvent.OnClickCourseType -> intent {
             reduce { state.copy(selectedCourseType = event.courseType) }
+            fetchCourseList()
         }
 
         is CourseListUiEvent.OnClickSortType -> intent {
             reduce { state.copy(selectedSort = event.sort) }
+            fetchCourseList()
         }
 
         is CourseListUiEvent.LoadMore -> fetchCourseList(true)
@@ -40,7 +42,6 @@ class CourseListViewModel(
     private fun fetchCourseList(isLoadMore: Boolean = false) = intent {
         Log.d(TAG, "fetchCourseList isLoadMore: $isLoadMore")
         if (state.isLoading || state.isLoadingMore || state.isLastPage) return@intent
-
         val nextPage: Int
         if (isLoadMore) {
             nextPage = state.page + 1
@@ -50,7 +51,9 @@ class CourseListViewModel(
             reduce { state.copy(isLoading = true) }
         }
 
-        getCourseListUseCase(page = nextPage).collectLatest { result ->
+        getCourseListUseCase(
+            page = nextPage, sort = state.selectedSort, courseType = state.selectedCourseType
+        ).collectLatest { result ->
             result.onSuccess { coursePage ->
                 reduce {
                     state.copy(

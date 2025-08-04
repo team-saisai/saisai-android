@@ -8,6 +8,8 @@ import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
+import com.choius323.saisai.ui.model.CourseSort
+import com.choius323.saisai.ui.model.CourseType
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RecentRide
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,8 +33,7 @@ interface CourseRepository {
     suspend fun getBookmarkedCourses(page: Int): Flow<Result<CoursePage>>
     suspend fun deleteBookmarkedCourses(courseIds: List<Long>): Flow<Result<Unit>>
     suspend fun getAllCourses(
-        page: Int,
-        status: String? = null,
+        page: Int, courseType: CourseType, sort: CourseSort,
     ): Flow<Result<CoursePage>>
 
     suspend fun completeCourse(
@@ -57,10 +58,9 @@ class CourseRepositoryImpl(
     }
 
     override suspend fun getAllCourses(
-        page: Int,
-        status: String?,
+        page: Int, courseType: CourseType, sort: CourseSort,
     ): Flow<Result<CoursePage>> =
-        courseRemoteDataSource.getAllCourses(page, status).map { result ->
+        courseRemoteDataSource.getAllCourses(page, courseType.name, sort.name).map { result ->
             result.mapCatching { responseDto ->
                 responseDto.toCoursePage()
             }

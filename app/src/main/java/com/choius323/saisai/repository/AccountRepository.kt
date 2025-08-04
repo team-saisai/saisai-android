@@ -5,6 +5,7 @@ import com.choius323.saisai.data.account.AccountRemoteDataSource
 import com.choius323.saisai.ui.model.AccountToken
 import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.model.UserBadgeDetail
+import com.choius323.saisai.ui.model.UserProfile
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
@@ -16,6 +17,7 @@ interface AccountRepository {
     suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadgeDetail>>
     suspend fun getUserInfo(): Flow<Result<String>>
     suspend fun getUserBadgeList(): Flow<Result<List<UserBadge>>>
+    suspend fun getUserProfile(): Flow<Result<UserProfile>> // 추가
 }
 
 class AccountRepositoryImpl(
@@ -60,6 +62,13 @@ class AccountRepositoryImpl(
         accountRemoteDataSource.getUserBadgeList().map { result ->
             result.mapCatching { responseDto ->
                 responseDto.data.toUserBadgeList()
+            }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun getUserProfile(): Flow<Result<UserProfile>> =
+        accountRemoteDataSource.getUserProfile().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toUserProfile()
             }
         }.flowOn(ioDispatcher)
 }

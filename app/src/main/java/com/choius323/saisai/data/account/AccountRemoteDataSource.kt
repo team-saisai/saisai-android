@@ -6,6 +6,7 @@ import com.choius323.saisai.data.account.model.LoginDto
 import com.choius323.saisai.data.account.model.UserBadgeDetailDto
 import com.choius323.saisai.data.account.model.UserBadgeDto
 import com.choius323.saisai.data.account.model.UserInformationDto
+import com.choius323.saisai.data.account.model.UserProfileDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.saiFetch
 import io.ktor.client.HttpClient
@@ -26,6 +27,7 @@ interface AccountRemoteDataSource {
     suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<SaiResponseDto<UserBadgeDetailDto>>>
     suspend fun getUserInfo(): Flow<Result<SaiResponseDto<UserInformationDto>>>
     suspend fun getUserBadgeList(): Flow<Result<SaiResponseDto<List<UserBadgeDto>>>>
+    suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>> // 추가
 }
 
 class AccountRemoteDataSourceImpl(
@@ -58,6 +60,9 @@ class AccountRemoteDataSourceImpl(
 
     override suspend fun getUserBadgeList(): Flow<Result<SaiResponseDto<List<UserBadgeDto>>>> =
         saiFetch { client.get("badges/me") }
+
+    override suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>> =
+        saiFetch { client.get("my/profile") }
 }
 
 private const val TAG = "AccountRemoteDataSource"

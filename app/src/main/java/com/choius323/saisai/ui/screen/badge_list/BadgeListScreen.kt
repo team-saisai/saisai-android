@@ -93,17 +93,18 @@ private fun BadgeListScreenContent(
                 .fillMaxWidth()
                 .padding(top = 20.dp, start = 30.dp, end = 30.dp),
         ) {
-            itemsIndexed(uiState.badgeList, { index, badge -> badge.id }) { index, badge ->
+            itemsIndexed(uiState.badgeList, { _, badge -> badge.id }) { index, badge ->
                 Box(
-                    modifier = Modifier.fillMaxWidth(),
-                    // 아이템의 위치(index)에 따라 정렬을 다르게 적용합니다.
-                    contentAlignment = when (index % 3) {
+                    modifier = Modifier.fillMaxWidth(), contentAlignment = when (index % 3) {
                         0 -> Alignment.CenterStart
                         1 -> Alignment.Center
                         else -> Alignment.CenterEnd
                     }
                 ) {
-                    BadgeGridItem(badge)
+                    BadgeGridItem(
+                        badge,
+                        Modifier.clickable { onEvent(BadgeListUiEvent.OnClickBadge(badge.id)) }
+                    )
                 }
             }
         }
@@ -120,7 +121,10 @@ private fun BadgeGridItem(
     badge: UserBadge,
     modifier: Modifier = Modifier,
 ) {
-    Column(modifier, horizontalAlignment = Alignment.CenterHorizontally) {
+    Column(
+        modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
         AsyncImage(
             badge.imageUrl,
             contentDescription = "뱃지 이미지",
@@ -134,6 +138,7 @@ private fun BadgeGridItem(
         Spacer(Modifier.height(12.dp))
         SaiText(
             badge.name,
+            modifier = Modifier.widthIn(max = 94.dp),
             color = SaiColor.White,
             fontSize = 13.sp,
             fontWeight = FontWeight.W400,
@@ -179,8 +184,7 @@ private fun BadgeListScreenContentDialogPreview() {
         Surface {
             BadgeListScreenContent(
                 uiState = BadgeListUiState(
-                    badgeList = badgeList,
-                    showBadgeDetail = UserBadgeDetail.sample1
+                    badgeList = badgeList, showBadgeDetail = UserBadgeDetail.sample1
                 )
             ) {}
         }

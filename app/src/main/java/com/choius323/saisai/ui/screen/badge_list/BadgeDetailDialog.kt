@@ -40,13 +40,15 @@ fun BadgeDetailDialog(
 ) {
     Box(
         modifier
-            .background(Color(0x804A4D50)),
+            .background(Color(0x804A4D50))
+            .clickable(null, null, onClick = closeBadgeDialog),
         contentAlignment = Alignment.Center
     ) {
         Box(
             Modifier
                 .clip(RoundedCornerShape(24.dp))
                 .background(SaiColor.Gray85)
+                .clickable(null, null) {}
         ) {
             Icon(
                 Icons.Default.Close,

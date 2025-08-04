@@ -23,7 +23,7 @@ data class UserBadge(
         )
         val sample4 = UserBadge(
             id = 4,
-            name = "자주 보는 사이",
+            name = "천리 길도 한 바퀴부터",
             imageUrl = null,
         )
         val sample5 = UserBadge(

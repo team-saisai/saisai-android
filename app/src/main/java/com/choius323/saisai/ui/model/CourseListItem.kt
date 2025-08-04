@@ -28,7 +28,7 @@ data class CourseListItem(
             imageUrl = "https://example.com/image.jpg",
             participantsCount = 9982,
             challengeStatus = "ENDED",
-            challengeEndedAt = LocalDate.now().minusDays(3),
+            challengeEndedAt = LocalDate.of(2025, 11, 20),
             isEventActive = true,
             isBookmarked = false,
             reward = 1000,

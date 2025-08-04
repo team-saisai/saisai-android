@@ -65,7 +65,7 @@ private fun SaiTopAppBar(
     Box(
         modifier
             .fillMaxWidth()
-            .height(60.dp)
+            .height(TopAppBarHeight)
             .padding(start = 24.dp, end = 14.dp)
             .background(Color.Transparent),
         contentAlignment = Alignment.Center
@@ -158,3 +158,5 @@ fun ProvideAppBar(
         }
     }
 }
+
+val TopAppBarHeight = 60.dp

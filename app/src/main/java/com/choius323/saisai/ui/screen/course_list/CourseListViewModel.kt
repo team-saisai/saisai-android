@@ -50,7 +50,6 @@ class CourseListViewModel(
             reduce { state.copy(isLoading = true) }
         }
 
-        reduce { state.copy(isLoading = true) }
         getCourseListUseCase(page = nextPage).collectLatest { result ->
             result.onSuccess { coursePage ->
                 reduce {

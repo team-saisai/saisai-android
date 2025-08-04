@@ -4,5 +4,5 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class DeleteBookmarkCoursesDto(
-    val courseIds: List<Int>,
+    val courseIds: List<Long>,
 )

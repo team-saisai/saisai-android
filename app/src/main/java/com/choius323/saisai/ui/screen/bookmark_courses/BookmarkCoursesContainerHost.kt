@@ -1,7 +1,6 @@
 package com.choius323.saisai.ui.screen.bookmark_courses
 
 import com.choius323.saisai.ui.model.CourseListItem
-import com.choius323.saisai.ui.model.CourseSort
 
 data class BookmarkCoursesUiState(
     val isLoading: Boolean = false,
@@ -11,7 +10,6 @@ data class BookmarkCoursesUiState(
     val isLoadingMore: Boolean = false,
     val isLastPage: Boolean = false,
     val page: Int = 1,
-    val selectedSort: CourseSort = CourseSort.levelAsc,
     val selectedIndices: List<Int> = emptyList(),
     val showDeleteDialog: Boolean = false,
 )
@@ -26,7 +24,7 @@ sealed interface BookmarkCoursesUiEvent {
     data object OnClickDialogConfirm : BookmarkCoursesUiEvent
     data object OnClickDialogDismiss : BookmarkCoursesUiEvent
     data object OnClickDeleteAll : BookmarkCoursesUiEvent
-    data class OnSortSelected(val sort: CourseSort) : BookmarkCoursesUiEvent
+    data object LoadMore : BookmarkCoursesUiEvent
 }
 
 sealed interface BookmarkCoursesSideEffect {

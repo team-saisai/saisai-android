@@ -1,15 +1,11 @@
 package com.choius323.saisai.ui.screen.my_page
 
+import com.choius323.saisai.ui.model.UserProfile
+
 data class MyPageUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val name: String = "",
-    val email: String = "",
-    val profileImage: String? = null,
-    val rewardPoint: Int = 0,
-    val badgeCount: Int = 0,
-    val rideCount: Int = 0,
-    val bookmarkCount: Int = 0,
+    val userProfile: UserProfile = UserProfile(null, "", "", 0, 0, 0, 0),
 )
 
 sealed interface MyPageUiEvent {

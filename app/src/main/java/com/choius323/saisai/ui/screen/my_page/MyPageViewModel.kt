@@ -1,31 +1,21 @@
 package com.choius323.saisai.ui.screen.my_page
 
 import androidx.lifecycle.ViewModel
+import com.choius323.saisai.repository.AccountRepository
+import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 class MyPageViewModel(
-    // TODO: UseCases, Repository 등 주입
+    private val accountRepository: AccountRepository,
 ) : ViewModel(), ContainerHost<MyPageUiState, MyPageSideEffect> {
 
     override val container: Container<MyPageUiState, MyPageSideEffect> =
         container(MyPageUiState())
 
     init {
-        // TODO: 실제 API 데이터 호출
-        intent {
-            reduce {
-                state.copy(
-                    name = "델라",
-                    email = "saisai@naver.com",
-                    rewardPoint = 1280,
-                    badgeCount = 6,
-                    rideCount = 132,
-                    bookmarkCount = 24,
-                )
-            }
-        }
+        loadData()
     }
 
     // TODO: 이벤트 로직 추가
@@ -49,8 +39,23 @@ class MyPageViewModel(
         MyPageUiEvent.OnClickRewardHistory -> intent {
             postSideEffect(MyPageSideEffect.GoRewardHistory)
         }
+
         MyPageUiEvent.OnClickBadgeAchievement -> intent {
             postSideEffect(MyPageSideEffect.GoBadgeAchievement)
+        }
+    }
+
+    private fun loadData() = intent {
+        reduce { state.copy(isLoading = true) }
+        accountRepository.getUserProfile().collectLatest { result ->
+            result.onSuccess { profile ->
+                reduce {
+                    state.copy(userProfile = profile, isLoading = false)
+                }
+            }.onFailure { throwable ->
+                reduce { state.copy(isLoading = false) }
+                postSideEffect(MyPageSideEffect.ShowToast(throwable.message ?: "프로필을 가져오지 못했습니다."))
+            }
         }
     }
 }

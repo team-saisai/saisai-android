@@ -2,6 +2,7 @@ package com.choius323.saisai.di
 
 import com.choius323.saisai.ui.MainViewModel
 import com.choius323.saisai.ui.screen.badge_list.BadgeListViewModel
+import com.choius323.saisai.ui.screen.bookmark_courses.BookmarkCoursesViewModel
 import com.choius323.saisai.ui.screen.course_detail.CourseDetailViewModel
 import com.choius323.saisai.ui.screen.course_list.CourseListViewModel
 import com.choius323.saisai.ui.screen.home.HomeViewModel
@@ -20,4 +21,5 @@ val uiModule = module {
     viewModelOf(::CourseListViewModel)
     viewModelOf(::RecordViewModel)
     viewModelOf(::BadgeListViewModel)
+    viewModelOf(::BookmarkCoursesViewModel)
 }

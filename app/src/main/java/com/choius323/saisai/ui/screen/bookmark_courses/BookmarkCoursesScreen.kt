@@ -83,7 +83,8 @@ private fun BookmarkCoursesScreenContent(
             modifier = Modifier
                 .weight(1f)
                 // .fillMaxSize()
-                .padding(top = 10.dp, start = 12.dp, end = 12.dp),
+            // .padding(top = 10.dp, start = 12.dp, end = 12.dp)
+            ,
             loadMore = { onEvent(BookmarkCoursesUiEvent.LoadMore) },
             isLoadingMore = uiState.isLoadingMore
         )

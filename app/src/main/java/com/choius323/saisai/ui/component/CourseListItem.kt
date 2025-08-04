@@ -49,7 +49,8 @@ import org.threeten.bp.LocalDate
 fun CourseListItemHorizontal(
     modifier: Modifier = Modifier,
     course: CourseListItem,
-    onClickBookmark: () -> Unit,
+    showBookmark: Boolean = true,
+    onClickBookmark: () -> Unit = {},
 ) {
     Row(
         modifier = modifier
@@ -73,7 +74,7 @@ fun CourseListItemHorizontal(
             participantCount = course.participantsCount,
             reward = course.reward,
             isLong = true,
-            isBookmarked = course.isBookmarked,
+            isBookmarked = if (showBookmark) course.isBookmarked else null,
             modifier = Modifier
                 .weight(1f)
                 .padding(top = 12.dp, bottom = 18.dp, end = 10.dp),
@@ -95,7 +96,7 @@ fun CourseListItemVertical(
     isEventActive: Boolean = false,
     reward: Int = 0,
     endDate: LocalDate,
-    onClickBookmark: () -> Unit,
+    onClickBookmark: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -138,9 +139,9 @@ private fun CourseInformationSection(
     participantCount: Int,
     reward: Int,
     isLong: Boolean,
-    isBookmarked: Boolean,
+    isBookmarked: Boolean?,
     modifier: Modifier = Modifier,
-    onClickBookmark: () -> Unit,
+    onClickBookmark: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
@@ -185,9 +186,9 @@ private fun TitleSection(
     courseName: String,
     distance: Double,
     level: Level,
-    isBookmarked: Boolean,
+    isBookmarked: Boolean?,
     modifier: Modifier = Modifier,
-    onClickBookmark: () -> Unit,
+    onClickBookmark: () -> Unit = {},
 ) {
     Row(modifier) {
         Column(Modifier.weight(1f)) {
@@ -208,13 +209,15 @@ private fun TitleSection(
                 color = SaiColor.Gray40,
             )
         }
-        Icon(
-            if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-            contentDescription = "북마크",
-            modifier = Modifier
-                .size(26.dp)
-                .clickable(onClick = onClickBookmark),
-        )
+        if (isBookmarked != null) {
+            Icon(
+                if (isBookmarked) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
+                contentDescription = "북마크",
+                modifier = Modifier
+                    .size(26.dp)
+                    .clickable(onClick = onClickBookmark),
+            )
+        }
     }
 }
 
@@ -225,9 +228,12 @@ private fun CourseListItemHorizontalPreview() {
     SaiTheme {
         Surface {
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                CourseListItemHorizontal(course = CourseListItem.dummyItem1) {}
-                CourseListItemHorizontal(course = CourseListItem.dummyItem2) {}
-                CourseListItemHorizontal(course = CourseListItem.dummyItem3) {}
+                CourseListItemHorizontal(course = CourseListItem.dummyItem1)
+                CourseListItemHorizontal(course = CourseListItem.dummyItem2)
+                CourseListItemHorizontal(
+                    course = CourseListItem.dummyItem3,
+                    showBookmark = false
+                ) {}
             }
         }
     }

@@ -3,6 +3,7 @@ package com.choius323.saisai.repository
 import com.choius323.saisai.data.course.local.CourseLocalDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
+import com.choius323.saisai.data.course.remote.model.DeleteBookmarkCoursesDto
 import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
@@ -27,6 +28,8 @@ interface CourseRepository {
     suspend fun pauseRide(rideId: Long, duration: Long, totalDistance: Double): Flow<Result<Unit>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<Boolean>>
     suspend fun addBookmark(courseId: Long): Flow<Result<Boolean>>
+    suspend fun getBookmarkedCourses(page: Int): Flow<Result<CoursePage>>
+    suspend fun deleteBookmarkedCourses(courseIds: List<Int>): Flow<Result<Unit>>
     suspend fun getAllCourses(
         page: Int,
         status: String? = null,
@@ -128,4 +131,13 @@ class CourseRepositoryImpl(
             .map { result ->
                 result.mapCatching { it.data.isCourseBookmarked }
             }.flowOn(ioDispatcher)
+
+    override suspend fun getBookmarkedCourses(page: Int): Flow<Result<CoursePage>> =
+        courseRemoteDataSource.getBookmarkedCourses(page).map { result ->
+            result.mapCatching { it.toCoursePage() }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun deleteBookmarkedCourses(courseIds: List<Int>): Flow<Result<Unit>> =
+        courseRemoteDataSource.deleteBookmarkedCourses(DeleteBookmarkCoursesDto(courseIds))
+            .map { result -> result.map {} }.flowOn(ioDispatcher)
 }

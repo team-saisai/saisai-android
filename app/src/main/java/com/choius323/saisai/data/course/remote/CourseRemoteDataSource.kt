@@ -5,6 +5,7 @@ import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
 import com.choius323.saisai.data.course.remote.model.CourseItemDto
+import com.choius323.saisai.data.course.remote.model.DeleteBookmarkCoursesDto
 import com.choius323.saisai.data.course.remote.model.PauseRideDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.RideIdDto
@@ -21,8 +22,7 @@ import kotlinx.coroutines.flow.Flow
 interface CourseRemoteDataSource {
     suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>>
     suspend fun getAllCourses(
-        page: Int,
-        status: String?,
+        page: Int, status: String?,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>>
 
     suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
@@ -31,9 +31,10 @@ interface CourseRemoteDataSource {
     suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
     suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
+    suspend fun getBookmarkedCourses(page: Int): Flow<Result<SaiResponseDto<CourseDataDto>>>
+    suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>>
     suspend fun pauseRide(
-        rideId: Long,
-        pauseRideDto: PauseRideDto,
+        rideId: Long, pauseRideDto: PauseRideDto,
     ): Flow<Result<SaiResponseDto<RideIdDto>>>
 
     suspend fun completeCourse(
@@ -69,12 +70,11 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun completeCourse(
         rideId: Long, completeCourseDto: CompleteCourseDto,
-    ): Flow<Result<SaiResponseDto<Unit>>> =
-        saiFetch {
-            client.patch("rides/$rideId/complete") {
-                setBody(completeCourseDto)
-            }
+    ): Flow<Result<SaiResponseDto<Unit>>> = saiFetch {
+        client.patch("rides/$rideId/complete") {
+            setBody(completeCourseDto)
         }
+    }
 
     override suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =
         saiFetch { client.patch("rides/$rideId/resume") }
@@ -82,16 +82,21 @@ class CourseRemoteDataSourceImpl(
     override suspend fun pauseRide(
         rideId: Long,
         pauseRideDto: PauseRideDto,
-    ): Flow<Result<SaiResponseDto<RideIdDto>>> =
-        saiFetch {
-            client.patch("rides/$rideId/pause") {
-                setBody(pauseRideDto)
-            }
+    ): Flow<Result<SaiResponseDto<RideIdDto>>> = saiFetch {
+        client.patch("rides/$rideId/pause") {
+            setBody(pauseRideDto)
         }
+    }
 
     override suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
         saiFetch { client.post("courses/$courseId/bookmarks") }
 
     override suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
         saiFetch { client.delete("courses/$courseId/bookmarks") }
+
+    override suspend fun getBookmarkedCourses(page: Int): Flow<Result<SaiResponseDto<CourseDataDto>>> =
+        saiFetch { client.get("my/bookmarks/courses?page=$page") }
+
+    override suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>> =
+        saiFetch { client.delete("my/bookmarks/courses") { setBody(body) } }
 }

@@ -48,6 +48,7 @@ fun BookmarkCoursesListSection(
     onCourseClick: (Int) -> Unit,
     onCourseSelect: (Int) -> Unit,
     loadMore: () -> Unit,
+    onClickBookmark: (Int) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -81,7 +82,8 @@ fun BookmarkCoursesListSection(
                         } else {
                             onCourseClick(index)
                         }
-                    }
+                    },
+                    onClickBookmark = { onClickBookmark(index) }
                 )
                 if (index != courseList.lastIndex) {
                     Spacer(Modifier.height(18.dp))

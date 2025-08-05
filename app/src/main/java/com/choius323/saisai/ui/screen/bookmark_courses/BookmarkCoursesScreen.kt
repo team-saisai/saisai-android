@@ -65,7 +65,7 @@ fun BookmarkCoursesScreen(
         modifier = modifier,
     )
     if (uiState.isLoading) {
-        FullScreenLoading()
+        FullScreenLoading(isModal = true)
     }
 }
 
@@ -86,6 +86,7 @@ private fun BookmarkCoursesScreenContent(
             loadMore = { onEvent(BookmarkCoursesUiEvent.LoadMore) },
             isLoadingMore = uiState.isLoadingMore,
             deletedIndexList = uiState.deletedIndexList,
+            onClickBookmark = { index -> onEvent(BookmarkCoursesUiEvent.OnClickBookmark(index)) },
         )
         if (uiState.editMode) {
             DeleteSnackbar(

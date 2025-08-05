@@ -45,6 +45,8 @@ class BookmarkCoursesViewModel(
             if (state.deletedIndexList.isNotEmpty()) showDeleteDialog()
             else cancelEditMode()
         }
+
+        is BookmarkCoursesUiEvent.OnClickBookmark -> deleteCourses(listOf(event.index))
     }
 
     private fun fetchCourses(isLoadMore: Boolean = false, nextPageParam: Int? = null) = intent {
@@ -119,6 +121,10 @@ class BookmarkCoursesViewModel(
 
     private fun deleteSelectedCourses() = intent {
         val indexList = state.deletedIndexList.ifEmpty { state.courseList.indices.toList() }
+        deleteCourses(indexList)
+    }
+
+    private fun deleteCourses(indexList: List<Int>) = intent {
         val firstIndex = indexList.min()
         val selectedIds = indexList.map { state.courseList[it].courseId }
 

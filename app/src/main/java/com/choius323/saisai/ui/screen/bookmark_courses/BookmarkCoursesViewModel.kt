@@ -20,7 +20,6 @@ class BookmarkCoursesViewModel(
     }
 
     fun onEvent(event: BookmarkCoursesUiEvent) = when (event) {
-        is BookmarkCoursesUiEvent.OnClickCourse -> {}
         is BookmarkCoursesUiEvent.OnClickEdit -> enterEditMode()
         is BookmarkCoursesUiEvent.OnClickCancel -> cancelEditMode()
         is BookmarkCoursesUiEvent.OnClickDeleteAll -> showDeleteDialog()
@@ -29,8 +28,21 @@ class BookmarkCoursesViewModel(
         is BookmarkCoursesUiEvent.OnClickBack -> goBack()
         is BookmarkCoursesUiEvent.LoadMore -> fetchCourses(true)
         is BookmarkCoursesUiEvent.OnClickDeleteItem -> toggleItemSelection(event.index)
+        is BookmarkCoursesUiEvent.OnClickCourse -> intent {
+            postSideEffect(BookmarkCoursesSideEffect.GoCourseDetail(state.courseList[event.index].courseId))
+        }
+
+        is BookmarkCoursesUiEvent.OnClickDeleteSelected -> intent {
+            reduce {
+                state.copy(
+                    deletedIndexList = state.deletedIndexList + state.selectedIndices,
+                    selectedIndices = emptyList()
+                )
+            }
+        }
+
         is BookmarkCoursesUiEvent.OnClickConfirm -> intent {
-            if (state.selectedIndices.isNotEmpty()) showDeleteDialog()
+            if (state.deletedIndexList.isNotEmpty()) showDeleteDialog()
         }
     }
 
@@ -85,17 +97,29 @@ class BookmarkCoursesViewModel(
     }
 
     private fun enterEditMode() = intent {
-        reduce { state.copy(editMode = true, selectedIndices = emptyList()) }
+        reduce {
+            state.copy(
+                editMode = true,
+                selectedIndices = emptyList(),
+                deletedIndexList = emptyList(),
+            )
+        }
     }
 
     private fun cancelEditMode() = intent {
-        reduce { state.copy(editMode = false, selectedIndices = emptyList()) }
+        reduce {
+            state.copy(
+                editMode = false,
+                selectedIndices = emptyList(),
+                deletedIndexList = emptyList(),
+            )
+        }
     }
 
     private fun deleteSelectedCourses() = intent {
-        val selectedIndices = state.selectedIndices.ifEmpty { state.courseList.indices.toList() }
-        val firstIndex = selectedIndices.min()
-        val selectedIds = selectedIndices.map { state.courseList[it].courseId }
+        val indexList = state.deletedIndexList.ifEmpty { state.courseList.indices.toList() }
+        val firstIndex = indexList.min()
+        val selectedIds = indexList.map { state.courseList[it].courseId }
 
         reduce { state.copy(isLoading = true) }
         courseRepository.deleteBookmarkedCourses(selectedIds).collectLatest { result ->

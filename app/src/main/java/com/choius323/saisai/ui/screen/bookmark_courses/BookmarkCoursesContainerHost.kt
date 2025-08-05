@@ -12,6 +12,7 @@ data class BookmarkCoursesUiState(
     val page: Int = 1,
     val selectedIndices: List<Int> = emptyList(),
     val showDeleteDialog: Boolean = false,
+    val deletedIndexList: List<Int> = emptyList(),
 )
 
 sealed interface BookmarkCoursesUiEvent {
@@ -25,9 +26,11 @@ sealed interface BookmarkCoursesUiEvent {
     data object OnClickDialogDismiss : BookmarkCoursesUiEvent
     data object OnClickDeleteAll : BookmarkCoursesUiEvent
     data object LoadMore : BookmarkCoursesUiEvent
+    data object OnClickDeleteSelected : BookmarkCoursesUiEvent
 }
 
 sealed interface BookmarkCoursesSideEffect {
     data class ShowToast(val message: String) : BookmarkCoursesSideEffect
     data object GoBack : BookmarkCoursesSideEffect
+    data class GoCourseDetail(val courseId: Long) : BookmarkCoursesSideEffect
 }

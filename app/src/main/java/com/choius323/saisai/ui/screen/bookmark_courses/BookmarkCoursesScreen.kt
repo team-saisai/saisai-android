@@ -28,6 +28,7 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun BookmarkCoursesScreen(
     modifier: Modifier = Modifier,
     viewModel: BookmarkCoursesViewModel = koinViewModel(),
+    goCourseDetail: (Long) -> Unit,
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
@@ -44,6 +45,7 @@ fun BookmarkCoursesScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is BookmarkCoursesSideEffect.GoBack -> goBack()
+            is BookmarkCoursesSideEffect.GoCourseDetail -> goCourseDetail(sideEffect.courseId)
             is BookmarkCoursesSideEffect.ShowToast -> {
                 context.SaiToast(sideEffect.message)
             }
@@ -57,7 +59,7 @@ fun BookmarkCoursesScreen(
     )
     DeleteBookmarkDialog(
         uiState.showDeleteDialog,
-        uiState.selectedIndices.size,
+        uiState.selectedIndices.size.takeIf { it != 0 } ?: uiState.courseList.size,
         onDismissRequest = { viewModel.onEvent(BookmarkCoursesUiEvent.OnClickDialogDismiss) },
         onConfirm = { viewModel.onEvent(BookmarkCoursesUiEvent.OnClickDialogConfirm) },
         modifier = modifier,
@@ -78,21 +80,18 @@ private fun BookmarkCoursesScreenContent(
             courseList = uiState.courseList,
             selectedIndexList = uiState.selectedIndices,
             isEditMode = uiState.editMode,
-            onCourseClick = { courseId -> onEvent(BookmarkCoursesUiEvent.OnClickCourse(courseId)) },
-            onCourseSelect = { courseId -> onEvent(BookmarkCoursesUiEvent.OnClickDeleteItem(courseId)) },
-            modifier = Modifier
-                .weight(1f)
-                // .fillMaxSize()
-            // .padding(top = 10.dp, start = 12.dp, end = 12.dp)
-            ,
+            onCourseClick = { index -> onEvent(BookmarkCoursesUiEvent.OnClickCourse(index)) },
+            onCourseSelect = { index -> onEvent(BookmarkCoursesUiEvent.OnClickDeleteItem(index)) },
+            modifier = Modifier.weight(1f),
             loadMore = { onEvent(BookmarkCoursesUiEvent.LoadMore) },
-            isLoadingMore = uiState.isLoadingMore
+            isLoadingMore = uiState.isLoadingMore,
+            deletedIndexList = uiState.deletedIndexList,
         )
         if (uiState.editMode) {
             DeleteSnackbar(
                 uiState.selectedIndices.size,
                 onClickDeleteAll = { onEvent(BookmarkCoursesUiEvent.OnClickDeleteAll) },
-                onClickDeleteSelected = { onEvent(BookmarkCoursesUiEvent.OnClickConfirm) },
+                onClickDeleteSelected = { onEvent(BookmarkCoursesUiEvent.OnClickDeleteSelected) },
                 modifier = Modifier
             )
         }

@@ -25,9 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.CourseListItemHorizontal
+import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -37,6 +40,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 fun BookmarkCoursesListSection(
     courseList: List<CourseListItem>,
     selectedIndexList: List<Int>,
+    deletedIndexList: List<Int>,
     isEditMode: Boolean,
     isLoadingMore: Boolean,
     onCourseClick: (Int) -> Unit,
@@ -46,28 +50,38 @@ fun BookmarkCoursesListSection(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxSize()
-        // .padding(horizontal = 16.dp)
-        ,
+            .fillMaxSize(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
     ) {
+        if (courseList.isEmpty()) {
+            item {
+                SaiText(
+                    "주행한 코스 기록이 없습니다",
+                    fontSize = 16.sp,
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier.fillMaxSize(),
+                )
+            }
+        }
         itemsIndexed(
             items = courseList,
             key = { _, item -> item.courseId }
         ) { index, item ->
-            BookmarkCourseListItem(
-                item = item,
-                isEditMode = isEditMode,
-                isSelected = index in selectedIndexList,
-                onItemClick = {
-                    if (isEditMode) {
-                        onCourseSelect(index)
-                    } else {
-                        onCourseClick(index)
+            if (index !in deletedIndexList) {
+                BookmarkCourseListItem(
+                    item = item,
+                    isEditMode = isEditMode,
+                    isSelected = index in selectedIndexList,
+                    onItemClick = {
+                        if (isEditMode) {
+                            onCourseSelect(index)
+                        } else {
+                            onCourseClick(index)
+                        }
                     }
-                }
-            )
+                )
+            }
             if (index == courseList.lastIndex) {
                 loadMore()
             }

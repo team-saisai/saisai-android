@@ -59,7 +59,7 @@ fun BookmarkCoursesScreen(
     )
     DeleteBookmarkDialog(
         uiState.showDeleteDialog,
-        uiState.selectedIndices.size.takeIf { it != 0 } ?: uiState.courseList.size,
+        uiState.deletedIndexList.size.takeIf { it != 0 } ?: uiState.courseList.size,
         onDismissRequest = { viewModel.onEvent(BookmarkCoursesUiEvent.OnClickDialogDismiss) },
         onConfirm = { viewModel.onEvent(BookmarkCoursesUiEvent.OnClickDialogConfirm) },
         modifier = modifier,

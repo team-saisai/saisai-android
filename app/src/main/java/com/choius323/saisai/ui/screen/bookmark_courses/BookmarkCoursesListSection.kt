@@ -6,8 +6,10 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -50,8 +52,8 @@ fun BookmarkCoursesListSection(
 ) {
     LazyColumn(
         modifier = modifier
+            .padding(horizontal = 18.dp)
             .fillMaxSize(),
-        verticalArrangement = Arrangement.spacedBy(20.dp),
         contentPadding = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
     ) {
         if (courseList.isEmpty()) {
@@ -81,6 +83,9 @@ fun BookmarkCoursesListSection(
                         }
                     }
                 )
+                if (index != courseList.lastIndex) {
+                    Spacer(Modifier.height(18.dp))
+                }
             }
             if (index == courseList.lastIndex) {
                 loadMore()

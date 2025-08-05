@@ -43,6 +43,7 @@ class BookmarkCoursesViewModel(
 
         is BookmarkCoursesUiEvent.OnClickConfirm -> intent {
             if (state.deletedIndexList.isNotEmpty()) showDeleteDialog()
+            else cancelEditMode()
         }
     }
 

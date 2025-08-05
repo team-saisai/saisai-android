@@ -43,11 +43,13 @@ android {
                 "proguard-rules.pro"
             )
             val kakaoKey = properties.getProperty("kakao.key")
+            manifestPlaceholders["KAKAO_KEY"] = kakaoKey ?: ""
             buildConfigField("String", "KAKAO_KEY", "\"$kakaoKey\"")
             buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
         }
         debug {
             val kakaoTestKey = properties.getProperty("kakao.test.key")
+            manifestPlaceholders["KAKAO_KEY"] = kakaoTestKey ?: ""
             buildConfigField("String", "KAKAO_KEY", "\"$kakaoTestKey\"")
             buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
         }

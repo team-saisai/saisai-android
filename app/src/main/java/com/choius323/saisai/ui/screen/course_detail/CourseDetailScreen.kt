@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
@@ -18,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
@@ -38,6 +40,7 @@ fun CourseDetailScreen(
     goRecordScreen: (courseId: Long) -> Unit,
     goBack: () -> Unit,
 ) {
+    ChangeStatusBarIconsColor()
     val uiState by viewModel.collectAsState()
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
@@ -84,7 +87,8 @@ fun CourseDetailScreenContent(
                 uiState.courseDetail,
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
-                    .padding(horizontal = 18.dp, vertical = 32.dp),
+                    .widthIn(min = 354.dp)
+                    .padding(bottom = 32.dp),
                 onChallengeClick = { onEvent(CourseDetailUiEvent.CourseStartClicked) }
             )
         }

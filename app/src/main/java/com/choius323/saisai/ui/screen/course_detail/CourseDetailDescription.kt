@@ -34,11 +34,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -59,11 +57,6 @@ fun CourseDetailDescription(
     onChallengeClick: () -> Unit,
 ) {
     var expanded by remember { mutableStateOf(false) }
-    val summaryText by remember(detail.summary) {
-        derivedStateOf {
-            AnnotatedString.fromHtml(detail.summary)
-        }
-    }
     val time by remember(detail.estimatedTime) {
         derivedStateOf {
             val hour = detail.estimatedTime.toInt() / 60
@@ -114,7 +107,9 @@ fun CourseDetailDescription(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 24.dp),
-                    text = summaryText
+                    fontSize = 14.sp,
+                    lineHeight = 22.sp,
+                    text = detail.summary
                 )
             }
         }

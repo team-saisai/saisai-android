@@ -34,11 +34,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.fromHtml
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -55,26 +53,25 @@ fun RecordStateDescription(
     toggleRecording: () -> Unit,
     toggleExpanded: () -> Unit,
 ) {
-    val courseDetail by remember { derivedStateOf { uiState.courseDetail } }
-    if (courseDetail == null) return
+    val courseDetail = uiState.courseDetail ?: return
     val distance by remember(uiState.totalRideDistance) {
         derivedStateOf {
             buildAnnotatedString {
                 withStyle(SpanStyle(color = SaiColor.Lime)) {
                     append("${uiState.totalRideDistance}km")
                 }
-                append(" / ${courseDetail!!.distance}km")
+                append(" / ${courseDetail.distance}km")
             }
         }
     }
     Column(
         modifier = modifier
-            .animateContentSize(animationSpec = tween(500))
     ) {
         RecordDescriptionSummary(
-            courseDetail = uiState.courseDetail!!,
+            courseDetail = uiState.courseDetail,
             expanded = uiState.isExpandedSummary,
-            modifier = modifier,
+            modifier = Modifier
+                .animateContentSize(animationSpec = tween(500)),
             toggleExpanded = toggleExpanded
         )
         Spacer(Modifier.height(8.dp))
@@ -176,11 +173,6 @@ private fun RecordDescriptionSummaryOpened(
     modifier: Modifier = Modifier,
     toggleExpanded: () -> Unit,
 ) {
-    val summaryText by remember(detail.summary) {
-        derivedStateOf {
-            AnnotatedString.fromHtml(detail.summary)
-        }
-    }
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -204,7 +196,7 @@ private fun RecordDescriptionSummaryOpened(
         Spacer(Modifier.height(14.dp))
         SaiText(
             modifier = Modifier.fillMaxWidth(),
-            text = summaryText,
+            text = detail.summary,
             lineHeight = 22.sp,
             fontSize = 14.sp,
         )

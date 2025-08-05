@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -29,6 +30,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.lifecycle.coroutineScope
+import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.ProvideAppBar
@@ -143,7 +145,6 @@ fun RecordScreen(
     if (uiState.isShowCompleteDialog) {
         val courseDetail = uiState.courseDetail
         if (courseDetail != null) {
-            println("isShowCompleteDialog: ${uiState.isShowCompleteDialog}")
             RideCompleteDialog(
                 courseDetail.imageUrl,
                 courseDetail.courseName,
@@ -158,7 +159,7 @@ fun RecordScreen(
         }
     }
     if (uiState.isLoading) {
-        FullScreenLoading()
+        FullScreenLoading(isModal = true)
     }
 }
 
@@ -185,7 +186,10 @@ fun RecordScreenContent(
         }
         RecordStateDescription(
             uiState = uiState,
-            modifier = Modifier.align(Alignment.BottomCenter),
+            modifier = Modifier
+                .align(Alignment.BottomCenter)
+                .widthIn(min = 354.dp)
+                .padding(bottom = 32.dp),
             toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },
             toggleExpanded = { onEvent(RecordUiEvent.OnToggleExpandedSummary) }
         )

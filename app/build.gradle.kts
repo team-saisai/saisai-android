@@ -145,6 +145,8 @@ dependencies {
     // Kakao
     implementation(libs.kakao.map)
     implementation(libs.kakao.common)
+    implementation(libs.kakao.auth)
+    implementation(libs.kakao.user)
 
     // DataStore
     implementation(libs.datastore.preferences)

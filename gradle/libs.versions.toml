@@ -45,7 +45,7 @@ accompanist = "0.37.3"
 
 # Kakao
 kakaoMap = "2.12.8"
-kakaoCommon = "2.21.4"
+kakao = "2.21.6"
 
 # DataStore
 datastore = "1.1.7"
@@ -130,7 +130,9 @@ accompanist-permissions = { group = "com.google.accompanist", name = "accompanis
 
 # Kakao
 kakao-map = { module = "com.kakao.maps.open:android", version.ref = "kakaoMap" }
-kakao-common = { module = "com.kakao.sdk:v2-common", version.ref = "kakaoCommon" }
+kakao-common = { module = "com.kakao.sdk:v2-common", version.ref = "kakao" }
+kakao-user = { module = "com.kakao.sdk:v2-user", version.ref = "kakao" }
+kakao-auth = { module = "com.kakao.sdk:v2-auth", version.ref = "kakao" }
 
 # DataStore
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }

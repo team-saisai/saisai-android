@@ -8,6 +8,7 @@ import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.camera.CameraAnimation
 import com.kakao.vectormap.camera.CameraUpdateFactory
+import com.kakao.vectormap.label.LabelLayerOptions
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
@@ -15,6 +16,7 @@ import com.kakao.vectormap.route.RouteLineOptions
 import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
 import com.kakao.vectormap.R as KakaoMapR
+
 
 fun updateMapData(map: KakaoMap?, route: List<GpxPoint>) {
     val latLngList = route.map(GpxPoint::toLatLng)
@@ -85,16 +87,40 @@ fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
     label.moveTo(latLng)
 }
 
+fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
+    val layer = this?.labelManager?.addLayer(LabelLayerOptions.from(CIRCLE_LAYER_ID)) ?: return
+    layer.zOrder = 5
+    val resource = if (isColor) R.drawable.ic_circle_lime else R.drawable.ic_circle_gray
+    list.forEachIndexed { index, latLng ->
+        val label = layer.addLabel(
+            LabelOptions.from(latLng)
+                .setStyles(LabelStyle.from(resource).setAnchorPoint(0.5f, 0.5f))
+        )
+        label.scaleTo(3f, 3f)
+    }
+}
+
+fun KakaoMap?.changeCirclesStyle(passedIndex: Int, style: LabelStyle = limeCircleStyle) {
+    val layer = this?.labelManager?.getLayer(CIRCLE_LAYER_ID) ?: return
+    layer.allLabels?.get(passedIndex)?.setStyles(style)
+}
+
 private const val START_LABEL = "Start"
 private const val END_LABEL = "End"
 private const val DIRECTION_LABEL = "Direction"
+private const val CIRCLE_ID = "Circle"
+private const val CIRCLE_LAYER_ID = "CircleLayer"
 
 private val startStyle: LabelStyles =
     LabelStyles.from(START_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
 private val endStyle: LabelStyles =
     LabelStyles.from(END_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
 private val directionStyle: LabelStyles =
-    LabelStyles.from(DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_direction_label))
+    LabelStyles.from(
+        DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_ride_bicycle).setAnchorPoint(0.5f, 0.5f)
+    )
 private val rideLineStyle = RouteLineStyle.from(LINE_WIDTH, SaiColor.Lime.toArgb())
+private val grayCircleStyle = LabelStyle.from(R.drawable.ic_circle_gray).setAnchorPoint(0.5f, 0.5f)
+private val limeCircleStyle = LabelStyle.from(R.drawable.ic_circle_lime).setAnchorPoint(0.5f, 0.5f)
 
 private const val LINE_WIDTH = 20f

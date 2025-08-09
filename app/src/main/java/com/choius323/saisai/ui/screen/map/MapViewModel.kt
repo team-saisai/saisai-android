@@ -18,7 +18,16 @@ class MapViewModel(
             }
 
             is MapUiEvent.SetRoute -> intent {
-                reduce { state.copy(route = event.route) }
+                reduce {
+                    state.copy(
+                        route = event.route,
+                        checkPointList = if (event.route.isNotEmpty()) {
+                            List(3) { event.route[((it + 1) * (event.route.lastIndex.toFloat() / 4)).toInt()] }
+                        } else {
+                            emptyList()
+                        }
+                    )
+                }
             }
 
             is MapUiEvent.SetIsTracking -> setIsTracking(event)

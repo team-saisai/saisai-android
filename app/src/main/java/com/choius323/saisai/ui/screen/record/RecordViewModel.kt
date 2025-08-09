@@ -28,9 +28,14 @@ class RecordViewModel(
                 result.onSuccess { courseDetail ->
                     reduce {
                         state.copy(
+                            // TODO: 실제 데이터로 수정 필요
                             courseDetail = courseDetail.copy(
                                 gpxPointList = courseDetail.gpxPointList.take(
                                     5
+                                ),
+                                checkPointList = listOf(
+                                    courseDetail.gpxPointList[2],
+                                    courseDetail.gpxPointList[4]
                                 )
                             ), isLoading = false
                         )

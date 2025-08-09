@@ -7,6 +7,7 @@ data class MapUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val route: List<GpxPoint> = emptyList(),
+    val checkPointList: List<GpxPoint> = emptyList(),
     val nowLatLng: LatLng? = null,
     val isTracking: Boolean = false,
     val permissionGranted: Boolean = false,

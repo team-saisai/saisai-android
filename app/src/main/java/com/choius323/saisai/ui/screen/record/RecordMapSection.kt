@@ -29,6 +29,7 @@ import com.choius323.saisai.ui.screen.map.ObserveLocation
 import com.choius323.saisai.ui.screen.map.createDirectionLabel
 import com.choius323.saisai.ui.screen.map.drawRideRoute
 import com.choius323.saisai.ui.screen.map.drawRoute
+import com.choius323.saisai.ui.screen.map.initCircles
 import com.choius323.saisai.ui.screen.map.moveCamera
 import com.choius323.saisai.ui.screen.map.rememberMapView
 import com.choius323.saisai.ui.screen.map.updateMapData
@@ -103,6 +104,11 @@ private fun RecordMapSetting(
             kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
         }
         kakaoMap.moveCamera(latLngList)
+    }
+    LaunchedEffect(uiState.courseDetail?.checkPointList) {
+        val checkPointList =
+            uiState.courseDetail?.checkPointList?.map { it.toLatLng() } ?: emptyList()
+        kakaoMap.initCircles(checkPointList, false)
     }
     LaunchedEffect(uiState.nowLatLng) {
         if (uiState.nowLatLng != null) {

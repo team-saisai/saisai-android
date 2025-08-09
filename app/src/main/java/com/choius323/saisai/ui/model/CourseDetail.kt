@@ -18,6 +18,7 @@ data class CourseDetail(
     val challengeEndedAt: LocalDate,
     val isEventActive: Boolean,
     val gpxPointList: List<GpxPoint>,
+    val checkPointList: List<GpxPoint> = emptyList(),
 ) {
     companion object {
         val sample = CourseDetail(

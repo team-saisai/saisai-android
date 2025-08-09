@@ -104,6 +104,7 @@ private fun MapScreen(
         val latLngList = uiState.route.map { it.toLatLng() }
         kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
         kakaoMap.moveCamera(latLngList)
+        kakaoMap.initCircles(uiState.checkPointList.map { it.toLatLng() })
     }
     LaunchedEffect(uiState.nowLatLng) {
         if (uiState.nowLatLng != null) {

@@ -20,6 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
+import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
@@ -70,6 +71,9 @@ fun CourseDetailScreen(
             )
         },
     )
+    if (uiState.isLoading) {
+        FullScreenLoading()
+    }
 }
 
 

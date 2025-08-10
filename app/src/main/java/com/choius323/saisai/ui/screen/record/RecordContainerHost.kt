@@ -13,9 +13,7 @@ data class RecordUiState(
     val startTime: Long = 0,
     val isShowPermissionDialog: Boolean = false,
     val isCameraTracking: Boolean = false,
-    val segmentIndex: Int = 0,
-    val totalRideDistance: Double = 0.0,
-    val projectedPoint: LatLng? = null,
+    val nowCheckPointIndex: Int = -1,
     val nowLatLng: LatLng? = null,
     val rideId: Long = 0,
     val isShowCompleteDialog: Boolean = false,
@@ -24,6 +22,8 @@ data class RecordUiState(
 ) {
     val route: List<GpxPoint>
         get() = courseDetail?.gpxPointList ?: emptyList()
+    val totalRideDistance: Double
+        get() = courseDetail?.checkPointList?.getOrNull(nowCheckPointIndex)?.totalDistance ?: 0.0
 }
 
 sealed interface RecordUiEvent {

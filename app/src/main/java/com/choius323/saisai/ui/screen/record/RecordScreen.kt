@@ -117,19 +117,20 @@ fun RecordScreen(
             )
 
             is RecordSideEffect.StartRecording -> {
-                getCurrentLocation(
-                    context = context,
-                    callbackLocation = { location ->
-                        viewModel.onEvent(
-                            RecordUiEvent.StartRecording(
-                                isPermissionGranted = permissionState.allPermissionsGranted,
-                                nowLatLng = LatLng.from(
-                                    location.latitude,
-                                    location.longitude
+                if (permissionState.allPermissionsGranted) {
+                    getCurrentLocation(
+                        context = context,
+                        callbackLocation = { location ->
+                            viewModel.onEvent(
+                                RecordUiEvent.StartRecording(
+                                    isPermissionGranted = permissionState.allPermissionsGranted,
+                                    nowLatLng = LatLng.from(location.latitude, location.longitude)
                                 )
                             )
-                        )
-                    })
+                        })
+                } else {
+                    viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
+                }
             }
         }
     }
@@ -148,7 +149,7 @@ fun RecordScreen(
             RideCompleteDialog(
                 courseDetail.imageUrl,
                 courseDetail.courseName,
-                uiState.totalRideDistance,
+                courseDetail.distance,
                 endTime = uiState.startTime,
                 modifier = modifier.fillMaxSize(),
                 goHome = goHome,

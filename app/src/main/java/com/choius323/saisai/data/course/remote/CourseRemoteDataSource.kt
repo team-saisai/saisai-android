@@ -39,7 +39,7 @@ interface CourseRemoteDataSource {
 
     suspend fun completeCourse(
         rideId: Long, completeCourseDto: CompleteCourseDto,
-    ): Flow<Result<SaiResponseDto<Unit>>>
+    ): Flow<Result<SaiResponseDto<Unit?>>>
 }
 
 class CourseRemoteDataSourceImpl(
@@ -72,7 +72,7 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun completeCourse(
         rideId: Long, completeCourseDto: CompleteCourseDto,
-    ): Flow<Result<SaiResponseDto<Unit>>> = saiFetch {
+    ): Flow<Result<SaiResponseDto<Unit?>>> = saiFetch {
         client.patch("rides/$rideId/complete") {
             setBody(completeCourseDto)
         }

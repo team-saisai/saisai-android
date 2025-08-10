@@ -32,7 +32,8 @@ fun KakaoMap?.drawRoute(route: List<LatLng>, color: Int = SaiColor.Lime.toArgb()
     val style = RouteLineStyle.from(LINE_WIDTH, color)
     val segment = RouteLineSegment.from(route)
         .setStyles(style)
-    layer.addRouteLine(RouteLineOptions.from(segment))
+    val routeLine = layer.addRouteLine(RouteLineOptions.from(segment))
+    routeLine.zOrder = 3
 }
 
 fun KakaoMap?.drawRideRoute(route: List<LatLng>, startIndex: Int, endIndex: Int) {
@@ -41,7 +42,9 @@ fun KakaoMap?.drawRideRoute(route: List<LatLng>, startIndex: Int, endIndex: Int)
     if (layer.getRouteLine("rideLine/${startIndex}/${endIndex}") != null) return
     val segment =
         RouteLineSegment.from(route.subList(startIndex, endIndex)).setStyles(rideLineStyle)
-    layer.addRouteLine(RouteLineOptions.from("rideLine/${startIndex}/${endIndex}", segment))
+    val routeLine =
+        layer.addRouteLine(RouteLineOptions.from("rideLine/${startIndex}/${endIndex}", segment))
+    routeLine.zOrder = 3
 }
 
 @JvmName("drawRideRouteWithGpxPoints")
@@ -89,7 +92,6 @@ fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
 
 fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
     val layer = this?.labelManager?.addLayer(LabelLayerOptions.from(CIRCLE_LAYER_ID)) ?: return
-    layer.zOrder = 5
     val resource = if (isColor) R.drawable.ic_circle_lime else R.drawable.ic_circle_gray
     list.forEachIndexed { index, latLng ->
         val label = layer.addLabel(
@@ -100,9 +102,19 @@ fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
     }
 }
 
-fun KakaoMap?.changeCirclesStyle(passedIndex: Int, style: LabelStyle = limeCircleStyle) {
+fun KakaoMap?.setCirclesStyle(list: List<LatLng>, passedIndex: Int) {
     val layer = this?.labelManager?.getLayer(CIRCLE_LAYER_ID) ?: return
-    layer.allLabels?.get(passedIndex)?.setStyles(style)
+    layer.removeAll()
+    for ((index, latLng) in list.withIndex()) {
+        val label = layer.addLabel(
+            LabelOptions.from(latLng)
+                .setStyles(
+                    LabelStyle.from(if (index > passedIndex) R.drawable.ic_circle_gray else R.drawable.ic_circle_lime)
+                        .setAnchorPoint(0.5f, 0.5f)
+                )
+        )
+        label.scaleTo(3f, 3f)
+    }
 }
 
 private const val START_LABEL = "Start"

@@ -11,7 +11,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,11 +26,11 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.choius323.saisai.ui.screen.map.ObserveLocation
 import com.choius323.saisai.ui.screen.map.createDirectionLabel
-import com.choius323.saisai.ui.screen.map.drawRideRoute
 import com.choius323.saisai.ui.screen.map.drawRoute
 import com.choius323.saisai.ui.screen.map.initCircles
 import com.choius323.saisai.ui.screen.map.moveCamera
 import com.choius323.saisai.ui.screen.map.rememberMapView
+import com.choius323.saisai.ui.screen.map.setCirclesStyle
 import com.choius323.saisai.ui.screen.map.updateMapData
 import com.choius323.saisai.ui.theme.SaiColor
 import com.kakao.vectormap.KakaoMap
@@ -58,7 +57,6 @@ fun RecordMapSection(
                 Log.d(TAG, "MapView update")
             }, modifier = Modifier.fillMaxSize()
         )
-        Text("${uiState.totalRideDistance}")
         if (uiState.isRecording) {
             Icon(
                 imageVector = Icons.Default.LocationOn,
@@ -115,12 +113,10 @@ private fun RecordMapSetting(
             kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
-    LaunchedEffect(uiState.segmentIndex) {
-        if (uiState.projectedPoint != null && uiState.segmentIndex > 0 && uiState.isRecording) {
-            kakaoMap.drawRideRoute(
-                uiState.route,
-                uiState.segmentIndex - 1, uiState.segmentIndex + 1
-            )
+    LaunchedEffect(uiState.nowCheckPointIndex, uiState.isRecording) {
+        if (uiState.courseDetail != null && uiState.isRecording && uiState.nowCheckPointIndex >= 0) {
+            val list = uiState.courseDetail.checkPointList.map { it.toLatLng() }
+            kakaoMap.setCirclesStyle(list, uiState.nowCheckPointIndex)
         }
     }
     ObserveLocation(

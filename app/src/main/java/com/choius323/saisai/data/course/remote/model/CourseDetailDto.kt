@@ -15,7 +15,7 @@ data class CourseDetailDto(
     val imageUrl: String? = null,
     val challengerCount: Int, // 챌린지 참여자 수
     val finisherCount: Int, // 완주 수
-    val rideId: Int?,
+    val rideId: Long?,
     val challengeStatus: String,
     val challengeEndedAt: String,
     val isEventActive: Boolean,

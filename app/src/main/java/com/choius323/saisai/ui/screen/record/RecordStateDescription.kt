@@ -54,7 +54,7 @@ fun RecordStateDescription(
     toggleExpanded: () -> Unit,
 ) {
     val courseDetail = uiState.courseDetail ?: return
-    val distance by remember(uiState.totalRideDistance) {
+    val distance by remember(courseDetail.distance) {
         derivedStateOf {
             buildAnnotatedString {
                 withStyle(SpanStyle(color = SaiColor.Lime)) {
@@ -114,7 +114,11 @@ fun RecordStateDescription(
                 }
             }
             Spacer(Modifier.width(28.dp))
-            RecordingToggleButton(uiState.isRecording, toggleRecording = toggleRecording)
+            RecordingToggleButton(
+                uiState.isRecording,
+                uiState.isPaused,
+                toggleRecording = toggleRecording
+            )
         }
     }
 }
@@ -122,6 +126,7 @@ fun RecordStateDescription(
 @Composable
 private fun RecordingToggleButton(
     isRecording: Boolean,
+    isPaused: Boolean,
     modifier: Modifier = Modifier,
     toggleRecording: () -> Unit,
 ) {
@@ -134,14 +139,14 @@ private fun RecordingToggleButton(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = if (isRecording) Icons.Default.Pause else Icons.Default.PlayArrow,
+            imageVector = if (isPaused) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = "도전하기 아이콘",
             tint = SaiColor.Black,
             modifier = Modifier.size(26.dp)
         )
         Spacer(modifier = Modifier.height(2.dp))
         SaiText(
-            text = if (isRecording) "일시정지" else "이어하기",
+            text = if (isPaused) "일시정지" else "이어하기",
             style = MaterialTheme.typography.labelMedium.copy(
                 color = SaiColor.Black, fontWeight = FontWeight.SemiBold
             ),
@@ -260,7 +265,7 @@ private fun RecordStateDescriptionPreview() {
                 uiState = RecordUiState(
                     courseDetail = CourseDetail.sample,
                     isRecording = true,
-                    totalRideDistance = 5.3
+                    nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
                 ), Modifier, {}, {}
             )
         }
@@ -275,7 +280,7 @@ private fun RecordStateDescriptionStopPreview() {
             RecordStateDescription(
                 uiState = RecordUiState(
                     courseDetail = CourseDetail.sample,
-                    totalRideDistance = 5.3
+                    nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
                 ), Modifier, {}, {}
             )
         }

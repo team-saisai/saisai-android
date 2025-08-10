@@ -4,7 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -76,6 +75,7 @@ fun CourseDetailDescription(
             modifier = Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(16.dp))
+                .clickable { expanded = expanded.not() }
                 .background(Color(0xE642464A))
                 .padding(18.dp)
                 .animateContentSize(animationSpec = tween(500)),
@@ -140,28 +140,6 @@ private fun CourseInfoSection(detail: CourseDetail) {
             fontSize = 12.sp,
             color = SaiColor.Gray40
         )
-    }
-}
-
-@Composable
-private fun ThemeTagsSection(themes: List<String>) {
-    Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        themes.forEach { theme ->
-            Surface(
-                modifier = Modifier
-                // .padding(horizontal = 10.dp, vertical = 5.dp)
-                ,
-                shape = RoundedCornerShape(12.dp),
-                tonalElevation = 2.dp
-            ) {
-                SaiText(
-                    text = theme,
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 5.dp),
-                    color = MaterialTheme.colorScheme.onSurface,
-                    fontSize = 12.sp,
-                )
-            }
-        }
     }
 }
 

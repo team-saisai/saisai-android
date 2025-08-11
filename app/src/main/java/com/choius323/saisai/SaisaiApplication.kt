@@ -7,6 +7,7 @@ import com.choius323.saisai.di.dataModule
 import com.choius323.saisai.di.uiModule
 import com.choius323.saisai.di.useCaseModule
 import com.jakewharton.threetenabp.AndroidThreeTen
+import com.kakao.sdk.common.KakaoSdk
 import com.kakao.vectormap.KakaoMapSdk
 import org.koin.android.ext.android.inject
 import org.koin.android.ext.koin.androidContext
@@ -23,6 +24,7 @@ class SaisaiApplication : Application() {
             modules(uiModule, useCaseModule, dataModule)
         }
         KakaoMapSdk.init(this, BuildConfig.KAKAO_KEY)
+        KakaoSdk.init(this, BuildConfig.KAKAO_KEY)
         SessionManager.init(authDataStore)
     }
 }

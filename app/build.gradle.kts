@@ -46,12 +46,22 @@ android {
             manifestPlaceholders["KAKAO_KEY"] = kakaoKey ?: ""
             buildConfigField("String", "KAKAO_KEY", "\"$kakaoKey\"")
             buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${properties.getProperty("google.web.client.id")}\""
+            )
         }
         debug {
             val kakaoTestKey = properties.getProperty("kakao.test.key")
             manifestPlaceholders["KAKAO_KEY"] = kakaoTestKey ?: ""
             buildConfigField("String", "KAKAO_KEY", "\"$kakaoTestKey\"")
             buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${properties.getProperty("google.web.client.id")}\""
+            )
         }
         create("releaseTest") {
             initWith(getByName("release"))
@@ -155,6 +165,10 @@ dependencies {
 
     // GMS
     implementation(libs.gms.services.location)
+    implementation("com.google.android.gms:play-services-auth:21.4.0")
+    implementation("com.google.android.libraries.identity.googleid:googleid:1.1.1")
+    implementation("androidx.credentials:credentials:1.5.0")
+    implementation("androidx.credentials:credentials-play-services-auth:1.5.0")
 
     // Proto
     implementation(libs.androidx.datastore.core)

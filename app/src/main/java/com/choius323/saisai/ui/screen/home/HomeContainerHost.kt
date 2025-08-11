@@ -21,9 +21,11 @@ sealed interface HomeUiEvent {
     data class LoadData(val isForceLoad: Boolean = false) : HomeUiEvent
     data class CourseClicked(val courseId: Long) : HomeUiEvent
     data class OnClickBookmark(val courseId: Long, val isBookmarked: Boolean) : HomeUiEvent
+    data object OnClickNotification : HomeUiEvent
 }
 
 sealed interface HomeSideEffect {
     data class GoToDetail(val courseId: Long) : HomeSideEffect
     data class ShowToast(val message: String) : HomeSideEffect
+    data object GoNotificationList : HomeSideEffect
 }

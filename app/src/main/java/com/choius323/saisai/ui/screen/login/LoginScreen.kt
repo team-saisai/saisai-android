@@ -16,6 +16,7 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
+import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -131,6 +132,7 @@ fun LoginScreenContent(
             )
         }
 
+        // 임시 로그인
         Column(
             Modifier
                 .align(Alignment.BottomCenter)
@@ -163,6 +165,9 @@ fun LoginScreenContent(
                     }
                 }
             )
+            Button({ onEvent(LoginUiEvent.LoginButtonClicked) }) {
+                Text("로그인")
+            }
         }
         LoginButtons(
             modifier = Modifier.offset(y = 130.dp),

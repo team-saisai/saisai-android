@@ -1,11 +1,12 @@
 package com.choius323.saisai.ui.screen.home
 
-import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyRow
@@ -21,6 +22,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +60,7 @@ fun HomeScreen(
         when (sideEffect) {
             is HomeSideEffect.GoToDetail -> goToDetail(sideEffect.courseId)
             is HomeSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is HomeSideEffect.GoNotificationList -> goNotificationList()
         }
     }
 
@@ -67,36 +70,31 @@ fun HomeScreen(
     ProvideAppBar(navigationIcon = {
         SaiText("사이사이", style = Typography.AppTitle)
     }, actions = {
-        Icon(Icons.Outlined.Notifications, contentDescription = "Notifications")
+        Icon(
+            Icons.Outlined.Notifications,
+            "Notifications",
+            Modifier.clickable { viewModel.onEvent(HomeUiEvent.OnClickNotification) }
+        )
     })
 
-    if (uiState.isLoading) {
-        FullScreenLoading(isModal = true)
-    }
-    if (uiState.errorMessage != null) {
-        Toast.makeText(context, uiState.errorMessage, Toast.LENGTH_SHORT).show()
-    }
     HomeScreenContent(
         name = uiState.name,
-        location = uiState.location,
-        temperature = uiState.temperature,
         recentChallenge = uiState.recentCourse,
         trendChallenges = uiState.popularChallenges,
-        aroundChallenges = uiState.aroundChallenges,
         badges = uiState.badges,
         modifier = modifier,
         onEvent = viewModel::onEvent,
     )
+    if (uiState.isLoading) {
+        FullScreenLoading(isModal = true)
+    }
 }
 
 @Composable
 fun HomeScreenContent(
     name: String?,
-    location: String,
-    temperature: String,
     recentChallenge: RecentCourse?,
     trendChallenges: List<CourseListItem>,
-    aroundChallenges: List<CourseListItem>,
     badges: List<BadgeInfo>,
     modifier: Modifier = Modifier,
     onEvent: (HomeUiEvent) -> Unit,
@@ -107,10 +105,8 @@ fun HomeScreenContent(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 22.dp)
     ) {
-        Greeting(
-            name, location, temperature
-        )
-        Spacer(Modifier.height(40.dp))
+        Greeting(name)
+        Spacer(Modifier.height(36.dp))
         recentChallenge?.apply {
             RecentCourseCard(
                 this, onClickCourse = { onEvent(HomeUiEvent.CourseClicked(it)) }
@@ -121,7 +117,23 @@ fun HomeScreenContent(
             "인기 챌린지", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
         )
         if (trendChallenges.isNotEmpty()) {
-            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            LazyRow(
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                contentPadding = PaddingValues(horizontal = 11.dp),
+                modifier = Modifier.layout { measurable, constraints ->
+                    // 부모가 준 최대 너비 제약에 오른쪽 패딩(22.dp)만큼을 더합니다.
+                    val newConstraints = constraints.copy(
+                        maxWidth = constraints.maxWidth + 22.dp.roundToPx()
+                    )
+                    // 새로 만든 '더 넓은' 제약 조건으로 LazyRow를 측정합니다.
+                    val placeable = measurable.measure(newConstraints)
+
+                    // 측정된 크기대로 레이아웃을 잡고 배치합니다.
+                    layout(placeable.width, placeable.height) {
+                        placeable.placeRelative(0, 0)
+                    }
+                }
+            ) {
                 items(trendChallenges) { courseInfo ->
                     CourseListItemVertical(
                         imageUrl = courseInfo.imageUrl ?: "",
@@ -150,40 +162,9 @@ fun HomeScreenContent(
         }
         Spacer(Modifier.height(40.dp))
         SaiText(
-            text = "뱃지 컬렉션", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
+            text = "나의 뱃지", fontSize = 18.sp, modifier = Modifier.padding(bottom = 12.dp)
         )
-        BadgeCollectionCard(badges)
-        Spacer(Modifier.height(40.dp))
-        SaiText(
-            text = "내 주변 코스", fontSize = 18.sp, modifier = Modifier
-                .padding(bottom = 16.dp)
-        )
-        if (aroundChallenges.isNotEmpty()) {
-            LazyRow {
-                items(aroundChallenges) { courseInfo ->
-                    CourseListItemVertical(
-                        imageUrl = courseInfo.imageUrl ?: "",
-                        courseName = courseInfo.courseName,
-                        distance = courseInfo.distance,
-                        level = courseInfo.level,
-                        participantCount = 125,
-                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
-                        endDate = courseInfo.challengeEndedAt,
-                        isBookmarked = courseInfo.isBookmarked,
-                        onClickBookmark = {
-                            onEvent(
-                                HomeUiEvent.OnClickBookmark(
-                                    courseInfo.courseId,
-                                    courseInfo.isBookmarked
-                                )
-                            )
-                        }
-                    )
-                }
-            }
-        } else {
-            SaiText("내 주변에 코스가 없습니다.", fontSize = 22.sp, fontWeight = FontWeight.Bold)
-        }
+        BadgeCollectionCard(badges, Modifier.fillMaxWidth())
     }
 }
 
@@ -215,11 +196,8 @@ fun HomeScreenContentPreview() {
     SaiTheme {
         HomeScreenContent(
             name = "사이",
-            location = "서울시 강남구",
-            temperature = "25°C",
             recentChallenge = dummyRecentCourse,
             trendChallenges = dummyCourses.take(2),
-            aroundChallenges = dummyCourses.takeLast(2),
             badges = dummyBadges,
             modifier = Modifier.padding(all = 0.dp),
             onEvent = {},
@@ -237,11 +215,8 @@ fun HomeScreenContentPreviewNoContents() {
         Scaffold { innerPadding ->
             HomeScreenContent(
                 name = "방문자",
-                location = "부산시 해운대구",
-                temperature = "22°C",
                 recentChallenge = null,
                 trendChallenges = emptyList(),
-                aroundChallenges = emptyList(),
                 badges = emptyList(),
                 modifier = Modifier.padding(innerPadding),
                 onEvent = {},

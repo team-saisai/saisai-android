@@ -122,7 +122,7 @@ fun RecentCourseCard(
                             append("${recentCourse.distance}km")
                         }
                         withStyle(style = SpanStyle(color = Color.Gray, fontSize = 14.sp)) {
-                            append("  완주율   ")
+                            append("  달성률   ")
                         }
                         withStyle(
                             style = SpanStyle(

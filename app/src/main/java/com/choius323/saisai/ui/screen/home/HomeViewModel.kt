@@ -29,6 +29,10 @@ class HomeViewModel(
             is HomeUiEvent.CourseClicked -> intent {
                 postSideEffect(HomeSideEffect.GoToDetail(event.courseId))
             }
+
+            HomeUiEvent.OnClickNotification -> intent {
+                postSideEffect(HomeSideEffect.GoNotificationList)
+            }
         }
     }
 
@@ -72,12 +76,10 @@ class HomeViewModel(
                         state.copy(name = name)
                     }
                 }.onFailure { exception ->
-                    Log.d(TAG, exception.toString())
-                    reduce {
-                        state.copy(
-                            errorMessage = exception.message ?: "Unknown error"
-                        )
-                    }
+                    Log.e(TAG, exception.toString())
+                    postSideEffect(
+                        HomeSideEffect.ShowToast(exception.message ?: "Unknown error")
+                    )
                 }
             }
         }

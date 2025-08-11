@@ -13,6 +13,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.choius323.saisai.ui.component.SaiTopAppBar
@@ -20,6 +23,7 @@ import com.choius323.saisai.ui.navigation.BottomNavigationBar
 import com.choius323.saisai.ui.navigation.MainNavController
 import com.choius323.saisai.ui.navigation.MainNavItem
 import com.choius323.saisai.ui.navigation.rememberSaiNavController
+import com.choius323.saisai.ui.screen.splash.SplashScreen
 import com.choius323.saisai.ui.theme.SaiTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -28,8 +32,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
+            var showSplashScreen by rememberSaveable { mutableStateOf(true) }
             SaiTheme {
+                if (showSplashScreen) {
+                    // 3. SplashScreen Composable 호출
+                    SplashScreen(onSplashFinished = { showSplashScreen = false })
+                } else {
+                    // 4. 기존 메인 화면 로직
                 MainApp()
+                }
             }
         }
     }

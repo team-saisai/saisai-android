@@ -1,5 +1,7 @@
 package com.choius323.saisai.ui.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -32,6 +34,10 @@ fun MainNavController(
         navController = navController.navController,
         modifier = Modifier,
         startDestination = MainNavItem.Login,
+        enterTransition = { EnterTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popExitTransition = { ExitTransition.None },
     ) {
         composable<MainNavItem.BottomNavItem.Home> { backStackEntry ->
             HomeScreen(
@@ -85,7 +91,7 @@ fun MainNavController(
         }
         composable<MainNavItem.Login> { backStackEntry ->
             LoginScreen(
-                modifier = modifier,
+                modifier = Modifier,
                 goHome = {
                     navController.navigate(MainNavItem.BottomNavItem.Home) {
                         popUpTo(MainNavItem.Login) { inclusive = true }

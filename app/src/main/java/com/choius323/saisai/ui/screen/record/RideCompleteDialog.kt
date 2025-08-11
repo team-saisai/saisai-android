@@ -17,7 +17,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.Upload
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -126,14 +125,6 @@ private fun RideCompleteDescription(
                 TimeText(time)
             }
         }
-        Spacer(Modifier.weight(1f))
-        Icon(
-            Icons.Default.Upload,
-            "SNS 공유",
-            Modifier
-                .size(24.dp)
-                .clickable(onClick = {/* TODO: SNS 공유*/ }, onClickLabel = "SNS 공유")
-        )
     }
 }
 

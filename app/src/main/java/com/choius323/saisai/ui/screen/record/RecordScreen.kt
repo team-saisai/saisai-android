@@ -8,7 +8,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -177,7 +177,7 @@ fun RecordScreenContent(
         TimerText(
             startTime = uiState.startTime,
             modifier = Modifier.align(Alignment.TopCenter),
-            isRecording = uiState.isRecording
+            rideState = uiState.rideState,
         )
         Button(
             onClick = { onEvent(RecordUiEvent.ClickedStart(permissionState.allPermissionsGranted)) },
@@ -189,7 +189,7 @@ fun RecordScreenContent(
             uiState = uiState,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .widthIn(min = 354.dp)
+                .width(354.dp)
                 .padding(bottom = 32.dp),
             toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },
             toggleExpanded = { onEvent(RecordUiEvent.OnToggleExpandedSummary) }
@@ -200,15 +200,15 @@ fun RecordScreenContent(
 @Composable
 private fun TimerText(
     startTime: Long,
-    isRecording: Boolean,
+    rideState: RideState,
     modifier: Modifier = Modifier,
 ) {
     var elapsedTimeInSeconds by remember { mutableLongStateOf(0L) }
 
-    LifecycleResumeEffect(startTime, isRecording) {
+    LifecycleResumeEffect(startTime, rideState) {
         Log.d(TAG, "$startTime $elapsedTimeInSeconds")
         val job = lifecycle.coroutineScope.launch {
-            while (isRecording) {
+            while (rideState == RideState.RECORDING) {
                 val now = System.currentTimeMillis()
                 elapsedTimeInSeconds = (now - startTime) / 1000
 
@@ -258,7 +258,7 @@ private fun TimerTextPreview() {
     SaiTheme {
         Surface {
             Box(Modifier.padding(bottom = 16.dp)) {
-                TimerText(System.currentTimeMillis(), false, Modifier)
+                TimerText(System.currentTimeMillis(), rideState = RideState.RECORDING, Modifier)
             }
         }
     }

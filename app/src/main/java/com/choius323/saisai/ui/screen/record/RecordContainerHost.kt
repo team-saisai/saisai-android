@@ -9,7 +9,7 @@ data class RecordUiState(
     val error: String? = null,
     val courseDetail: CourseDetail? = null,
     val permissionGranted: Boolean = false,
-    val isRecording: Boolean = false,
+    val rideState: RideState = RideState.READY,
     val startTime: Long = 0,
     val isShowPermissionDialog: Boolean = false,
     val isCameraTracking: Boolean = false,
@@ -18,7 +18,6 @@ data class RecordUiState(
     val rideId: Long = 0,
     val isShowCompleteDialog: Boolean = false,
     val isExpandedSummary: Boolean = false,
-    val isPaused: Boolean = false,
 ) {
     val route: List<GpxPoint>
         get() = courseDetail?.gpxPointList ?: emptyList()
@@ -48,4 +47,14 @@ sealed interface RecordSideEffect {
     data object StartRecording : RecordSideEffect
     data class PermissionRequest(val isStartRecord: Boolean = false) : RecordSideEffect
     data class ShowToast(val msg: String) : RecordSideEffect
+}
+
+enum class RideState {
+    READY,
+    RECORDING,
+    PAUSED,
+    COMPLETE
+    ;
+
+    fun isRecording() = this == RECORDING
 }

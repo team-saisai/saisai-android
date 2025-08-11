@@ -21,7 +21,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ForkRight
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.filled.Route
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -82,7 +81,9 @@ fun RecordStateDescription(
                 .background(Color(0xE642464A))
                 .border(
                     1.4.dp,
-                    color = if (uiState.isRecording) Color(0xFFD4D8CD) else Color(0xFFDE6666),
+                    color = if (uiState.rideState == RideState.RECORDING) Color(0xFFD4D8CD) else Color(
+                        0xFFDE6666
+                    ),
                     RoundedCornerShape(16.dp)
                 )
                 .padding(top = 18.dp, bottom = 18.dp, start = 20.dp, end = 18.dp),
@@ -102,31 +103,22 @@ fun RecordStateDescription(
                 ) {
                     Box(
                         Modifier
-                            .fillMaxWidth((uiState.totalRideDistance / courseDetail!!.distance).toFloat())
+                            .fillMaxWidth((uiState.totalRideDistance / courseDetail.distance).toFloat())
                             .fillMaxHeight()
                             .background(SaiColor.Lime)
                     )
                 }
                 Spacer(Modifier.height(20.dp))
-                Row {
-                    Icon(Icons.Default.Route, null)
-                    SaiText("다음 체크포인트: ")
-                }
             }
             Spacer(Modifier.width(28.dp))
-            RecordingToggleButton(
-                uiState.isRecording,
-                uiState.isPaused,
-                toggleRecording = toggleRecording
-            )
+            RecordingToggleButton(uiState.rideState, toggleRecording = toggleRecording)
         }
     }
 }
 
 @Composable
 private fun RecordingToggleButton(
-    isRecording: Boolean,
-    isPaused: Boolean,
+    rideState: RideState,
     modifier: Modifier = Modifier,
     toggleRecording: () -> Unit,
 ) {
@@ -139,14 +131,14 @@ private fun RecordingToggleButton(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = if (isPaused) Icons.Default.Pause else Icons.Default.PlayArrow,
+            imageVector = if (rideState == RideState.RECORDING) Icons.Default.Pause else Icons.Default.PlayArrow,
             contentDescription = "도전하기 아이콘",
             tint = SaiColor.Black,
             modifier = Modifier.size(26.dp)
         )
         Spacer(modifier = Modifier.height(2.dp))
         SaiText(
-            text = if (isPaused) "일시정지" else "이어하기",
+            text = if (rideState == RideState.RECORDING) "일시정지" else "이어하기",
             style = MaterialTheme.typography.labelMedium.copy(
                 color = SaiColor.Black, fontWeight = FontWeight.SemiBold
             ),
@@ -264,7 +256,7 @@ private fun RecordStateDescriptionPreview() {
             RecordStateDescription(
                 uiState = RecordUiState(
                     courseDetail = CourseDetail.sample,
-                    isRecording = true,
+                    rideState = RideState.RECORDING,
                     nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
                 ), Modifier, {}, {}
             )

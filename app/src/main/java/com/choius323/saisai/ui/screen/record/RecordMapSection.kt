@@ -57,7 +57,7 @@ fun RecordMapSection(
                 Log.d(TAG, "MapView update")
             }, modifier = Modifier.fillMaxSize()
         )
-        if (uiState.isRecording) {
+        if (uiState.rideState == RideState.RECORDING) {
             Icon(
                 imageVector = Icons.Default.LocationOn,
                 modifier = Modifier
@@ -87,16 +87,16 @@ private fun RecordMapSetting(
     LaunchedEffect(uiState.isCameraTracking, uiState.nowLatLng) {
         Log.d(
             TAG,
-            "isRecording: ${uiState.isRecording}, isCameraTracking: ${uiState.isCameraTracking}, nowLatLng: ${uiState.nowLatLng}"
+            "isRecording: ${uiState.rideState}, isCameraTracking: ${uiState.isCameraTracking}, nowLatLng: ${uiState.nowLatLng}"
         )
-        if (uiState.isRecording && uiState.isCameraTracking && uiState.nowLatLng != null) {
+        if (uiState.rideState == RideState.RECORDING && uiState.isCameraTracking && uiState.nowLatLng != null) {
             kakaoMap.moveCamera(uiState.nowLatLng)
         }
     }
     LaunchedEffect(kakaoMap, uiState.route) {
         updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
-        if (uiState.isRecording) {
+        if (uiState.rideState == RideState.RECORDING) {
             kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
         } else {
             kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
@@ -113,8 +113,8 @@ private fun RecordMapSetting(
             kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
-    LaunchedEffect(uiState.nowCheckPointIndex, uiState.isRecording) {
-        if (uiState.courseDetail != null && uiState.isRecording && uiState.nowCheckPointIndex >= 0) {
+    LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState == RideState.RECORDING) {
+        if (uiState.courseDetail != null && uiState.rideState == RideState.RECORDING && uiState.nowCheckPointIndex >= 0) {
             val list = uiState.courseDetail.checkPointList.map { it.toLatLng() }
             kakaoMap.setCirclesStyle(list, uiState.nowCheckPointIndex)
         }

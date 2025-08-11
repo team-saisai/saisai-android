@@ -54,7 +54,7 @@ class RecordViewModel(
         RecordUiEvent.StopRecording -> pauseRecording()
         RecordUiEvent.ResumeRecording -> resumeRecording()
         RecordUiEvent.OnClickToggleRecording -> intent {
-            if (state.isPaused) {
+            if (state.rideState == RideState.PAUSED) {
                 resumeRecording()
             } else {
                 pauseRecording()
@@ -84,7 +84,7 @@ class RecordViewModel(
     }
 
     private fun clickStart(event: RecordUiEvent.ClickedStart) = intent {
-        if (state.isRecording) return@intent
+        if (state.rideState == RideState.RECORDING) return@intent
         if (event.isPermissionGranted) {
             postSideEffect(RecordSideEffect.StartRecording)
         } else {
@@ -96,14 +96,13 @@ class RecordViewModel(
         reduce { state.copy(isLoading = true) }
         when {
             event.isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
-            state.isRecording -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
+            state.rideState == RideState.RECORDING -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
             state.route.isNotEmpty() -> {
                 courseRepository.startCourse(courseId).collectLatest { result ->
                     result.onSuccess { rideId ->
                         reduce {
                             state.copy(
-                                isRecording = true,
-                                isPaused = false,
+                                rideState = RideState.RECORDING,
                                 isCameraTracking = true,
                                 startTime = System.currentTimeMillis(),
                                 rideId = rideId
@@ -125,7 +124,7 @@ class RecordViewModel(
     private fun setNowLatLng(event: RecordUiEvent.SetNowLatLng) = intent {
         if (state.permissionGranted.not()) return@intent
         reduce { state.copy(nowLatLng = event.latLng) }
-        if (state.isRecording.not() &&
+        if (state.rideState != RideState.RECORDING &&
             state.nowCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex
         ) return@intent
         val nextLatLng =
@@ -151,8 +150,7 @@ class RecordViewModel(
             state.copy(
                 isLoading = true,
                 isCameraTracking = false,
-                isRecording = false,
-                isPaused = true,
+                rideState = RideState.COMPLETE,
             )
         }
         courseRepository.completeCourse(
@@ -187,7 +185,7 @@ class RecordViewModel(
             courseDetail.checkPointList[state.nowCheckPointIndex].totalDistance
         ).collectLatest { result ->
             result.onSuccess {
-                reduce { state.copy(isPaused = true, isLoading = false) }
+                reduce { state.copy(rideState = RideState.PAUSED, isLoading = false) }
             }.onFailure {
                 postSideEffect(RecordSideEffect.ShowToast(it.message ?: "주행 정보를 서버에 전송하지 못했습니다."))
                 reduce { state.copy(isLoading = false) }
@@ -200,7 +198,7 @@ class RecordViewModel(
         courseRepository.resumeRide(state.rideId)
             .collectLatest { result ->
                 result.onSuccess {
-                    reduce { state.copy(isPaused = false, isLoading = false) }
+                    reduce { state.copy(rideState = RideState.RECORDING, isLoading = false) }
                 }.onFailure {
                     postSideEffect(
                         RecordSideEffect.ShowToast(

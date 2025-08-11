@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Saisai</string>
+    <string name="app_name">사이사이</string>
 
     <!-- 권한 요청 -->
     <string name="permission_dialog_title_access_fine_location">자세한 위치 권한</string>

@@ -12,10 +12,14 @@ val HakgyoansimSamulham = FontFamily(
     Font(R.font.hakgyoansim_samulham, FontWeight.Normal)
 )
 
+val pretendardFamily = FontFamily(
+    Font(R.font.pretendard),
+)
+
 // Set of Material typography styles to start with
 val Typography = Typography(
     bodyLarge = TextStyle(
-        fontFamily = FontFamily.Default,
+        fontFamily = pretendardFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 16.sp,
         lineHeight = 24.sp,

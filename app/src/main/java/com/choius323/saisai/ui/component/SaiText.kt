@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.theme.SaiTheme
+import com.choius323.saisai.ui.theme.pretendardFamily
 
 @Composable
 fun SaiText(
@@ -56,6 +57,7 @@ fun SaiText(
                 trim = LineHeightStyle.Trim.None,
             ),
             lineHeight = 1.em,
+            fontFamily = pretendardFamily,
         )
     }
 

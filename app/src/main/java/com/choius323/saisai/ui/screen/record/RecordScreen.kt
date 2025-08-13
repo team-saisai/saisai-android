@@ -18,8 +18,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.HandlePermissionActions
@@ -27,6 +29,7 @@ import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.TopAppBarHeight
 import com.choius323.saisai.ui.screen.map.getCurrentLocation
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.util.locationPermissions
 import com.choius323.saisai.util.postNotificationPermissions
@@ -49,17 +52,28 @@ fun RecordScreen(
 ) {
     ChangeStatusBarIconsColor()
     val context = LocalContext.current
+    val uiState by viewModel.collectAsState()
     ProvideAppBar(
         navigationIcon = {
-            Icon(
-                Icons.AutoMirrored.Default.ArrowBack,
-                contentDescription = "Go Back",
-                modifier = Modifier.clickable(onClick = onBack)
-            )
+            if (uiState.rideState != RideState.COMPLETE) {
+                Icon(
+                    Icons.AutoMirrored.Default.ArrowBack,
+                    contentDescription = "Go Back",
+                    modifier = Modifier.clickable(onClick = onBack),
+                    tint = SaiColor.Gray90
+                )
+            }
+        },
+        title = {
+            if (uiState.rideState != RideState.COMPLETE) {
+                SaiText(
+                    uiState.courseDetail?.courseName ?: "",
+                    color = SaiColor.Gray90, fontSize = 18.sp, fontWeight = FontWeight.W500
+                )
+            }
         }
     )
 
-    val uiState by viewModel.collectAsState()
     val permissionState = rememberMultiplePermissionsState(
         postNotificationPermissions + locationPermissions
     ) { resultMap ->

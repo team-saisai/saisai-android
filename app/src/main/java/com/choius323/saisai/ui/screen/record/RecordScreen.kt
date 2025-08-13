@@ -28,7 +28,6 @@ import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.TopAppBarHeight
-import com.choius323.saisai.ui.screen.map.getCurrentLocation
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.util.locationPermissions
@@ -36,7 +35,6 @@ import com.choius323.saisai.util.postNotificationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
-import com.kakao.vectormap.LatLng
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -80,16 +78,11 @@ fun RecordScreen(
         val allGranted = resultMap.all { it.value }
         viewModel.onEvent(RecordUiEvent.SetPermissionGranted(allGranted))
         if (allGranted) {
-            getCurrentLocation(
-                context = context,
-                callbackLocation = { location ->
-                    viewModel.onEvent(
-                        RecordUiEvent.StartRecording(
-                            isPermissionGranted = true,
-                            nowLatLng = LatLng.from(location.latitude, location.longitude)
-                        )
-                    )
-                })
+            viewModel.onEvent(
+                RecordUiEvent.StartRecording(
+                    isPermissionGranted = true,
+                )
+            )
         }
     }
     HandlePermissionActions(
@@ -119,16 +112,11 @@ fun RecordScreen(
 
             is RecordSideEffect.StartRecording -> {
                 if (permissionState.allPermissionsGranted) {
-                    getCurrentLocation(
-                        context = context,
-                        callbackLocation = { location ->
-                            viewModel.onEvent(
-                                RecordUiEvent.StartRecording(
-                                    isPermissionGranted = permissionState.allPermissionsGranted,
-                                    nowLatLng = LatLng.from(location.latitude, location.longitude)
-                                )
-                            )
-                        })
+                    viewModel.onEvent(
+                        RecordUiEvent.StartRecording(
+                            isPermissionGranted = permissionState.allPermissionsGranted,
+                        )
+                    )
                 } else {
                     viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
                 }
@@ -151,7 +139,7 @@ fun RecordScreen(
                 courseDetail.imageUrl,
                 courseDetail.courseName,
                 courseDetail.distance,
-                endTime = uiState.totalSeconds,
+                rideTime = uiState.totalSeconds,
                 modifier = modifier.fillMaxSize(),
                 goHome = goHome,
                 goCourseDetail = { goCourseDetail(courseDetail.courseId) }
@@ -196,16 +184,11 @@ fun RecordScreenContent(
                 .width(354.dp)
                 .padding(bottom = 32.dp),
             startRecording = {
-                getCurrentLocation(
-                    context = context,
-                    callbackLocation = { location ->
-                        onEvent(
-                            RecordUiEvent.StartRecording(
-                                isPermissionGranted = permissionState.allPermissionsGranted,
-                                nowLatLng = LatLng.from(location.latitude, location.longitude)
-                            )
-                        )
-                    })
+                onEvent(
+                    RecordUiEvent.StartRecording(
+                        isPermissionGranted = permissionState.allPermissionsGranted,
+                    )
+                )
             },
             toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },
             toggleExpanded = { onEvent(RecordUiEvent.OnToggleExpandedSummary) }

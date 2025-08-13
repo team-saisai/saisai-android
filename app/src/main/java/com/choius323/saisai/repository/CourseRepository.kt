@@ -4,7 +4,7 @@ import com.choius323.saisai.data.course.local.CourseLocalDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.model.CompleteCourseDto
 import com.choius323.saisai.data.course.remote.model.DeleteBookmarkCoursesDto
-import com.choius323.saisai.data.course.remote.model.PauseRideDto
+import com.choius323.saisai.data.course.remote.model.SaveRideDto
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
@@ -12,22 +12,20 @@ import com.choius323.saisai.ui.model.CourseSort
 import com.choius323.saisai.ui.model.CourseType
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.RecentRide
+import com.choius323.saisai.ui.model.ResumeRideInfo
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
 
 interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
-    suspend fun getRecentRideCourse(): Flow<Result<RecentRide>>
     suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<CourseListItem>>>
     suspend fun startCourse(courseId: Long): Flow<Result<Long>>
     suspend fun setRecentRide(recentRide: RecentRide)
-    suspend fun getRecentRide(): Flow<Result<RecentRide>>
-    suspend fun resumeRide(rideId: Long): Flow<Result<Unit>>
-    suspend fun pauseRide(rideId: Long, duration: Long, totalDistance: Double): Flow<Result<Unit>>
+    suspend fun resumeRide(rideId: Long): Flow<Result<ResumeRideInfo>>
+    suspend fun pauseRide(rideId: Long, duration: Long, checkPointIdx: Int): Flow<Result<Unit>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<Boolean>>
     suspend fun addBookmark(courseId: Long): Flow<Result<Boolean>>
     suspend fun getBookmarkedCourses(page: Int): Flow<Result<CoursePage>>
@@ -37,8 +35,12 @@ interface CourseRepository {
     ): Flow<Result<CoursePage>>
 
     suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double,
+        rideId: Long, duration: Long,
     ): Flow<Result<Unit?>>
+
+    suspend fun syncRide(
+        rideId: Long, duration: Long, checkPointIdx: Int
+    ): Flow<Result<Unit>>
 }
 
 class CourseRepositoryImpl(
@@ -52,10 +54,6 @@ class CourseRepositoryImpl(
                 responseDto.data?.toRecentCourse()
             }
         }.flowOn(ioDispatcher)
-
-    override suspend fun getRecentRideCourse(): Flow<Result<RecentRide>> {
-        TODO("Not yet implemented")
-    }
 
     override suspend fun getAllCourses(
         page: Int, courseType: CourseType, sort: CourseSort,
@@ -86,36 +84,34 @@ class CourseRepositoryImpl(
         }.flowOn(ioDispatcher)
 
     override suspend fun completeCourse(
-        rideId: Long, duration: Long, distance: Double,
+        rideId: Long, duration: Long,
     ): Flow<Result<Unit?>> =
-        courseRemoteDataSource.completeCourse(rideId, CompleteCourseDto(duration, distance))
+        courseRemoteDataSource.completeCourse(rideId, CompleteCourseDto(duration))
             .map { result ->
                 result.mapCatching { responseDto -> responseDto.data }
+            }.flowOn(ioDispatcher)
+
+    override suspend fun syncRide(
+        rideId: Long, duration: Long, checkPointIdx: Int
+    ): Flow<Result<Unit>> =
+        courseRemoteDataSource.syncRide(rideId, SaveRideDto(duration, checkPointIdx))
+            .map { result ->
+                result.mapCatching { }
             }.flowOn(ioDispatcher)
 
     override suspend fun setRecentRide(recentRide: RecentRide) {
         courseLocalDataSource.setRecentRideCourse(recentRide.toProto())
     }
 
-    override suspend fun getRecentRide(): Flow<Result<RecentRide>> {
-        return courseLocalDataSource.getRecentRideCourse().map { result ->
-            Result.success(result.toDomainModel())
-        }.catch {
-            emit(Result.failure<RecentRide>(it))
-        }.flowOn(ioDispatcher)
-    }
-
-    override suspend fun resumeRide(rideId: Long): Flow<Result<Unit>> =
+    override suspend fun resumeRide(rideId: Long): Flow<Result<ResumeRideInfo>> =
         courseRemoteDataSource.resumeRide(rideId).map { result ->
-            result.mapCatching {}
+            result.mapCatching { it.data.toResumeRideInfo() }
         }.flowOn(ioDispatcher)
 
     override suspend fun pauseRide(
-        rideId: Long,
-        duration: Long,
-        totalDistance: Double,
+        rideId: Long, duration: Long, checkPointIdx: Int,
     ): Flow<Result<Unit>> =
-        courseRemoteDataSource.pauseRide(rideId, PauseRideDto(duration, totalDistance))
+        courseRemoteDataSource.pauseRide(rideId, SaveRideDto(duration, checkPointIdx))
             .map { result ->
                 result.mapCatching { }
             }.flowOn(ioDispatcher)

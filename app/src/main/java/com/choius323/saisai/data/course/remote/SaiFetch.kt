@@ -33,7 +33,7 @@ inline fun <reified T> saiFetch(crossinline block: suspend () -> HttpResponse): 
                 }
 
                 else -> {
-                    throw IOException(throwable)
+                    throw throwable
                 }
             }
         })

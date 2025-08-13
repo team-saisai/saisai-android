@@ -9,7 +9,7 @@ class PauseRideUseCase(
     suspend operator fun invoke(
         rideId: Long,
         duration: Long,
-        totalDistance: Double,
+        checkPointIdx:Int,
     ): Flow<Result<Unit>> =
-        courseRepository.pauseRide(rideId, duration, totalDistance)
+        courseRepository.pauseRide(rideId, duration, checkPointIdx)
 }

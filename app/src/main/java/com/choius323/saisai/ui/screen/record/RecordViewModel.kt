@@ -1,10 +1,5 @@
 package com.choius323.saisai.ui.screen.record
 
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -24,8 +19,7 @@ class RecordViewModel(
     savedStateHandle: SavedStateHandle,
     private val courseRepository: CourseRepository,
 ) : ViewModel(), ContainerHost<RecordUiState, RecordSideEffect> {
-    override val container: Container<RecordUiState, RecordSideEffect> =
-        container(RecordUiState())
+    override val container: Container<RecordUiState, RecordSideEffect> = container(RecordUiState())
     val courseId = savedStateHandle.toRoute<MainNavItem.Record>().courseId
     private var timerJob: Job? = null
 
@@ -44,7 +38,9 @@ class RecordViewModel(
                                     courseDetail.gpxPointList[2],
                                     courseDetail.gpxPointList[4],
                                 )
-                            ), isLoading = false
+                            ),
+                            isLoading = false,
+                            rideId = courseDetail.rideId ?: 0,
                         )
                     }
                     postSideEffect(RecordSideEffect.StartRecording)
@@ -59,7 +55,7 @@ class RecordViewModel(
     fun onEvent(event: RecordUiEvent) = when (event) {
         is RecordUiEvent.ClickedStart -> clickStart(event)
         is RecordUiEvent.SetNowLatLng -> setNowLatLng(event)
-        is RecordUiEvent.StartRecording -> startRecording(event)
+        is RecordUiEvent.StartRecording -> startRecording(event.isPermissionGranted)
         RecordUiEvent.StopRecording -> pauseRecording()
         RecordUiEvent.ResumeRecording -> resumeRecording()
         RecordUiEvent.OnClickToggleRecording -> intent {
@@ -100,60 +96,60 @@ class RecordViewModel(
         }
     }
 
-    private fun startRecording(event: RecordUiEvent.StartRecording) = intent {
+    private fun startRecording(isPermissionGranted: Boolean) = intent {
         reduce { state.copy(isLoading = true) }
         when {
-            event.isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
+            isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
             state.rideState == RideState.RECORDING -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
-            state.route.isNotEmpty() -> {
-                courseRepository.startCourse(courseId).collectLatest { result ->
-                    result.onSuccess { rideId ->
-                        reduce {
-                            state.copy(
-                                rideState = RideState.RECORDING,
-                                isCameraTracking = true,
-                                totalSeconds = 0,
-                                rideId = rideId
-                            )
-                        }
-                        startTimer()
-                    }.onFailure {
-                        postSideEffect(RecordSideEffect.ShowToast("코스를 시작하는데 실패했습니다."))
-                    }
-                }
-            }
-
-            else -> {
-                postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다."))
-            }
+            state.rideId != 0L -> resumeRecording()
+            state.route.isNotEmpty() -> startRecording()
+            else -> postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다."))
         }
         reduce { state.copy(isLoading = false) }
+    }
+
+    private fun startRecording() = intent {
+        courseRepository.startCourse(courseId).collectLatest { result ->
+            result.onSuccess { rideId ->
+                reduce {
+                    state.copy(
+                        rideState = RideState.RECORDING,
+                        isCameraTracking = true,
+                        totalTime = 0,
+                        rideId = rideId,
+                        isLoading = false,
+                    )
+                }
+                startTimer()
+            }.onFailure {
+                postSideEffect(RecordSideEffect.ShowToast("코스를 시작하는데 실패했습니다."))
+            }
+        }
     }
 
     private fun setNowLatLng(event: RecordUiEvent.SetNowLatLng) = intent {
         if (state.permissionGranted.not()) return@intent
         reduce { state.copy(nowLatLng = event.latLng) }
-        if (state.rideState != RideState.RECORDING &&
-            state.nowCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex
-        ) return@intent
-        val nextLatLng =
-            state.courseDetail?.checkPointList?.get(state.nowCheckPointIndex + 1)?.toLatLng()
-                ?: return@intent
+        if (state.rideState != RideState.RECORDING && state.nowCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
+        val nextCheckPointIndex = state.nowCheckPointIndex + 1
+        val nextLatLng = state.courseDetail?.checkPointList?.get(nextCheckPointIndex)?.toLatLng()
+            ?: return@intent
         val distance = calculateDistance(event.latLng, nextLatLng)
         if (distance < 10f) {
             reduce {
                 state.copy(
-                    nowCheckPointIndex = state.nowCheckPointIndex + 1,
+                    nowCheckPointIndex = nextCheckPointIndex,
                 )
             }
-            if (state.nowCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex) {
+            if (nextCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex) {
                 completeRecording()
+            } else {
+                saveRideState(checkPointIndex = nextCheckPointIndex)
             }
         }
     }
 
     private fun completeRecording() = intent {
-        stopTimer()
         delay(300)
         val courseDetail = state.courseDetail ?: return@intent
         reduce {
@@ -164,9 +160,7 @@ class RecordViewModel(
             )
         }
         courseRepository.completeCourse(
-            state.rideId,
-            state.totalSeconds,
-            courseDetail.distance
+            state.rideId, state.totalSeconds
         ).collectLatest { result ->
             result.onSuccess {
                 reduce {
@@ -175,6 +169,7 @@ class RecordViewModel(
                         isLoading = false,
                     )
                 }
+                stopTimer()
             }.onFailure {
                 reduce {
                     state.copy(
@@ -187,16 +182,16 @@ class RecordViewModel(
     }
 
     private fun pauseRecording() = intent {
-        stopTimer()
+        if (state.rideState.isRecording().not()) return@intent
         reduce { state.copy(isLoading = true) }
-        val courseDetail = state.courseDetail ?: return@intent
         courseRepository.pauseRide(
             state.rideId,
             state.totalSeconds,
-            courseDetail.checkPointList[state.nowCheckPointIndex].totalDistance
+            state.nowCheckPointIndex,
         ).collectLatest { result ->
             result.onSuccess {
                 reduce { state.copy(rideState = RideState.PAUSED, isLoading = false) }
+                stopTimer()
             }.onFailure {
                 postSideEffect(RecordSideEffect.ShowToast(it.message ?: "주행 정보를 서버에 전송하지 못했습니다."))
                 reduce { state.copy(isLoading = false) }
@@ -206,18 +201,45 @@ class RecordViewModel(
 
     private fun resumeRecording() = intent {
         reduce { state.copy(isLoading = true) }
-        courseRepository.resumeRide(state.rideId)
-            .collectLatest { result ->
-                result.onSuccess {
-                    reduce { state.copy(rideState = RideState.RECORDING, isLoading = false) }
-                    startTimer()
-                }.onFailure {
+        courseRepository.resumeRide(state.rideId).collectLatest { result ->
+            result.onSuccess { resumeRideInfo ->
+                reduce {
+                    state.copy(
+                        rideState = RideState.RECORDING,
+                        isLoading = false,
+                        nowCheckPointIndex = maxOf(
+                            state.nowCheckPointIndex, resumeRideInfo.checkpointIdx
+                        ),
+                        totalTime = maxOf(state.totalSeconds, resumeRideInfo.duration) * 1000,
+                    )
+                }
+                startTimer()
+            }.onFailure {
+                if (it.message?.contains("RD_ER_06") == true) {
+                    startRecording()
+                } else {
                     postSideEffect(
                         RecordSideEffect.ShowToast(
                             it.message ?: "주행 정보를 서버에 전송하지 못했습니다."
                         )
                     )
                     reduce { state.copy(isLoading = false) }
+                }
+            }
+        }
+    }
+
+    private fun saveRideState(checkPointIndex: Int) = intent {
+        if (checkPointIndex == 0 || checkPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
+        courseRepository.syncRide(state.rideId, state.totalSeconds, checkPointIndex)
+            .collectLatest { result ->
+                result.onSuccess {
+                }.onFailure {
+                    postSideEffect(
+                        RecordSideEffect.ShowToast(
+                            it.message ?: "주행 정보를 서버에 전송하지 못했습니다."
+                        )
+                    )
                 }
             }
     }
@@ -233,8 +255,7 @@ class RecordViewModel(
                     val elapsedTime = now - state.lastTimestamp
                     reduce {
                         state.copy(
-                            totalSeconds = state.totalSeconds + elapsedTime,
-                            lastTimestamp = now
+                            totalTime = state.totalTime + elapsedTime, lastTimestamp = now
                         )
                     }
                 }
@@ -242,7 +263,6 @@ class RecordViewModel(
         }
     }
 
-    // [추가] 타이머를 정지하는 함수
     private fun stopTimer() {
         timerJob?.cancel()
     }

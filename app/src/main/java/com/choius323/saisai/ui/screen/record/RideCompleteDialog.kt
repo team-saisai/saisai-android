@@ -46,12 +46,11 @@ fun RideCompleteDialog(
     imageUrl: String?,
     courseName: String,
     distance: Double,
-    endTime: Long,
+    rideTime:Long,
     modifier: Modifier = Modifier,
     goHome: () -> Unit,
     goCourseDetail: () -> Unit,
 ) {
-    val duration = remember(endTime) { System.currentTimeMillis() - endTime }
     Box(
         modifier.background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
         contentAlignment = Alignment.Center
@@ -82,7 +81,7 @@ fun RideCompleteDialog(
                     model = imageUrl,
                     contentDescription = "코스 이미지",
                 )
-                RideCompleteDescription(courseName, distance, duration)
+                RideCompleteDescription(courseName, distance, rideTime)
             }
             Spacer(Modifier.height(50.dp))
             Button(
@@ -154,7 +153,7 @@ private fun RideCompleteScreenContentPreview() {
                 imageUrl = "",
                 courseName = "여의대로 - 국회대로",
                 distance = 13.2123,
-                endTime = System.currentTimeMillis() - 1000,
+                rideTime = System.currentTimeMillis() - 1000,
                 goHome = {},
                 goCourseDetail = {},
                 modifier = Modifier.fillMaxSize()

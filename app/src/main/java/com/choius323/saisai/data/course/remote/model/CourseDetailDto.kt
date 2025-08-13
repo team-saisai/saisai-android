@@ -21,4 +21,6 @@ data class CourseDetailDto(
     val isEventActive: Boolean,
     @SerialName("gpxPoints")
     val gpxPointDtoList: List<GpxPointDto> = emptyList(),
+    @SerialName("checkpoints")
+    val checkpointList:List<PointDto> = emptyList()
 )

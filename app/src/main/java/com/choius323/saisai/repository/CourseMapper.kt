@@ -7,6 +7,7 @@ import com.choius323.saisai.data.course.remote.model.CourseItemDto
 import com.choius323.saisai.data.course.remote.model.GpxPointDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
+import com.choius323.saisai.data.course.remote.model.ResumeRideDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
@@ -17,6 +18,7 @@ import com.choius323.saisai.ui.model.GpxPoint
 import com.choius323.saisai.ui.model.Level
 import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
+import com.choius323.saisai.ui.model.ResumeRideInfo
 import com.choius323.saisai.ui.model.RewardInfo
 import com.choius323.saisai.util.DateTimeFormat
 import org.threeten.bp.LocalDate
@@ -127,3 +129,7 @@ fun RecentCourseDto?.toRecentCourse(): RecentCourse? {
         )
     }
 }
+
+fun ResumeRideDto.toResumeRideInfo() = ResumeRideInfo(
+    rideId = rideId, duration = durationSecond, checkpointIdx = checkpointIdx
+)

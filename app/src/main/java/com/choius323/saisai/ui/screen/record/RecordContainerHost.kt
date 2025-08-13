@@ -10,8 +10,8 @@ data class RecordUiState(
     val courseDetail: CourseDetail? = null,
     val permissionGranted: Boolean = false,
     val rideState: RideState = RideState.READY,
-    val totalSeconds: Long = 0,
-    val lastTimestamp:Long = 0,
+    val totalTime: Long = 0,
+    val lastTimestamp: Long = 0,
     val isShowPermissionDialog: Boolean = false,
     val isCameraTracking: Boolean = false,
     val nowCheckPointIndex: Int = -1,
@@ -24,6 +24,9 @@ data class RecordUiState(
         get() = courseDetail?.gpxPointList ?: emptyList()
     val totalRideDistance: Double
         get() = courseDetail?.checkPointList?.getOrNull(nowCheckPointIndex)?.totalDistance ?: 0.0
+
+    val totalSeconds: Long
+        get() = totalTime / 1000
 }
 
 sealed interface RecordUiEvent {
@@ -33,8 +36,7 @@ sealed interface RecordUiEvent {
     data class SetNowLatLng(val latLng: LatLng) : RecordUiEvent
     data class SetShowPermissionDialog(val isShow: Boolean) : RecordUiEvent
     data class SetCameraTracking(val isCameraTracking: Boolean) : RecordUiEvent
-    data class StartRecording(val isPermissionGranted: Boolean, val nowLatLng: LatLng) :
-        RecordUiEvent
+    data class StartRecording(val isPermissionGranted: Boolean) : RecordUiEvent
 
     data object StopRecording : RecordUiEvent
     data object ResumeRecording : RecordUiEvent

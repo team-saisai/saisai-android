@@ -1,13 +1,21 @@
 package com.choius323.saisai.ui.screen.record
 
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.navigation.toRoute
 import com.choius323.saisai.repository.CourseRepository
 import com.choius323.saisai.ui.navigation.MainNavItem
 import com.choius323.saisai.ui.screen.map.calculateDistance
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -19,6 +27,7 @@ class RecordViewModel(
     override val container: Container<RecordUiState, RecordSideEffect> =
         container(RecordUiState())
     val courseId = savedStateHandle.toRoute<MainNavItem.Record>().courseId
+    private var timerJob: Job? = null
 
     init {
         intent {
@@ -80,7 +89,6 @@ class RecordViewModel(
         is RecordUiEvent.SetCameraTracking -> intent {
             reduce { state.copy(isCameraTracking = event.isCameraTracking) }
         }
-
     }
 
     private fun clickStart(event: RecordUiEvent.ClickedStart) = intent {
@@ -104,10 +112,11 @@ class RecordViewModel(
                             state.copy(
                                 rideState = RideState.RECORDING,
                                 isCameraTracking = true,
-                                startTime = System.currentTimeMillis(),
+                                totalSeconds = 0,
                                 rideId = rideId
                             )
                         }
+                        startTimer()
                     }.onFailure {
                         postSideEffect(RecordSideEffect.ShowToast("코스를 시작하는데 실패했습니다."))
                     }
@@ -144,6 +153,7 @@ class RecordViewModel(
     }
 
     private fun completeRecording() = intent {
+        stopTimer()
         delay(300)
         val courseDetail = state.courseDetail ?: return@intent
         reduce {
@@ -155,7 +165,7 @@ class RecordViewModel(
         }
         courseRepository.completeCourse(
             state.rideId,
-            System.currentTimeMillis() - state.startTime,
+            state.totalSeconds,
             courseDetail.distance
         ).collectLatest { result ->
             result.onSuccess {
@@ -177,11 +187,12 @@ class RecordViewModel(
     }
 
     private fun pauseRecording() = intent {
+        stopTimer()
         reduce { state.copy(isLoading = true) }
         val courseDetail = state.courseDetail ?: return@intent
         courseRepository.pauseRide(
             state.rideId,
-            System.currentTimeMillis() - state.startTime,
+            state.totalSeconds,
             courseDetail.checkPointList[state.nowCheckPointIndex].totalDistance
         ).collectLatest { result ->
             result.onSuccess {
@@ -199,6 +210,7 @@ class RecordViewModel(
             .collectLatest { result ->
                 result.onSuccess {
                     reduce { state.copy(rideState = RideState.RECORDING, isLoading = false) }
+                    startTimer()
                 }.onFailure {
                     postSideEffect(
                         RecordSideEffect.ShowToast(
@@ -208,5 +220,30 @@ class RecordViewModel(
                     reduce { state.copy(isLoading = false) }
                 }
             }
+    }
+
+    private fun startTimer() {
+        timerJob?.cancel()
+        intent { reduce { state.copy(lastTimestamp = System.currentTimeMillis()) } }
+        timerJob = viewModelScope.launch {
+            intent {
+                while (true) {
+                    delay(500L)
+                    val now = System.currentTimeMillis()
+                    val elapsedTime = now - state.lastTimestamp
+                    reduce {
+                        state.copy(
+                            totalSeconds = state.totalSeconds + elapsedTime,
+                            lastTimestamp = now
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+    // [추가] 타이머를 정지하는 함수
+    private fun stopTimer() {
+        timerJob?.cancel()
     }
 }

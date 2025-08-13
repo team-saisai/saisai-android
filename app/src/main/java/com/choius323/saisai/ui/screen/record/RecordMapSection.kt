@@ -85,11 +85,11 @@ private fun RecordMapSetting(
     onEvent: (RecordUiEvent) -> Unit,
 ) {
     LaunchedEffect(uiState.isCameraTracking, uiState.nowLatLng) {
-        Log.d(
-            TAG,
-            "isRecording: ${uiState.rideState}, isCameraTracking: ${uiState.isCameraTracking}, nowLatLng: ${uiState.nowLatLng}"
-        )
         if (uiState.rideState == RideState.RECORDING && uiState.isCameraTracking && uiState.nowLatLng != null) {
+            Log.d(
+                TAG,
+                "isRecording: ${uiState.rideState}, isCameraTracking: ${true}, nowLatLng: ${uiState.nowLatLng}"
+            )
             kakaoMap.moveCamera(uiState.nowLatLng)
         }
     }

@@ -5,6 +5,7 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,12 +16,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ForkRight
 import androidx.compose.material.icons.filled.Pause
 import androidx.compose.material.icons.filled.PlayArrow
+import androidx.compose.material.icons.rounded.Pause
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -33,6 +34,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -49,11 +51,12 @@ import com.choius323.saisai.ui.theme.SaiTheme
 fun RecordStateDescription(
     uiState: RecordUiState,
     modifier: Modifier = Modifier,
+    startRecording: () -> Unit,
     toggleRecording: () -> Unit,
     toggleExpanded: () -> Unit,
 ) {
     val courseDetail = uiState.courseDetail ?: return
-    val distance by remember(courseDetail.distance) {
+    val distanceString by remember(courseDetail.distance) {
         derivedStateOf {
             buildAnnotatedString {
                 withStyle(SpanStyle(color = SaiColor.Lime)) {
@@ -89,29 +92,102 @@ fun RecordStateDescription(
                 .padding(top = 18.dp, bottom = 18.dp, start = 20.dp, end = 18.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            Column(
-                modifier = Modifier.weight(1f)
-            ) {
-                Text(distance, fontSize = 24.sp)
-                Spacer(Modifier.height(8.dp))
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .height(5.dp)
-                        .clip(CircleShape)
-                        .background(Color(0xFF42464A).copy(alpha = 0.9f))
-                ) {
-                    Box(
-                        Modifier
-                            .fillMaxWidth((uiState.totalRideDistance / courseDetail.distance).toFloat())
-                            .fillMaxHeight()
-                            .background(SaiColor.Lime)
-                    )
-                }
-                Spacer(Modifier.height(20.dp))
+
+            if (uiState.rideState == RideState.PAUSED) {
+                DescriptionPausedContent(
+                    distanceString,
+                    rideDistance = uiState.totalRideDistance,
+                    totalDistance = courseDetail.distance,
+                    modifier = Modifier.weight(1f),
+                )
+            } else {
+                DescriptionNormalContent(
+                    distanceString,
+                    rideDistance = uiState.totalRideDistance,
+                    totalDistance = courseDetail.distance,
+                    modifier = Modifier.weight(1f),
+                )
             }
             Spacer(Modifier.width(28.dp))
-            RecordingToggleButton(uiState.rideState, toggleRecording = toggleRecording)
+            RecordingToggleButton(
+                uiState.rideState,
+                startRecording = startRecording,
+                toggleRecording = toggleRecording
+            )
+        }
+    }
+}
+
+@Composable
+private fun DescriptionNormalContent(
+    distanceString: AnnotatedString,
+    rideDistance: Double,
+    totalDistance: Double,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Text(distanceString, fontSize = 22.sp)
+        Spacer(Modifier.height(8.dp))
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(4.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(SaiColor.Gray70)
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth((rideDistance / totalDistance).toFloat())
+                    .fillMaxHeight()
+                    .background(SaiColor.Lime)
+            )
+        }
+    }
+}
+
+@Composable
+private fun DescriptionPausedContent(
+    distanceString: AnnotatedString,
+    rideDistance: Double,
+    totalDistance: Double,
+    modifier: Modifier = Modifier,
+) {
+    Column(
+        modifier = modifier
+    ) {
+        Row(
+            Modifier
+                .background(Color(0x29FC9292), RoundedCornerShape(50.dp))
+                .padding(top = 6.dp, bottom = 6.dp, end = 12.dp, start = 10.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Rounded.Pause, "일시 정지", tint = Color(0xFFFF7676))
+            SaiText(
+                "일시정지 중",
+                fontSize = 12.sp,
+                fontWeight = FontWeight.W500,
+                color = Color(0xFFFF7676)
+            )
+        }
+        Spacer(Modifier.height(11.dp))
+        Text(distanceString, fontSize = 18.sp)
+        Spacer(Modifier.height(8.dp))
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .height(3.dp)
+                .clip(RoundedCornerShape(12.dp))
+                .background(SaiColor.Gray70)
+        ) {
+            Box(
+                Modifier
+                    .fillMaxWidth((rideDistance / totalDistance).toFloat())
+                    .fillMaxHeight()
+                    .background(SaiColor.Lime)
+            )
         }
     }
 }
@@ -120,6 +196,7 @@ fun RecordStateDescription(
 private fun RecordingToggleButton(
     rideState: RideState,
     modifier: Modifier = Modifier,
+    startRecording: () -> Unit,
     toggleRecording: () -> Unit,
 ) {
     Column(
@@ -127,7 +204,7 @@ private fun RecordingToggleButton(
             .clip(RoundedCornerShape(16.dp))
             .background(SaiColor.Lime)
             .padding(top = 9.dp, bottom = 11.dp, start = 6.dp, end = 6.dp)
-            .clickable(onClick = toggleRecording),
+            .clickable(onClick = if (rideState == RideState.READY) startRecording else toggleRecording),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
@@ -138,7 +215,11 @@ private fun RecordingToggleButton(
         )
         Spacer(modifier = Modifier.height(2.dp))
         SaiText(
-            text = if (rideState == RideState.RECORDING) "일시정지" else "이어하기",
+            text = when (rideState) {
+                RideState.READY -> "도전하기"
+                RideState.PAUSED -> "이어하기"
+                RideState.RECORDING, RideState.COMPLETE -> "일시정지"
+            },
             style = MaterialTheme.typography.labelMedium.copy(
                 color = SaiColor.Black, fontWeight = FontWeight.SemiBold
             ),
@@ -258,7 +339,7 @@ private fun RecordStateDescriptionPreview() {
                     courseDetail = CourseDetail.sample,
                     rideState = RideState.RECORDING,
                     nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
-                ), Modifier, {}, {}
+                ), Modifier, {}, {}, {}
             )
         }
     }
@@ -273,7 +354,7 @@ private fun RecordStateDescriptionStopPreview() {
                 uiState = RecordUiState(
                     courseDetail = CourseDetail.sample,
                     nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
-                ), Modifier, {}, {}
+                ), Modifier, {}, {}, {}
             )
         }
     }

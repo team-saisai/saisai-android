@@ -173,6 +173,7 @@ fun RecordScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (RecordUiEvent) -> Unit = {},
 ) {
+    val context = LocalContext.current
     Box(modifier) {
         RecordMapSection(uiState, Modifier.fillMaxSize(), onEvent)
         RecordTimerText(
@@ -194,6 +195,18 @@ fun RecordScreenContent(
                 .align(Alignment.BottomCenter)
                 .width(354.dp)
                 .padding(bottom = 32.dp),
+            startRecording = {
+                getCurrentLocation(
+                    context = context,
+                    callbackLocation = { location ->
+                        onEvent(
+                            RecordUiEvent.StartRecording(
+                                isPermissionGranted = permissionState.allPermissionsGranted,
+                                nowLatLng = LatLng.from(location.latitude, location.longitude)
+                            )
+                        )
+                    })
+            },
             toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },
             toggleExpanded = { onEvent(RecordUiEvent.OnToggleExpandedSummary) }
         )

@@ -17,8 +17,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
@@ -27,6 +29,7 @@ import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.screen.map.MapScreen
 import com.choius323.saisai.ui.screen.map.MapUiEvent
 import com.choius323.saisai.ui.screen.map.MapViewModel
+import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.androidx.compose.koinViewModel
@@ -54,7 +57,14 @@ fun CourseDetailScreen(
             Icon(
                 Icons.AutoMirrored.Default.ArrowBack,
                 contentDescription = "Go Back",
-                modifier = Modifier.clickable(onClick = goBack)
+                modifier = Modifier.clickable(onClick = goBack),
+                tint = SaiColor.Gray90,
+            )
+        },
+        title = {
+            SaiText(
+                uiState.courseDetail?.courseName ?: "",
+                color = SaiColor.Gray90, fontSize = 18.sp, fontWeight = FontWeight.W500
             )
         })
     LaunchedEffect(uiState.courseDetail) {

@@ -137,8 +137,10 @@ fun rememberMapView(setKakaoMap: (KakaoMap) -> Unit): MapView {
                 override fun onMapReady(map: KakaoMap) {
                     Log.d(TAG, "onMapReady $map")
                     setKakaoMap(map)
-                    map.compass?.show()
-                    map.compass?.isBackToNorthOnClick = true
+//                    map.compass?.run {
+//                        show()
+//                        isBackToNorthOnClick = true
+//                    }
                 }
             })
         }

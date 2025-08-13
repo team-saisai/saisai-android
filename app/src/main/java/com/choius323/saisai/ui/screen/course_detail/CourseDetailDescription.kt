@@ -4,6 +4,7 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -81,19 +82,19 @@ fun CourseDetailDescription(
                 .animateContentSize(animationSpec = tween(500)),
         ) {
             Row(
-                verticalAlignment = Alignment.CenterVertically
+                verticalAlignment = Alignment.CenterVertically,
             ) {
-                Column(modifier = Modifier) {
+                Column(modifier = Modifier.weight(1f)) {
                     CourseInfoSection(detail)
                     Spacer(modifier = Modifier.height(20.dp))
                     ParticipantInfoSection(detail.inProgressUserCount, detail.completeUserCount)
                 }
-                Spacer(modifier = Modifier.weight(1f))
 
                 // 우측 '도전하기' 버튼 영역
                 Column(
                     Modifier
                         .align(Alignment.Top)
+                        .padding(start = 8.dp)
                         .width(IntrinsicSize.Max),
                     horizontalAlignment = Alignment.CenterHorizontally,
                 ) {

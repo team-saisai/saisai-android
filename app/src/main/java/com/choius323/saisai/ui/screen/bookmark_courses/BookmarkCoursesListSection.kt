@@ -27,12 +27,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.CourseListItemHorizontal
-import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.component.EmptyCourseList
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -49,6 +47,7 @@ fun BookmarkCoursesListSection(
     onCourseSelect: (Int) -> Unit,
     loadMore: () -> Unit,
     onClickBookmark: (Int) -> Unit,
+    onClickEmptyButton: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     LazyColumn(
@@ -59,11 +58,11 @@ fun BookmarkCoursesListSection(
     ) {
         if (courseList.isEmpty()) {
             item {
-                SaiText(
-                    "주행한 코스 기록이 없습니다",
-                    fontSize = 16.sp,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxSize(),
+                EmptyCourseList(
+                    content = "저장한 코스가 없습니다.\n" +
+                            "코스를 탐색해 나의 취향을 발견해보세요.",
+                    onClick = onClickEmptyButton,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }

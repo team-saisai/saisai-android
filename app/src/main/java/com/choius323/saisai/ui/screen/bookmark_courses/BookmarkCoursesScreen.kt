@@ -29,6 +29,7 @@ fun BookmarkCoursesScreen(
     modifier: Modifier = Modifier,
     viewModel: BookmarkCoursesViewModel = koinViewModel(),
     goCourseDetail: (Long) -> Unit,
+    goCourseList: () -> Unit,
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
@@ -46,6 +47,7 @@ fun BookmarkCoursesScreen(
         when (sideEffect) {
             is BookmarkCoursesSideEffect.GoBack -> goBack()
             is BookmarkCoursesSideEffect.GoCourseDetail -> goCourseDetail(sideEffect.courseId)
+            is BookmarkCoursesSideEffect.GoCourseList -> goCourseList()
             is BookmarkCoursesSideEffect.ShowToast -> {
                 context.SaiToast(sideEffect.message)
             }
@@ -85,6 +87,7 @@ private fun BookmarkCoursesScreenContent(
             modifier = Modifier.weight(1f),
             loadMore = { onEvent(BookmarkCoursesUiEvent.LoadMore) },
             isLoadingMore = uiState.isLoadingMore,
+            onClickEmptyButton = { onEvent(BookmarkCoursesUiEvent.OnClickEmptyButton) },
             deletedIndexList = uiState.deletedIndexList,
             onClickBookmark = { index -> onEvent(BookmarkCoursesUiEvent.OnClickBookmark(index)) },
         )

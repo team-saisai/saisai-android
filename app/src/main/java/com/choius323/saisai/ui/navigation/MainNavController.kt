@@ -118,7 +118,12 @@ fun MainNavController(
                     .padding(top = TopAppBarHeight)
                     .fillMaxSize(),
                 goCourseDetail = { navController.navigate(MainNavItem.CourseDetail(it)) },
-                goBack = { navController.upPress() }
+                goCourseList = {
+                    navController.navigate(MainNavItem.BottomNavItem.Course) {
+                        popUpTo(MainNavItem.BottomNavItem.MyPage)
+                    }
+                },
+                goBack = { navController.upPress() },
             )
         }
     }

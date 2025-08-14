@@ -28,6 +28,10 @@ class BookmarkCoursesViewModel(
         is BookmarkCoursesUiEvent.OnClickBack -> goBack()
         is BookmarkCoursesUiEvent.LoadMore -> fetchCourses(true)
         is BookmarkCoursesUiEvent.OnClickDeleteItem -> toggleItemSelection(event.index)
+        BookmarkCoursesUiEvent.OnClickEmptyButton -> intent {
+            postSideEffect(BookmarkCoursesSideEffect.GoCourseList)
+        }
+
         is BookmarkCoursesUiEvent.OnClickCourse -> intent {
             postSideEffect(BookmarkCoursesSideEffect.GoCourseDetail(state.courseList[event.index].courseId))
         }

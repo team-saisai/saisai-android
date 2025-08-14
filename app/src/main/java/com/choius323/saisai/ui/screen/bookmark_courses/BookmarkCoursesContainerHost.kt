@@ -28,10 +28,12 @@ sealed interface BookmarkCoursesUiEvent {
     data object LoadMore : BookmarkCoursesUiEvent
     data object OnClickDeleteSelected : BookmarkCoursesUiEvent
     data class OnClickBookmark(val index: Int) : BookmarkCoursesUiEvent
+    data object OnClickEmptyButton: BookmarkCoursesUiEvent
 }
 
 sealed interface BookmarkCoursesSideEffect {
     data class ShowToast(val message: String) : BookmarkCoursesSideEffect
     data object GoBack : BookmarkCoursesSideEffect
     data class GoCourseDetail(val courseId: Long) : BookmarkCoursesSideEffect
+    data object GoCourseList : BookmarkCoursesSideEffect
 }

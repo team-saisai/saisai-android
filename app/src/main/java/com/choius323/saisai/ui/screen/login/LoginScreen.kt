@@ -6,27 +6,13 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -37,15 +23,13 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.Typography
@@ -89,8 +73,6 @@ fun LoginScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (LoginUiEvent) -> Unit,
 ) {
-    var passwordVisible by remember { mutableStateOf(false) }
-
     Box(
         modifier,
         contentAlignment = Alignment.Center
@@ -131,48 +113,11 @@ fun LoginScreenContent(
                 color = SaiColor.White
             )
         }
-
-        // 임시 로그인
-        Column(
-            Modifier
-                .align(Alignment.BottomCenter)
-                .offset(y = -(20).dp)
-        ) {
-            TextField(
-                uiState.email,
-                onValueChange = { onEvent(LoginUiEvent.EmailChanged(it)) },
-                label = { Text("이메일") },
-                placeholder = { Text("이메일 주소를 입력해주세요") },
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                singleLine = true
-            )
-            Spacer(Modifier.height(8.dp))
-            TextField(
-                uiState.password,
-                onValueChange = { onEvent(LoginUiEvent.PasswordChanged(it)) },
-                label = { Text("비밀번호") },
-                placeholder = { Text("비밀번호를 입력해주세요") },
-                visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
-                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-                singleLine = true,
-                trailingIcon = {
-                    val image =
-                        if (passwordVisible) Icons.Filled.Visibility else Icons.Filled.VisibilityOff
-                    val description = if (passwordVisible) "비밀번호 숨기기" else "비밀번호 보이기"
-
-                    IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                        Icon(imageVector = image, contentDescription = description)
-                    }
-                }
-            )
-            Button({ onEvent(LoginUiEvent.LoginButtonClicked) }) {
-                Text("로그인")
-            }
-        }
         LoginButtons(
             modifier = Modifier.offset(y = 130.dp),
-            onGoogleSuccess = {},
-            onKakaoSuccess = {},
+            onGoogleSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.GOOGLE, it)) },
+            onKakaoSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.KAKAO, it)) },
+            onError = { }
         )
     }
 }
@@ -182,6 +127,7 @@ fun LoginButtons(
     modifier: Modifier = Modifier,
     onGoogleSuccess: (idToken: String) -> Unit,
     onKakaoSuccess: (accessToken: String) -> Unit,
+    onError: (Throwable) -> Unit = {}
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
@@ -196,7 +142,7 @@ fun LoginButtons(
                 .clip(CircleShape)
                 .clickable {
                     coroutineScope.launch {
-                        GoogleAccountUtil.googleSignIn(context, onGoogleSuccess, { })
+                        GoogleAccountUtil.googleSignIn(context, onGoogleSuccess, onError)
                     }
                 },
         )
@@ -207,7 +153,7 @@ fun LoginButtons(
                 .size(48.dp)
                 .clip(CircleShape)
                 .clickable {
-                    KakaoAccountUtil.kakaoLogin(context, onKakaoSuccess, {})
+                    KakaoAccountUtil.kakaoLogin(context, onKakaoSuccess, onError)
                 },
         )
     }

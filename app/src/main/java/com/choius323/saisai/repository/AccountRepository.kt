@@ -17,7 +17,10 @@ interface AccountRepository {
     suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<UserBadgeDetail>>
     suspend fun getUserInfo(): Flow<Result<String>>
     suspend fun getUserBadgeList(): Flow<Result<List<UserBadge>>>
-    suspend fun getUserProfile(): Flow<Result<UserProfile>> // 추가
+    suspend fun getUserProfile(): Flow<Result<UserProfile>>
+    suspend fun loginWithGoogle(idToken: String): Flow<Result<AccountToken>>
+    suspend fun loginWithKakao(kakaoAccessToken: String): Flow<Result<AccountToken>>
+    suspend fun saveToken(accountToken: AccountToken)
 }
 
 class AccountRepositoryImpl(
@@ -71,4 +74,22 @@ class AccountRepositoryImpl(
                 responseDto.data.toUserProfile()
             }
         }.flowOn(ioDispatcher)
+
+    override suspend fun loginWithGoogle(idToken: String): Flow<Result<AccountToken>> =
+        accountRemoteDataSource.loginWithGoogle(idToken).map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toAccountToken()
+            }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun loginWithKakao(kakaoAccessToken: String): Flow<Result<AccountToken>> =
+        accountRemoteDataSource.loginWithKakao(kakaoAccessToken).map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toAccountToken()
+            }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun saveToken(accountToken: AccountToken) {
+        accountLocalDataSource.saveTokens(accountToken.accessToken, accountToken.refreshToken)
+    }
 }

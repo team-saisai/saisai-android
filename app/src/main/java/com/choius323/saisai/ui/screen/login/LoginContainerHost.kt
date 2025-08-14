@@ -1,16 +1,14 @@
 package com.choius323.saisai.ui.screen.login
 
+import com.choius323.saisai.ui.model.LoginType
+
 data class LoginUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val email: String = "",
-    val password: String = "",
 )
 
 sealed interface LoginUiEvent {
-    data class EmailChanged(val email: String) : LoginUiEvent
-    data class PasswordChanged(val password: String) : LoginUiEvent
-    object LoginButtonClicked : LoginUiEvent
+    data class SuccessOAuthLogin(val loginType: LoginType, val token: String) : LoginUiEvent
 }
 
 sealed interface LoginSideEffect {

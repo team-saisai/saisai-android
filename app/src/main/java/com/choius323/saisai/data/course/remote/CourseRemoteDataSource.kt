@@ -49,7 +49,7 @@ class CourseRemoteDataSourceImpl(
     private val client: HttpClient,
 ) : CourseRemoteDataSource {
     override suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>> =
-        saiFetch { client.get("my/rides") }
+        saiFetch { client.get("my/rides/recent") }
 
     override suspend fun getAllCourses(
         page: Int,

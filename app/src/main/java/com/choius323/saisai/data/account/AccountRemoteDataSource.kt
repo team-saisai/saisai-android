@@ -27,7 +27,9 @@ interface AccountRemoteDataSource {
     suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<SaiResponseDto<UserBadgeDetailDto>>>
     suspend fun getUserInfo(): Flow<Result<SaiResponseDto<UserInformationDto>>>
     suspend fun getUserBadgeList(): Flow<Result<SaiResponseDto<List<UserBadgeDto>>>>
-    suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>> // 추가
+    suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>>
+    suspend fun loginWithGoogle(idToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>>
+    suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>>
 }
 
 class AccountRemoteDataSourceImpl(
@@ -40,7 +42,7 @@ class AccountRemoteDataSourceImpl(
     ): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
         saiFetch<SaiResponseDto<AccountTokenDto>> {
             defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/login") {
-            setBody(LoginDto(email, password))
+                setBody(LoginDto(email, password))
             }
         }
 
@@ -63,6 +65,16 @@ class AccountRemoteDataSourceImpl(
 
     override suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>> =
         saiFetch { client.get("my/profile") }
+
+    override suspend fun loginWithGoogle(idToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
+        saiFetch {
+            client.post("auth/login/google/android") { setBody(mapOf("token" to idToken)) }
+        }
+
+    override suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
+        saiFetch {
+            client.post("auth/login/kakao") { setBody(mapOf("token" to accessToken)) }
+        }
 }
 
 private const val TAG = "AccountRemoteDataSource"

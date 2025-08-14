@@ -74,10 +74,8 @@ class RecordViewModel(
             reduce { state.copy(permissionGranted = event.isGranted) }
         }
 
-        RecordUiEvent.BackClicked -> intent {
-            postSideEffect(RecordSideEffect.NavigateBack)
-        }
-
+        RecordUiEvent.OnClickBack -> onClickBack()
+        is RecordUiEvent.OnClickBackDialog -> onClickBackDialog(event.isConfirm)
         is RecordUiEvent.SetShowPermissionDialog -> intent {
             reduce { state.copy(isShowPermissionDialog = event.isShow) }
         }
@@ -181,7 +179,7 @@ class RecordViewModel(
         }
     }
 
-    private fun pauseRecording() = intent {
+    private fun pauseRecording(isFinish: Boolean = false) = intent {
         if (state.rideState.isRecording().not()) return@intent
         reduce { state.copy(isLoading = true) }
         courseRepository.pauseRide(
@@ -192,6 +190,9 @@ class RecordViewModel(
             result.onSuccess {
                 reduce { state.copy(rideState = RideState.PAUSED, isLoading = false) }
                 stopTimer()
+                if(isFinish) {
+                    postSideEffect(RecordSideEffect.NavigateBack)
+                }
             }.onFailure {
                 postSideEffect(RecordSideEffect.ShowToast(it.message ?: "주행 정보를 서버에 전송하지 못했습니다."))
                 reduce { state.copy(isLoading = false) }
@@ -242,6 +243,22 @@ class RecordViewModel(
                     )
                 }
             }
+    }
+
+    private fun onClickBack() = intent {
+        if (state.rideState == RideState.RECORDING) {
+            reduce { state.copy(isShowBackDialog = true) }
+        } else {
+            postSideEffect(RecordSideEffect.NavigateBack)
+        }
+    }
+
+    private fun onClickBackDialog(isConfirm: Boolean) = intent {
+        if (isConfirm) {
+            pauseRecording(true)
+        } else {
+            reduce { state.copy(isShowBackDialog = false) }
+        }
     }
 
     private fun startTimer() {

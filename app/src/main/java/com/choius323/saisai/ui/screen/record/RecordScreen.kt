@@ -1,6 +1,7 @@
 package com.choius323.saisai.ui.screen.record
 
 import android.widget.Toast
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -51,6 +52,9 @@ fun RecordScreen(
     ChangeStatusBarIconsColor()
     val context = LocalContext.current
     val uiState by viewModel.collectAsState()
+    BackHandler {
+        viewModel.onEvent(RecordUiEvent.OnClickBack)
+    }
     ProvideAppBar(
         navigationIcon = {
             if (uiState.rideState != RideState.COMPLETE) {
@@ -147,6 +151,9 @@ fun RecordScreen(
         } else {
             Toast.makeText(context, "코스 정보가 없습니다.", Toast.LENGTH_SHORT).show()
         }
+    }
+    RecordBackDialog(uiState.isShowBackDialog) {
+        viewModel.onEvent(RecordUiEvent.OnClickBackDialog(it))
     }
     if (uiState.isLoading) {
         FullScreenLoading(isModal = true)

@@ -19,6 +19,7 @@ data class RecordUiState(
     val rideId: Long = 0,
     val isShowCompleteDialog: Boolean = false,
     val isExpandedSummary: Boolean = false,
+    val isShowBackDialog: Boolean = false
 ) {
     val route: List<GpxPoint>
         get() = courseDetail?.gpxPointList ?: emptyList()
@@ -32,16 +33,16 @@ data class RecordUiState(
 sealed interface RecordUiEvent {
     data class ClickedStart(val isPermissionGranted: Boolean) : RecordUiEvent
     data class SetPermissionGranted(val isGranted: Boolean) : RecordUiEvent
-    data object BackClicked : RecordUiEvent
+    data object OnClickBack : RecordUiEvent
     data class SetNowLatLng(val latLng: LatLng) : RecordUiEvent
     data class SetShowPermissionDialog(val isShow: Boolean) : RecordUiEvent
     data class SetCameraTracking(val isCameraTracking: Boolean) : RecordUiEvent
     data class StartRecording(val isPermissionGranted: Boolean) : RecordUiEvent
-
     data object StopRecording : RecordUiEvent
     data object ResumeRecording : RecordUiEvent
     data object OnToggleExpandedSummary : RecordUiEvent
     data object OnClickToggleRecording : RecordUiEvent
+    data class OnClickBackDialog(val isConfirm: Boolean) : RecordUiEvent
 }
 
 sealed interface RecordSideEffect {

@@ -21,6 +21,7 @@ interface AccountRepository {
     suspend fun loginWithGoogle(idToken: String): Flow<Result<AccountToken>>
     suspend fun loginWithKakao(kakaoAccessToken: String): Flow<Result<AccountToken>>
     suspend fun saveToken(accountToken: AccountToken)
+    suspend fun logOut()
 }
 
 class AccountRepositoryImpl(
@@ -91,5 +92,9 @@ class AccountRepositoryImpl(
 
     override suspend fun saveToken(accountToken: AccountToken) {
         accountLocalDataSource.saveTokens(accountToken.accessToken, accountToken.refreshToken)
+    }
+
+    override suspend fun logOut() {
+        accountLocalDataSource.clearTokens()
     }
 }

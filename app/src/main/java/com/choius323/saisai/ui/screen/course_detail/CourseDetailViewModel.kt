@@ -26,7 +26,10 @@ class CourseDetailViewModel(
                 result.onSuccess { courseDetail ->
                     reduce { state.copy(courseDetail = courseDetail, isLoading = false) }
                 }.onFailure {
-                    reduce { state.copy(error = it.message, isLoading = false) }
+                    reduce { state.copy(isLoading = false) }
+                    postSideEffect(
+                        CourseDetailSideEffect.ShowToast(it.message ?: "코스 정보를 불러오는데 실패했습니다.")
+                    )
                 }
             }
         }

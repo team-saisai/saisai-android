@@ -16,4 +16,5 @@ sealed interface CourseDetailUiEvent {
 sealed interface CourseDetailSideEffect {
     data class StartCourse(val courseId: Long) : CourseDetailSideEffect
     data object GoBack : CourseDetailSideEffect
+    data class ShowToast(val message: String) : CourseDetailSideEffect
 }

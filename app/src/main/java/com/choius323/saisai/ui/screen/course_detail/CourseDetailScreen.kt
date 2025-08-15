@@ -25,6 +25,7 @@ import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.screen.map.MapScreen
 import com.choius323.saisai.ui.screen.map.MapUiEvent
@@ -44,12 +45,14 @@ fun CourseDetailScreen(
     goRecordScreen: (courseId: Long) -> Unit,
     goBack: () -> Unit,
 ) {
+    val context = LocalContext.current
     ChangeStatusBarIconsColor()
     val uiState by viewModel.collectAsState()
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is CourseDetailSideEffect.StartCourse -> goRecordScreen(viewModel.courseId)
             is CourseDetailSideEffect.GoBack -> goBack()
+            is CourseDetailSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
         }
     }
     ProvideAppBar(

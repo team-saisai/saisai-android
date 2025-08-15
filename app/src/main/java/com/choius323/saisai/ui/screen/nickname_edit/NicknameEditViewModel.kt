@@ -5,10 +5,7 @@ import androidx.lifecycle.ViewModel
 import androidx.navigation.toRoute
 import com.choius323.saisai.repository.AccountRepository
 import com.choius323.saisai.ui.navigation.MainNavItem
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.flow.flowOf
-import kotlinx.coroutines.flow.onEach
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
@@ -42,8 +39,7 @@ class NicknameEditViewModel(
         if (state.isDuplicateCheckDone.not()) return@intent
         reduce { state.copy(isLoading = true) }
 
-        // TODO: 실제 API 호출로 변경
-        flowOf(Result.success(Unit)).onEach { delay(500) }.collectLatest { result ->
+        accountRepository.changeNickname(state.nickname).collectLatest { result ->
             result.onSuccess {
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(NicknameEditSideEffect.NicknameUpdateSuccess)
@@ -59,8 +55,7 @@ class NicknameEditViewModel(
             if (state.isDuplicateCheckDone || state.isNicknameValid.not()) return@intent
             reduce { state.copy(isLoading = true) }
 
-            // TODO: 실제 API 호출로 변경
-            flowOf(Result.success(Unit)).onEach { delay(1000L) }.collectLatest { result ->
+            accountRepository.duplicateCheckNickname(state.nickname).collectLatest { result ->
                 result.onSuccess {
                     reduce {
                         state.copy(

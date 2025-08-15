@@ -22,6 +22,8 @@ interface AccountRepository {
     suspend fun loginWithKakao(kakaoAccessToken: String): Flow<Result<AccountToken>>
     suspend fun saveToken(accountToken: AccountToken)
     suspend fun logOut()
+    suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>>
+    suspend fun changeNickname(nickname: String): Flow<Result<Unit>>
 }
 
 class AccountRepositoryImpl(
@@ -97,4 +99,14 @@ class AccountRepositoryImpl(
     override suspend fun logOut() {
         accountLocalDataSource.clearTokens()
     }
+
+    override suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>> =
+        accountRemoteDataSource.duplicateCheckNickname(nickname).map { result ->
+            result.mapCatching { }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun changeNickname(nickname: String): Flow<Result<Unit>> =
+        accountRemoteDataSource.changeNickname(nickname).map { result ->
+            result.mapCatching { }
+        }.flowOn(ioDispatcher)
 }

@@ -30,6 +30,8 @@ interface AccountRemoteDataSource {
     suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>>
     suspend fun loginWithGoogle(idToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>>
     suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>>
+    suspend fun duplicateCheckNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>>
+    suspend fun changeNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>>
 }
 
 class AccountRemoteDataSourceImpl(
@@ -74,6 +76,16 @@ class AccountRemoteDataSourceImpl(
     override suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
         saiFetch {
             client.post("auth/login/kakao") { setBody(mapOf("token" to accessToken)) }
+        }
+
+    override suspend fun duplicateCheckNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>> =
+        saiFetch {
+            client.get("my/profile/nickname/check?nickname=$nickname")
+        }
+
+    override suspend fun changeNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>> =
+        saiFetch {
+            client.post("my/profile/nickname") { setBody(mapOf("nickname" to nickname)) }
         }
 }
 

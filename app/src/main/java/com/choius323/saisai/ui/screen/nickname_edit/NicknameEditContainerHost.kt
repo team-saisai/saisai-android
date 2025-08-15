@@ -11,7 +11,7 @@ data class NicknameEditUiState(
     val currentNickname: String = "",
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
-    val isNicknameValid: Boolean = true,
+    val isNicknameValid: Boolean = false,
     val isDuplicateCheckDone: Boolean = false,
     val maxNicknameLength: Int = 10,
     val supportingTextType: SupportingTextType = SupportingTextType.NONE

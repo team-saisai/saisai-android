@@ -44,6 +44,7 @@ object KakaoAccountUtil {
                     )
                 } else if (token != null) {
                     Log.i(TAG, "카카오톡으로 로그인 성공 ${token.accessToken}\n")
+                    onSuccess(token.accessToken)
                 }
             }
         } else {

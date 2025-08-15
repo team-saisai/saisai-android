@@ -13,6 +13,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.rounded.Person
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ fun MyPageProfileSection(
     userProfile: UserProfile,
     modifier: Modifier = Modifier,
     onClickProfile: () -> Unit,
+    onClickNickname: () -> Unit,
 ) {
     Column(
         modifier = modifier.fillMaxWidth(),
@@ -55,7 +58,7 @@ fun MyPageProfileSection(
         Spacer(Modifier.height(22.dp))
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.clickable(onClick = onClickProfile)
+            modifier = Modifier.clickable(onClick = onClickNickname)
         ) {
             SaiText(
                 text = userProfile.nickname,
@@ -64,9 +67,9 @@ fun MyPageProfileSection(
             )
             Spacer(Modifier.size(4.dp))
             Icon(
-                imageVector = Icons.AutoMirrored.Rounded.ArrowForwardIos,
+                imageVector = Icons.Outlined.Edit,
                 contentDescription = "Edit Profile",
-                modifier = Modifier.size(24.dp),
+                modifier = Modifier.size(20.dp),
                 tint = SaiColor.White
             )
         }

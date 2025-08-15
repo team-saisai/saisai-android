@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.theme.SaiColor
@@ -103,11 +105,15 @@ private fun DialogButtons(
             colors = ButtonDefaults.buttonColors(
                 containerColor = SaiColor.Gray80
             ),
-            modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 12.dp),
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(vertical = 12.dp)
         ) {
-            Text(text = "취소", fontSize = 16.sp, fontWeight = FontWeight.W600)
+            Text(
+                text = "취소",
+                fontSize = 16.sp,
+                fontWeight = FontWeight.W600,
+                color = SaiColor.Gray20
+            )
         }
         Spacer(modifier = Modifier.width(8.dp))
         Button(
@@ -116,9 +122,8 @@ private fun DialogButtons(
             colors = ButtonDefaults.buttonColors(
                 containerColor = confirmButtonColor
             ),
-            modifier = Modifier
-                .weight(1f)
-                .padding(vertical = 12.dp),
+            modifier = Modifier.weight(1f),
+            contentPadding = PaddingValues(vertical = 12.dp)
         ) {
             Text(
                 text = confirmButtonText,
@@ -128,4 +133,30 @@ private fun DialogButtons(
             )
         }
     }
+}
+
+@Preview(heightDp = 400)
+@Composable
+fun SaiDialogPreview() {
+    SaiDialog(
+        isShow = true,
+        content = "정말로 로그아웃 하시겠어요?",
+        confirmButtonText = "로그아웃",
+        isModal = false,
+        onClickButton = { }
+    )
+}
+
+@Preview(heightDp = 400)
+@Composable
+fun SaiDialogPreviewWithSubContent() {
+    SaiDialog(
+        isShow = true,
+        content = "정말로 로그아웃 하시겠어요?",
+        confirmButtonText = "로그아웃",
+        confirmButtonColor = SaiColor.Lime,
+        subContent = "로그아웃 하시면 다시 로그인해야 해요.",
+        isModal = true,
+        onClickButton = { }
+    )
 }

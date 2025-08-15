@@ -13,8 +13,10 @@ sealed interface MyPageUiEvent {
     data object OnClickRideCourses : MyPageUiEvent
     data object OnClickRewardHistory : MyPageUiEvent
     data object OnClickBadgeAchievement : MyPageUiEvent
-    data object OnClickSetting : MyPageUiEvent
+    data object OnClickAppSettings : MyPageUiEvent
     data object OnClickProfile : MyPageUiEvent
+    data object OnClickTermsOfService : MyPageUiEvent
+    data object OnClickNicknameEdit : MyPageUiEvent
 }
 
 sealed interface MyPageSideEffect {
@@ -26,4 +28,6 @@ sealed interface MyPageSideEffect {
     data object GoSetting : MyPageSideEffect
     data object GoProfile : MyPageSideEffect
     data object GoNotification : MyPageSideEffect
+    data object GoTermsOfService : MyPageSideEffect
+    data class GoNicknameEdit(val nickname: String) : MyPageSideEffect
 }

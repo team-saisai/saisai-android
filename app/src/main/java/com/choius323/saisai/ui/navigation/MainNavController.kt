@@ -19,8 +19,10 @@ import com.choius323.saisai.ui.screen.course_list.CourseListScreen
 import com.choius323.saisai.ui.screen.home.HomeScreen
 import com.choius323.saisai.ui.screen.login.LoginScreen
 import com.choius323.saisai.ui.screen.my_page.MyPageScreen
+import com.choius323.saisai.ui.screen.nickname_edit.NicknameEditScreen
 import com.choius323.saisai.ui.screen.notification_list.NotificationListScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
+import com.choius323.saisai.ui.screen.settings.SettingsScreen
 
 @Stable
 class MainNavController(controller: NavHostController) : SaiNavController(controller)
@@ -75,11 +77,13 @@ fun MainNavController(
                 modifier.fillMaxSize(),
                 goProfile = {},
                 goBadgeAchievement = { navController.navigate(MainNavItem.BadgeList) },
-                goSetting = {},
+                goSetting = { navController.navigate(MainNavItem.AppSettings)},
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
                 goBookmarkCourses = { navController.navigate(MainNavItem.BookmarkList) },
                 goRodeListCourse = {},
                 goRewardHistory = {},
+                goTermsOfService = {},
+                goNicknameEdit = { navController.navigate(MainNavItem.NicknameEdit(it))},
             )
         }
         composable<MainNavItem.CourseDetail> { backStackEntry ->
@@ -124,6 +128,18 @@ fun MainNavController(
                     }
                 },
                 goBack = { navController.upPress() },
+            )
+        }
+        composable<MainNavItem.AppSettings> { backStackEntry ->
+            SettingsScreen(
+                modifier = modifier.fillMaxSize(),
+                goBack = { navController.upPress() }
+            )
+        }
+        composable<MainNavItem.NicknameEdit> { backStackEntry ->
+            NicknameEditScreen(
+                modifier = modifier.fillMaxSize(),
+                goBack = { navController.upPress() }
             )
         }
     }

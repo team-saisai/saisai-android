@@ -33,6 +33,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
@@ -131,6 +132,7 @@ private fun NicknameEditScreenContent(
                         .weight(1f)
                         .fillMaxHeight(),
                     singleLine = true,
+                    cursorBrush = SolidColor(Color.White),
                     textStyle = TextStyle(
                         platformStyle = PlatformTextStyle(
                             includeFontPadding = false
@@ -190,10 +192,11 @@ private fun TextFieldTrailingIcon(
     onClickDuplicateCheck: () -> Unit,
 ) {
     Row(
-        modifier, // 전달된 modifier를 사용
+        modifier,
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.End
     ) {
+        Spacer(Modifier.width(4.dp))
         SaiText(
             lengthText,
             color = Color(0xFFD3D5D9),

@@ -24,7 +24,7 @@ class MyPageViewModel(
             postSideEffect(MyPageSideEffect.GoProfile)
         }
 
-        MyPageUiEvent.OnClickSetting -> intent {
+        MyPageUiEvent.OnClickAppSettings -> intent {
             postSideEffect(MyPageSideEffect.GoSetting)
         }
 
@@ -42,6 +42,14 @@ class MyPageViewModel(
 
         MyPageUiEvent.OnClickBadgeAchievement -> intent {
             postSideEffect(MyPageSideEffect.GoBadgeAchievement)
+        }
+
+        MyPageUiEvent.OnClickTermsOfService -> intent {
+            postSideEffect(MyPageSideEffect.GoTermsOfService)
+        }
+
+        MyPageUiEvent.OnClickNicknameEdit -> intent {
+            postSideEffect(MyPageSideEffect.GoNicknameEdit(state.userProfile.nickname))
         }
     }
 

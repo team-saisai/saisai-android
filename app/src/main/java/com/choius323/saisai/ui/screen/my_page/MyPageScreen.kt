@@ -1,6 +1,7 @@
 package com.choius323.saisai.ui.screen.my_page
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -18,7 +19,6 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -27,7 +27,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.choius323.saisai.data.account.SessionManager
+import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
@@ -37,7 +37,6 @@ import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.ui.theme.Typography
-import kotlinx.coroutines.launch
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -53,6 +52,8 @@ fun MyPageScreen(
     goBookmarkCourses: () -> Unit,
     goRodeListCourse: () -> Unit,
     goRewardHistory: () -> Unit,
+    goTermsOfService: () -> Unit,
+    goNicknameEdit: (String) -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
@@ -69,6 +70,8 @@ fun MyPageScreen(
             MyPageSideEffect.GoBookmarkCourses -> goBookmarkCourses()
             MyPageSideEffect.GoRodeListCourses -> goRodeListCourse()
             MyPageSideEffect.GoRewardHistory -> goRewardHistory()
+            MyPageSideEffect.GoTermsOfService -> goTermsOfService()
+            is MyPageSideEffect.GoNicknameEdit -> goNicknameEdit(sideEffect.nickname)
         }
     }
     ProvideAppBar(
@@ -103,11 +106,10 @@ fun MyPageScreenContent(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(Modifier.height(36.dp))
-        MyPageProfileSection(userProfile = uiState.userProfile, onClickProfile = {
-            onEvent(
-                MyPageUiEvent.OnClickProfile
-            )
-        })
+        MyPageProfileSection(
+            userProfile = uiState.userProfile,
+            onClickProfile = { onEvent(MyPageUiEvent.OnClickProfile) },
+            onClickNickname = { onEvent(MyPageUiEvent.OnClickNicknameEdit) })
         Spacer(Modifier.height(28.dp))
         MyPageAchievementSection(
             onEvent = onEvent,
@@ -115,22 +117,39 @@ fun MyPageScreenContent(
             modifier = Modifier,
         )
         Spacer(Modifier.height(32.dp))
-        MenuSection()
+        MenuSection(
+            onClickAppSettings = { onEvent(MyPageUiEvent.OnClickAppSettings) },
+            onClickTermsOfService = { onEvent(MyPageUiEvent.OnClickTermsOfService) }
+        )
     }
 }
 
 @Composable
-private fun MenuSection(modifier: Modifier = Modifier) {
-    val coroutineScope = rememberCoroutineScope()
-
+private fun MenuSection(
+    modifier: Modifier = Modifier,
+    onClickAppSettings: () -> Unit,
+    onClickTermsOfService: () -> Unit,
+) {
     Column(modifier = modifier) {
         HorizontalDivider(color = Color(0xFF31353A))
-        MenuItem(text = "APP 설정") { /* TODO: Handle App Setting Click */ }
+        MenuItem(text = "APP 설정", onClick = onClickAppSettings)
         HorizontalDivider(color = Color(0xFF31353A))
-        MenuItem(text = "서비스 이용 약관") { /* TODO: Handle Terms of Service Click */ }
+        MenuItem(text = "서비스 이용 약관", onClick = onClickTermsOfService)
         HorizontalDivider(color = Color(0xFF31353A))
-        MenuItem(text = "로그아웃") {
-            coroutineScope.launch { SessionManager.onLogout() }
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(vertical = 23.dp)
+                .padding(start = 12.dp, end = 8.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+        ) {
+            SaiText("버전 정보", fontSize = 15.sp, fontWeight = FontWeight.W400)
+            SaiText(
+                "ver ${BuildConfig.VERSION_NAME}",
+                color = SaiColor.Gray40,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.W400
+            )
         }
         HorizontalDivider(color = Color(0xFF31353A))
     }

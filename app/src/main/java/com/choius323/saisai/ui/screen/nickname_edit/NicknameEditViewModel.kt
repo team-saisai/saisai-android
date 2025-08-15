@@ -4,6 +4,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.navigation.toRoute
 import com.choius323.saisai.repository.AccountRepository
+import com.choius323.saisai.ui.navigation.MainNavItem
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.flowOf
@@ -20,8 +21,7 @@ class NicknameEditViewModel(
         container<NicknameEditUiState, NicknameEditSideEffect>(NicknameEditUiState())
 
     init {
-        // TODO: toRoute -> 실제 Navigate Type으로 변경
-        val nickname = savedStateHandle.toRoute<String>()
+        val nickname = savedStateHandle.toRoute<MainNavItem.NicknameEdit>().nickname
         intent {
             reduce { state.copy(currentNickname = nickname, nickname = nickname) }
         }
@@ -100,7 +100,8 @@ class NicknameEditViewModel(
     }
 
     private fun onNicknameChanged(inputNickname: String) = intent {
-        val newNickname = inputNickname.filterNot { it.isWhitespace() }
+        val newNickname =
+            inputNickname.take(state.maxNicknameLength).filterNot { it.isWhitespace() }
         val isValid =
             newNickname.length in 1..state.maxNicknameLength && newNickname != state.currentNickname
         reduce {

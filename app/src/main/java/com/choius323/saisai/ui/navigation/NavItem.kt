@@ -54,4 +54,10 @@ sealed interface MainNavItem : NavItem {
 
     @Serializable
     data object BookmarkList : MainNavItem
+
+    @Serializable
+    data object AppSettings : MainNavItem
+
+    @Serializable
+    data class NicknameEdit(val nickname: String) : MainNavItem
 }

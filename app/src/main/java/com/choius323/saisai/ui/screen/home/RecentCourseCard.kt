@@ -107,7 +107,7 @@ fun RecentCourseCard(
                     fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                 )
-                Text(
+                SaiText(
                     buildAnnotatedString {
                         withStyle(style = SpanStyle(color = Color.Gray, fontSize = 14.sp)) {
                             append("총거리 ")
@@ -150,7 +150,7 @@ fun RecentCourseCard(
                 containerColor = SaiColor.Purple
             )
         ) {
-            Text(
+            SaiText(
                 text = if (isCompleted) "다시 도전하기" else "이어하기",
                 color = SaiColor.White,
                 fontWeight = FontWeight.Bold,

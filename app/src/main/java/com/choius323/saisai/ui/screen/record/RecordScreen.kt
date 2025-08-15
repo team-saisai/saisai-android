@@ -28,6 +28,7 @@ import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.TopAppBarHeight
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -104,9 +105,7 @@ fun RecordScreen(
         when (sideEffect) {
             is RecordSideEffect.NavigateBack -> onBack()
             is RecordSideEffect.PermissionRequest -> permissionState.launchMultiplePermissionRequest()
-            is RecordSideEffect.ShowToast -> Toast.makeText(
-                context, sideEffect.msg, Toast.LENGTH_SHORT
-            ).show()
+            is RecordSideEffect.ShowToast -> context.SaiToast(sideEffect.msg)
 
             is RecordSideEffect.PermissionCheck -> viewModel.onEvent(
                 RecordUiEvent.SetPermissionGranted(

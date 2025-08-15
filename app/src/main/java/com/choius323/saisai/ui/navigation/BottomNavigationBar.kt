@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.currentBackStackEntryAsState
+import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.theme.SaiColor
 
 @Composable
@@ -68,7 +69,7 @@ fun BottomNavigationBar(
                         contentDescription = screen.name,
                         tint = if (isSelected) SaiColor.White else MaterialTheme.colorScheme.onSurface
                     )
-                    Text(
+                    SaiText(
                         screen::class.simpleName ?: "",
                         color = if (isSelected) SaiColor.White else MaterialTheme.colorScheme.onSurface
                     )

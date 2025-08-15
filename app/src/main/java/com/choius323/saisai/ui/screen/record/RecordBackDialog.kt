@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.theme.SaiColor
 
 @Composable
@@ -55,13 +56,13 @@ fun RecordBackDialog(
                 verticalArrangement = Arrangement.Center,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(
+                SaiText(
                     text = "코스를 중단하고 나가시겠습니까?",
                     color = SaiColor.White,
                     fontSize = 18.sp,
                 )
                 Spacer(modifier = Modifier.height(7.dp))
-                Text(
+                SaiText(
                     text = "코스는 홈에서 이어서 도전할 수 있습니다.",
                     color = SaiColor.Gray40,
                     fontSize = 14.sp,

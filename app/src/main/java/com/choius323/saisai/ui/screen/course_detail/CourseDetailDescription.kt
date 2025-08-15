@@ -131,7 +131,7 @@ private fun CourseInfoSection(detail: CourseDetail) {
             text = detail.courseName, fontSize = 20.sp, fontWeight = FontWeight.W500
         )
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
+        SaiText(
             buildAnnotatedString {
                 append("${detail.distance}km · 난이도 ")
                 withStyle(SpanStyle(color = detail.level.color)) {

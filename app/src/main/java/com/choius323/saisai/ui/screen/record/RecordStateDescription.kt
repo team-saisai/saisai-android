@@ -128,7 +128,7 @@ private fun DescriptionNormalContent(
     Column(
         modifier = modifier
     ) {
-        Text(distanceString, fontSize = 22.sp)
+        SaiText(distanceString, fontSize = 22.sp)
         Spacer(Modifier.height(8.dp))
         Box(
             Modifier
@@ -173,7 +173,7 @@ private fun DescriptionPausedContent(
             )
         }
         Spacer(Modifier.height(11.dp))
-        Text(distanceString, fontSize = 18.sp)
+        SaiText(distanceString, fontSize = 18.sp)
         Spacer(Modifier.height(8.dp))
         Box(
             Modifier
@@ -261,7 +261,7 @@ private fun RecordDescriptionSummaryOpened(
     ) {
         SaiText(text = detail.courseName, fontSize = 16.sp, fontWeight = FontWeight.W600)
         Spacer(modifier = Modifier.height(4.dp))
-        Text(
+        SaiText(
             buildAnnotatedString {
                 append("${detail.distance}km · 난이도 ")
                 withStyle(SpanStyle(color = detail.level.color)) {

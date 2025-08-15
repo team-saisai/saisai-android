@@ -100,7 +100,7 @@ private fun SaiTopAppBarPreview() {
                     Icon(Icons.AutoMirrored.Default.ArrowBack, null)
                 },
                 title = {
-                    Text("Title Preview", maxLines = 1)
+                    SaiText("Title Preview", maxLines = 1)
                 },
                 actions = {
                     Icon(Icons.AutoMirrored.Default.List, null)

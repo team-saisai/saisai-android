@@ -122,7 +122,7 @@ object KtorClient {
                     Log.d(TAG, "reissue refreshTokens: ${response.status}")
                     if (response.status.isSuccess()) {
                         val newTokens = response.body<SaiResponseDto<AccountTokenDto>>().data
-                        SessionManager.onLoginSuccess(newTokens.accessToken, newTokens.refreshToken)
+                        SessionManager.onLoginSuccess(newTokens.accessToken, newTokens.refreshToken, null)
 
                         val accessToken = SessionManager.accessToken.value
                         val refreshToken = SessionManager.refreshToken.value

@@ -15,7 +15,7 @@ class LoginUseCase(
             LoginType.GOOGLE -> accountRepository.loginWithGoogle(token)
         }.onEach { result ->
             result.onSuccess { accountToken ->
-                accountRepository.saveToken(accountToken)
+                accountRepository.saveToken(accountToken, type.name)
             }
         }
 }

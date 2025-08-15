@@ -5,7 +5,8 @@ import kotlinx.coroutines.flow.Flow
 interface AccountLocalDataSource {
     val accessToken: Flow<String?>
     val refreshToken: Flow<String?>
-    suspend fun saveTokens(accessToken: String, refreshToken: String)
+    val loginType: Flow<String?>
+    suspend fun saveTokens(accessToken: String, refreshToken: String, loginType: String? = null)
     suspend fun clearTokens()
 }
 
@@ -18,8 +19,11 @@ class AccountLocalDataSourceImpl(
     override val refreshToken: Flow<String?>
         get() = authDataStore.refreshToken
 
-    override suspend fun saveTokens(accessToken: String, refreshToken: String) {
-        SessionManager.onLoginSuccess(accessToken, refreshToken)
+    override val loginType: Flow<String?>
+        get() = authDataStore.loginType
+
+    override suspend fun saveTokens(accessToken: String, refreshToken: String, loginType: String?) {
+        SessionManager.onLoginSuccess(accessToken, refreshToken, loginType)
     }
 
     override suspend fun clearTokens() {

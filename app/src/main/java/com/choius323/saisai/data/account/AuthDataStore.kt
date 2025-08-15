@@ -15,31 +15,34 @@ class AuthDataStore(private val context: Context) {
     companion object {
         private val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         private val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
+        private val USER_LOGIN_TYPE = stringPreferencesKey("user_login_type")
     }
 
-    // AccessToken 가져오기
     val accessToken: Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[ACCESS_TOKEN_KEY]
     }
 
-    // RefreshToken 가져오기
     val refreshToken: Flow<String?> = context.dataStore.data.map { preferences ->
         preferences[REFRESH_TOKEN_KEY]
     }
 
-    // 토큰 저장
-    suspend fun saveTokens(accessToken: String, refreshToken: String) {
+    val loginType: Flow<String?> = context.dataStore.data.map { preferences ->
+        preferences[USER_LOGIN_TYPE]
+    }
+
+    suspend fun saveTokens(accessToken: String, refreshToken: String, loginType: String?) {
         context.dataStore.edit { preferences ->
             preferences[ACCESS_TOKEN_KEY] = accessToken.removePrefix("Bearer ")
             preferences[REFRESH_TOKEN_KEY] = refreshToken.removePrefix("Bearer ")
+            loginType?.let { preferences[USER_LOGIN_TYPE] = it }
         }
     }
 
-    // 토큰 삭제 (로그아웃 시)
     suspend fun clearTokens() {
         context.dataStore.edit { preferences ->
             preferences.remove(ACCESS_TOKEN_KEY)
             preferences.remove(REFRESH_TOKEN_KEY)
+            preferences.remove(USER_LOGIN_TYPE)
         }
     }
 }

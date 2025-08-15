@@ -20,10 +20,11 @@ interface AccountRepository {
     suspend fun getUserProfile(): Flow<Result<UserProfile>>
     suspend fun loginWithGoogle(idToken: String): Flow<Result<AccountToken>>
     suspend fun loginWithKakao(kakaoAccessToken: String): Flow<Result<AccountToken>>
-    suspend fun saveToken(accountToken: AccountToken)
+    suspend fun saveToken(accountToken: AccountToken, loginType: String)
     suspend fun logOut()
     suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>>
     suspend fun changeNickname(nickname: String): Flow<Result<Unit>>
+    suspend fun getNowLoginType(): Flow<String?>
 }
 
 class AccountRepositoryImpl(
@@ -35,9 +36,7 @@ class AccountRepositoryImpl(
         email: String, password: String,
     ): Flow<Result<AccountToken>> = accountRemoteDataSource.login(email, password).map { result ->
         result.mapCatching { responseDto ->
-            responseDto.data.toAccountToken().apply {
-                accountLocalDataSource.saveTokens(accessToken, refreshToken)
-            }
+            responseDto.data.toAccountToken()
         }
     }.flowOn(ioDispatcher)
 
@@ -92,8 +91,12 @@ class AccountRepositoryImpl(
             }
         }.flowOn(ioDispatcher)
 
-    override suspend fun saveToken(accountToken: AccountToken) {
-        accountLocalDataSource.saveTokens(accountToken.accessToken, accountToken.refreshToken)
+    override suspend fun saveToken(accountToken: AccountToken, loginType: String) {
+        accountLocalDataSource.saveTokens(
+            accountToken.accessToken,
+            accountToken.refreshToken,
+            loginType
+        )
     }
 
     override suspend fun logOut() {
@@ -109,4 +112,6 @@ class AccountRepositoryImpl(
         accountRemoteDataSource.changeNickname(nickname).map { result ->
             result.mapCatching { }
         }.flowOn(ioDispatcher)
+
+    override suspend fun getNowLoginType(): Flow<String?> = accountLocalDataSource.loginType
 }

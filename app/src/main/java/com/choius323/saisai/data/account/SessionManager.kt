@@ -18,10 +18,12 @@ object SessionManager {
     private val _refreshToken = MutableStateFlow<String?>(null)
     val refreshToken = _refreshToken.asStateFlow()
 
+    private val _loginType = MutableStateFlow<String?>(null)
+    val loginType = _loginType.asStateFlow()
+
     fun init(authDataStore: AuthDataStore) {
         this.authDataStore = authDataStore
 
-        // DataStore의 토큰을 메모리로 불러오는 로직
         CoroutineScope(Dispatchers.IO).launch {
             launch {
                 authDataStore.accessToken.collectLatest {
@@ -33,12 +35,17 @@ object SessionManager {
                     _refreshToken.emit(it)
                 }
             }
+            launch {
+                authDataStore.loginType.collectLatest {
+                    _loginType.emit(it)
+                }
+            }
         }
     }
 
     // 로그인 성공 시 호출
-    suspend fun onLoginSuccess(accessToken: String, refreshToken: String) {
-        authDataStore.saveTokens(accessToken, refreshToken)
+    suspend fun onLoginSuccess(accessToken: String, refreshToken: String, loginType: String?) {
+        authDataStore.saveTokens(accessToken, refreshToken, loginType)
     }
 
     // 로그아웃 시 호출

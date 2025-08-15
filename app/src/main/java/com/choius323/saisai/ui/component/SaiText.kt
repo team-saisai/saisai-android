@@ -46,6 +46,7 @@ fun SaiText(
     overflow: TextOverflow = TextOverflow.Clip,
     maxLines: Int = Int.MAX_VALUE,
     style: TextStyle = LocalTextStyle.current,
+    letterSpacing: TextUnit = TextUnit.Unspecified,
 ) {
     val adjustedStyle = remember {
         style.copy(
@@ -71,7 +72,8 @@ fun SaiText(
         lineHeight = lineHeight,
         overflow = overflow,
         maxLines = maxLines,
-        style = adjustedStyle
+        style = adjustedStyle,
+        letterSpacing = letterSpacing,
     )
 }
 

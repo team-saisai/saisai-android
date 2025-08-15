@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
+import com.choius323.saisai.ui.component.SaiDialog
 import com.choius323.saisai.ui.component.SaiSwitch
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.theme.SaiColor
@@ -40,22 +41,37 @@ fun SettingsScreen(
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
-    ProvideAppBar(
-        navigationIcon = {
-            Icon(
-                Icons.AutoMirrored.Default.ArrowBackIos,
-                "뒤로 가기",
-                modifier = Modifier
-                    .size(40.dp)
-                    .clickable(onClick = goBack)
-                    .padding(8.dp)
-            )
-        },
-        title = {
-            SaiText("APP 설정", fontSize = 18.sp)
-        }
-    )
+    ProvideAppBar(navigationIcon = {
+        Icon(
+            Icons.AutoMirrored.Default.ArrowBackIos,
+            "뒤로 가기",
+            modifier = Modifier
+                .size(40.dp)
+                .clickable(onClick = goBack)
+                .padding(8.dp)
+        )
+    }, title = {
+        SaiText("APP 설정", fontSize = 18.sp)
+    })
     SettingsScreenContent(uiState, modifier, viewModel::onEvent)
+    SaiDialog(
+        isShow = uiState.isShowLogOutDialog,
+        content = "로그아웃 하시겠습니까?",
+        confirmButtonText = "로그아웃",
+        modifier = Modifier,
+    ) {
+        viewModel.onEvent(SettingsUiEvent.OnClickLogOutDialogButton(it))
+    }
+    SaiDialog(
+        isShow = uiState.isShowDeleteAccountDialog,
+        content = "회원탈퇴 하시겠습니까?",
+        subContent = "탈퇴 후에는 복구할 수 없습니다.",
+        confirmButtonText = "회원탈퇴",
+        confirmButtonColor = Color(0xFFFF7676),
+        modifier = Modifier,
+    ) {
+        viewModel.onEvent(SettingsUiEvent.OnClickDeleteAccountDialogButton(it))
+    }
     if (uiState.isLoading) {
         FullScreenLoading(isModal = true)
     }
@@ -94,12 +110,17 @@ private fun SettingsScreenContent(
             color = SaiColor.White
         )
         Spacer(Modifier.height(12.dp))
-        MenuText("로그아웃", modifier = Modifier.fillMaxWidth().clickable { onEvent(SettingsUiEvent.OnClickLogOut) })
+        MenuText(
+            "로그아웃",
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onEvent(SettingsUiEvent.OnClickLogOut) })
         HorizontalDivider(color = Color(0xFF31353A))
         MenuText(
             "회원탈퇴",
-            modifier = Modifier.fillMaxWidth().clickable { onEvent(SettingsUiEvent.OnClickDeleteAccount) }
-        )
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { onEvent(SettingsUiEvent.OnClickDeleteAccount) })
     }
 }
 
@@ -107,8 +128,7 @@ private fun SettingsScreenContent(
 private fun MenuText(text: String, modifier: Modifier = Modifier) {
     SaiText(
         text,
-        modifier
-            .padding(vertical = 21.dp, horizontal = 8.dp),
+        modifier.padding(vertical = 21.dp, horizontal = 8.dp),
         fontSize = 15.sp,
         fontWeight = FontWeight.W400,
         color = SaiColor.Gray20
@@ -119,8 +139,5 @@ private fun MenuText(text: String, modifier: Modifier = Modifier) {
 @Composable
 private fun SettingsScreenContentPreview() {
     SettingsScreenContent(
-        uiState = SettingsUiState(),
-        modifier = Modifier,
-        onEvent = {}
-    )
+        uiState = SettingsUiState(), modifier = Modifier, onEvent = {})
 }

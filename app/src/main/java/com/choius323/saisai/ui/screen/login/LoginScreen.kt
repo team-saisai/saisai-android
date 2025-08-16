@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.login
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -73,6 +74,7 @@ fun LoginScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (LoginUiEvent) -> Unit,
 ) {
+    val context = LocalContext.current
     Box(
         modifier,
         contentAlignment = Alignment.Center
@@ -117,7 +119,7 @@ fun LoginScreenContent(
             modifier = Modifier.offset(y = 130.dp),
             onGoogleSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.GOOGLE, it)) },
             onKakaoSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.KAKAO, it)) },
-            onError = { }
+            onError = { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
         )
     }
 }

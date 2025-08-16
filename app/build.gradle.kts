@@ -51,6 +51,7 @@ android {
                 "GOOGLE_WEB_CLIENT_ID",
                 "\"${properties.getProperty("google.web.client.id")}\""
             )
+            manifestPlaceholders.put("applicationLabel", "@string/app_name")
         }
         debug {
             val kakaoTestKey = properties.getProperty("kakao.test.key")
@@ -62,6 +63,8 @@ android {
                 "GOOGLE_WEB_CLIENT_ID",
                 "\"${properties.getProperty("google.web.client.id")}\""
             )
+            applicationIdSuffix = ".debug"
+            manifestPlaceholders.put("applicationLabel", "@string/app_name_debug")
         }
         create("releaseTest") {
             initWith(getByName("release"))

@@ -66,7 +66,7 @@ fun SplashScreen(
             SaiText(
                 text = "사이사이",
                 style = Typography.AppTitle.copy(fontSize = 42.sp, fontWeight = FontWeight.W400),
-                color = SaiColor.White
+                color = SaiColor.White,
             )
             SaiText(
                 text = "일상 사이 스며드는 라이딩 코스",

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -37,7 +36,6 @@ fun BottomNavigationBar(
 
     val navBackStackEntry by mainNavController.navController.currentBackStackEntryAsState()
 
-    // 현재 route가 bottomBarScreens에 포함되는지 확인
     val currentRoute = navBackStackEntry?.destination?.route
     val shouldShowBottomBar = bottomBarShowItems.any { screen ->
         currentRoute == screen.fullName
@@ -51,16 +49,17 @@ fun BottomNavigationBar(
             for (screen in bottomBarItems) {
                 val isSelected = currentRoute == screen.fullName
                 Column(
-                    modifier = Modifier.clickable {
-                        // 객체를 직접 전달하여 화면 이동
-                        mainNavController.navigate(to = screen, from = navBackStackEntry) {
-                            popUpTo(mainNavController.navController.graph.startDestinationId) {
-                                saveState = true
+                    modifier = Modifier
+                        .weight(1f)
+                        .clickable {
+                            mainNavController.navigate(to = screen, from = navBackStackEntry) {
+                                popUpTo(mainNavController.navController.graph.startDestinationId) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
                             }
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    },
+                        },
                     verticalArrangement = Arrangement.Center,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {

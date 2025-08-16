@@ -141,7 +141,9 @@ fun MainNavController(
                 modifier = modifier.fillMaxSize(),
                 goBack = {
                     navController.navigate(MainNavItem.BottomNavItem.MyPage) {
-                        popUpTo(MainNavItem.BottomNavItem.MyPage)
+                        popUpTo(MainNavItem.BottomNavItem.MyPage) {
+                            inclusive = true
+                        }
                     }
                 }
             )

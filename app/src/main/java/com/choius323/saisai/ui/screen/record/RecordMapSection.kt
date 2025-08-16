@@ -57,24 +57,6 @@ fun RecordMapSection(
                 Log.d(TAG, "MapView update")
             }, modifier = Modifier.fillMaxSize()
         )
-        if (uiState.rideState == RideState.RECORDING) {
-            Icon(
-                imageVector = Icons.Default.LocationOn,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .offset(x = (-8).dp, y = 24.dp)
-                    .size(24.dp)
-                    .background(SaiColor.Black)
-                    .clip(CircleShape)
-                    .clickable(
-                        onClick = {
-                            onEvent(
-                                RecordUiEvent.SetCameraTracking(uiState.isCameraTracking.not())
-                            )
-                        }),
-                contentDescription = "내 위치로 이동"
-            )
-        }
     }
 }
 
@@ -88,7 +70,7 @@ private fun RecordMapSetting(
         if (uiState.rideState == RideState.RECORDING && uiState.isCameraTracking && uiState.nowLatLng != null) {
             Log.d(
                 TAG,
-                "isRecording: ${uiState.rideState}, isCameraTracking: ${true}, nowLatLng: ${uiState.nowLatLng}"
+                "isRecording: ${uiState.rideState}, nowLatLng: ${uiState.nowLatLng}"
             )
             kakaoMap.moveCamera(uiState.nowLatLng)
         }
@@ -101,11 +83,11 @@ private fun RecordMapSetting(
         } else {
             kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
         }
-        kakaoMap.moveCamera(latLngList)
+//        kakaoMap.moveCamera(latLngList)
     }
     LaunchedEffect(uiState.courseDetail?.checkPointList) {
         val checkPointList =
-            uiState.courseDetail?.checkPointList?.map { it.toLatLng() } ?: emptyList()
+            uiState.courseDetail?.checkPointList?.map { LatLng.from(it.lat, it.lng) } ?: emptyList()
         kakaoMap.initCircles(checkPointList, false)
     }
     LaunchedEffect(uiState.nowLatLng) {
@@ -115,7 +97,7 @@ private fun RecordMapSetting(
     }
     LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState == RideState.RECORDING) {
         if (uiState.courseDetail != null && uiState.rideState == RideState.RECORDING && uiState.nowCheckPointIndex >= 0) {
-            val list = uiState.courseDetail.checkPointList.map { it.toLatLng() }
+            val list = uiState.courseDetail.checkPointList.map { LatLng.from(it.lat, it.lng) }
             kakaoMap.setCirclesStyle(list, uiState.nowCheckPointIndex)
         }
     }

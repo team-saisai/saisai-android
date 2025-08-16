@@ -11,6 +11,7 @@ import com.choius323.saisai.data.course.remote.model.ResumeRideDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.ChallengeInfo
+import com.choius323.saisai.ui.model.CheckPoint
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
@@ -75,6 +76,13 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
         challengeStatus = challengeStatus,
         challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
         isEventActive = isEventActive,
+        checkPointList = gpxPointDtoList.foldIndexed(emptyList()) { index, newList, gpxPointDto ->
+            if (gpxPointDto.elevation == null) {
+                newList + CheckPoint(gpxPointDto.latitude, gpxPointDto.longitude, index)
+            } else {
+                newList
+            }
+        }
     )
 }
 

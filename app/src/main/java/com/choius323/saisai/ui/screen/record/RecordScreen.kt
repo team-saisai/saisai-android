@@ -167,7 +167,6 @@ fun RecordScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (RecordUiEvent) -> Unit = {},
 ) {
-    val context = LocalContext.current
     Box(modifier) {
         RecordMapSection(uiState, Modifier.fillMaxSize(), onEvent)
         RecordTimerText(
@@ -177,12 +176,6 @@ fun RecordScreenContent(
                 .offset(y = TopAppBarHeight + 12.dp),
             rideState = uiState.rideState,
         )
-        Button(
-            onClick = { onEvent(RecordUiEvent.ClickedStart(permissionState.allPermissionsGranted)) },
-            modifier = Modifier.align(Alignment.CenterStart)
-        ) {
-            SaiText("기록 시작")
-        }
         RecordStateDescription(
             uiState = uiState,
             modifier = Modifier

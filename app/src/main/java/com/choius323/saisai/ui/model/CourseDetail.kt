@@ -18,7 +18,7 @@ data class CourseDetail(
     val challengeEndedAt: LocalDate,
     val isEventActive: Boolean,
     val gpxPointList: List<GpxPoint>,
-    val checkPointList: List<GpxPoint> = emptyList(),
+    val checkPointList: List<CheckPoint> = emptyList(),
 ) {
     companion object {
         val sample = CourseDetail(
@@ -37,15 +37,7 @@ data class CourseDetail(
             challengeEndedAt = LocalDate.of(2026, 5, 13),
             isEventActive = true,
             rideId = 1,
-            // TODO: 임시 데이터
-            checkPointList = GpxPoint.gpxPointsSample.let {
-                listOf(
-                    it.first(),
-                    it[(it.size.toFloat() / 3).toInt()],
-                    it[(it.size.toFloat() / 3 * 2).toInt()],
-                    it.last()
-                )
-            }
+            checkPointList = CheckPoint.sample1
         )
     }
 }

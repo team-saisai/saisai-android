@@ -71,7 +71,12 @@ fun CourseDetailScreen(
             )
         })
     LaunchedEffect(uiState.courseDetail) {
-        mapViewModel.onEvent(MapUiEvent.SetRoute(uiState.courseDetail?.gpxPointList ?: emptyList()))
+        mapViewModel.onEvent(
+            MapUiEvent.SetRoute(
+                uiState.courseDetail?.gpxPointList ?: emptyList(),
+                uiState.courseDetail?.checkPointList ?: emptyList(),
+            )
+        )
     }
     CourseDetailScreenContent(
         uiState = uiState,

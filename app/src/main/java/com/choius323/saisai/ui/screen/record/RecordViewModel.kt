@@ -30,14 +30,9 @@ class RecordViewModel(
                 result.onSuccess { courseDetail ->
                     reduce {
                         state.copy(
-                            // TODO: 실제 데이터로 수정 필요
                             courseDetail = courseDetail.copy(
-                                gpxPointList = courseDetail.gpxPointList.take(5),
-                                checkPointList = listOf(
-                                    courseDetail.gpxPointList[0],
-                                    courseDetail.gpxPointList[2],
-                                    courseDetail.gpxPointList[4],
-                                )
+                                gpxPointList = courseDetail.gpxPointList,
+                                checkPointList = courseDetail.checkPointList,
                             ),
                             isLoading = false,
                             rideId = courseDetail.rideId ?: 0,
@@ -46,7 +41,7 @@ class RecordViewModel(
                     postSideEffect(RecordSideEffect.StartRecording)
                 }.onFailure {
                     reduce { state.copy(isLoading = false) }
-                    postSideEffect(RecordSideEffect.ShowToast("코스 정보를 가져오는데 실패했습니다."))
+                    postSideEffect(RecordSideEffect.ShowToast(it.message ?: "코스 정보를 가져오는데 실패했습니다."))
                 }
             }
         }
@@ -120,7 +115,7 @@ class RecordViewModel(
                 }
                 startTimer()
             }.onFailure {
-                postSideEffect(RecordSideEffect.ShowToast("코스를 시작하는데 실패했습니다."))
+                postSideEffect(RecordSideEffect.ShowToast(it.message ?: "코스를 시작하는데 실패했습니다."))
             }
         }
     }
@@ -130,7 +125,9 @@ class RecordViewModel(
         reduce { state.copy(nowLatLng = event.latLng) }
         if (state.rideState != RideState.RECORDING && state.nowCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
         val nextCheckPointIndex = state.nowCheckPointIndex + 1
-        val nextLatLng = state.courseDetail?.checkPointList?.get(nextCheckPointIndex)?.toLatLng()
+        val nextCheckPoint = state.courseDetail?.checkPointList?.get(nextCheckPointIndex)
+            ?: return@intent
+        val nextLatLng = state.courseDetail?.gpxPointList[nextCheckPoint.gpxPointIdx]?.toLatLng()
             ?: return@intent
         val distance = calculateDistance(event.latLng, nextLatLng)
         if (distance < 10f) {
@@ -190,7 +187,7 @@ class RecordViewModel(
             result.onSuccess {
                 reduce { state.copy(rideState = RideState.PAUSED, isLoading = false) }
                 stopTimer()
-                if(isFinish) {
+                if (isFinish) {
                     postSideEffect(RecordSideEffect.NavigateBack)
                 }
             }.onFailure {

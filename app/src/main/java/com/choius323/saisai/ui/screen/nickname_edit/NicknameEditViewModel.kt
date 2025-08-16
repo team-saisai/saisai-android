@@ -45,7 +45,7 @@ class NicknameEditViewModel(
                 postSideEffect(NicknameEditSideEffect.NicknameUpdateSuccess)
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(NicknameEditSideEffect.ShowToast("닉네임 변경에 실패했습니다."))
+                postSideEffect(NicknameEditSideEffect.ShowToast(it.message ?: "닉네임 변경에 실패했습니다."))
             }
         }
     }

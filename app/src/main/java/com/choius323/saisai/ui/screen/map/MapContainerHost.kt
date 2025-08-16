@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.map
 
+import com.choius323.saisai.ui.model.CheckPoint
 import com.choius323.saisai.ui.model.GpxPoint
 import com.kakao.vectormap.LatLng
 
@@ -7,7 +8,7 @@ data class MapUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val route: List<GpxPoint> = emptyList(),
-    val checkPointList: List<GpxPoint> = emptyList(),
+    val checkPointList: List<CheckPoint> = emptyList(),
     val nowLatLng: LatLng? = null,
     val isTracking: Boolean = false,
     val permissionGranted: Boolean = false,
@@ -16,7 +17,9 @@ data class MapUiState(
 
 sealed interface MapUiEvent {
     data object BackClicked : MapUiEvent
-    data class SetRoute(val route: List<GpxPoint>) : MapUiEvent
+    data class SetRoute(val route: List<GpxPoint>, val checkPointList: List<CheckPoint>) :
+        MapUiEvent
+
     data class SetNowLatLng(val latLng: LatLng) : MapUiEvent
     data class SetIsTracking(val isTracking: Boolean) : MapUiEvent
     data class SetPermissionGranted(val changed: Boolean) : MapUiEvent

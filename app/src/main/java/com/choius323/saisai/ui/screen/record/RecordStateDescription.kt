@@ -46,6 +46,8 @@ import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
+import java.text.DecimalFormat
+import java.text.NumberFormat
 
 @Composable
 fun RecordStateDescription(
@@ -60,7 +62,7 @@ fun RecordStateDescription(
         derivedStateOf {
             buildAnnotatedString {
                 withStyle(SpanStyle(color = SaiColor.Lime)) {
-                    append("${uiState.totalRideDistance}km")
+                    append("${DecimalFormat("0.0").format(uiState.totalRideDistance)}km")
                 }
                 append(" / ${courseDetail.distance}km")
             }

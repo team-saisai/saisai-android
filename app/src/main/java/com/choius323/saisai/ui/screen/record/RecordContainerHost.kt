@@ -14,7 +14,7 @@ data class RecordUiState(
     val lastTimestamp: Long = 0,
     val isShowPermissionDialog: Boolean = false,
     val isCameraTracking: Boolean = false,
-    val nowCheckPointIndex: Int = -1,
+    val nowCheckPointIndex: Int = 0,
     val nowLatLng: LatLng? = null,
     val rideId: Long = 0,
     val isShowCompleteDialog: Boolean = false,
@@ -24,7 +24,9 @@ data class RecordUiState(
     val route: List<GpxPoint>
         get() = courseDetail?.gpxPointList ?: emptyList()
     val totalRideDistance: Double
-        get() = courseDetail?.checkPointList?.getOrNull(nowCheckPointIndex)?.totalDistance ?: 0.0
+        get() = courseDetail?.checkPointList?.getOrNull(nowCheckPointIndex)?.gpxPointIdx?.let { idx ->
+            courseDetail.gpxPointList[idx].totalDistance
+        } ?: 0.0
 
     val totalSeconds: Long
         get() = totalTime / 1000

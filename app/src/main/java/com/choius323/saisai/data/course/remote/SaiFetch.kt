@@ -19,7 +19,10 @@ inline fun <reified T> saiFetch(crossinline block: suspend () -> HttpResponse): 
             } else {
                 val errorToThrow = runCatching {
                     val errorBody = response.body<SaiErrorResponseDto>()
-                    IllegalStateException("${errorBody.code} - ${errorBody.message}")
+                    val exception =
+                        IllegalStateException("${errorBody.code} - ${errorBody.message}")
+                    Log.e("saiFetch", "SaiErrorResponseDto\n${exception.message}", exception)
+                    exception
                 }.getOrElse { exception ->
                     IOException("Network error: ${response.status.value} - ${response.status.description}. ${exception.message}")
                 }

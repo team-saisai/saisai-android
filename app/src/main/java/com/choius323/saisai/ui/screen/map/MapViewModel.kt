@@ -21,11 +21,7 @@ class MapViewModel(
                 reduce {
                     state.copy(
                         route = event.route,
-                        checkPointList = if (event.route.isNotEmpty()) {
-                            List(3) { event.route[((it + 1) * (event.route.lastIndex.toFloat() / 4)).toInt()] }
-                        } else {
-                            emptyList()
-                        }
+                        checkPointList = event.checkPointList
                     )
                 }
             }

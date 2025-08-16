@@ -22,6 +22,7 @@ import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.PlatformTextStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
@@ -47,6 +48,8 @@ fun SaiText(
     maxLines: Int = Int.MAX_VALUE,
     style: TextStyle = LocalTextStyle.current,
     letterSpacing: TextUnit = TextUnit.Unspecified,
+    fontFamily: FontFamily? = null,
+    minLines: Int = 1,
 ) {
     val adjustedStyle = remember {
         style.copy(
@@ -58,7 +61,6 @@ fun SaiText(
                 trim = LineHeightStyle.Trim.None,
             ),
             lineHeight = 1.em,
-            fontFamily = pretendardFamily,
         )
     }
 
@@ -74,6 +76,8 @@ fun SaiText(
         maxLines = maxLines,
         style = adjustedStyle,
         letterSpacing = letterSpacing,
+        fontFamily = fontFamily ?: adjustedStyle.fontFamily ?: pretendardFamily,
+        minLines = 1,
     )
 }
 

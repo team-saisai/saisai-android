@@ -195,7 +195,9 @@ private fun TitleSection(
             SaiText(
                 text = courseName,
                 fontWeight = FontWeight.SemiBold,
-                fontSize = 16.sp
+                fontSize = 16.sp,
+                maxLines = 2,
+                minLines = 2,
             )
             Spacer(Modifier.height(4.dp))
             SaiText(

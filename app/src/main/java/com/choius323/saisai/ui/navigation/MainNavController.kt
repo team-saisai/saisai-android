@@ -77,13 +77,13 @@ fun MainNavController(
                 modifier.fillMaxSize(),
                 goProfile = {},
                 goBadgeAchievement = { navController.navigate(MainNavItem.BadgeList) },
-                goSetting = { navController.navigate(MainNavItem.AppSettings)},
+                goSetting = { navController.navigate(MainNavItem.AppSettings) },
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
                 goBookmarkCourses = { navController.navigate(MainNavItem.BookmarkList) },
                 goRodeListCourse = {},
                 goRewardHistory = {},
                 goTermsOfService = {},
-                goNicknameEdit = { navController.navigate(MainNavItem.NicknameEdit(it))},
+                goNicknameEdit = { navController.navigate(MainNavItem.NicknameEdit(it)) },
             )
         }
         composable<MainNavItem.CourseDetail> { backStackEntry ->
@@ -139,7 +139,11 @@ fun MainNavController(
         composable<MainNavItem.NicknameEdit> { backStackEntry ->
             NicknameEditScreen(
                 modifier = modifier.fillMaxSize(),
-                goBack = { navController.upPress() }
+                goBack = {
+                    navController.navigate(MainNavItem.BottomNavItem.MyPage) {
+                        popUpTo(MainNavItem.BottomNavItem.MyPage)
+                    }
+                }
             )
         }
     }

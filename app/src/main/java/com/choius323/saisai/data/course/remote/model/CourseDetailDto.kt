@@ -16,8 +16,8 @@ data class CourseDetailDto(
     val challengerCount: Int, // 챌린지 참여자 수
     val finisherCount: Int, // 완주 수
     val rideId: Long?,
-    val challengeStatus: String,
-    val challengeEndedAt: String,
+    val challengeStatus: String?,
+    val challengeEndedAt: String?,
     val isEventActive: Boolean,
     @SerialName("gpxPoints")
     val gpxPointDtoList: List<GpxPointDto> = emptyList(),

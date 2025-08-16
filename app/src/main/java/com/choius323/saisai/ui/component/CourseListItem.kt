@@ -60,12 +60,14 @@ fun CourseListItemHorizontal(
             .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        ImageSection(
-            course.imageUrl,
-            course.challengeEndedAt,
-            course.isEventActive,
-            Modifier.size(width = 160.dp, height = 132.dp)
-        )
+        if (course.challengeEndedAt != null) {
+            ImageSection(
+                course.imageUrl,
+                course.challengeEndedAt,
+                course.isEventActive,
+                Modifier.size(width = 160.dp, height = 132.dp)
+            )
+        }
         Spacer(Modifier.width(4.dp))
         CourseInformationSection(
             courseName = course.courseName,
@@ -95,14 +97,13 @@ fun CourseListItemVertical(
     isBookmarked: Boolean,
     isEventActive: Boolean = false,
     reward: Int = 0,
-    endDate: LocalDate,
+    endDate: LocalDate?,
     onClickBookmark: () -> Unit = {},
 ) {
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
             .width(IntrinsicSize.Min)
-            .height(IntrinsicSize.Min)
             .background(Color(0xFF2B2E31)),
     ) {
         // 상단 이미지 및 날짜 배지 섹션
@@ -124,8 +125,7 @@ fun CourseListItemVertical(
             isLong = false,
             isBookmarked = isBookmarked,
             modifier = Modifier
-                .padding(horizontal = 12.dp)
-                .padding(bottom = 18.dp),
+                .padding(top = 4.dp, bottom = 18.dp, start = 12.dp, end = 12.dp),
             onClickBookmark = onClickBookmark
         )
     }
@@ -162,7 +162,7 @@ private fun CourseInformationSection(
 @Composable
 private fun ImageSection(
     imageUrl: Any?,
-    endDate: LocalDate,
+    endDate: LocalDate?,
     isEventActive: Boolean,
     modifier: Modifier = Modifier,
 ) {
@@ -196,8 +196,6 @@ private fun TitleSection(
                 text = courseName,
                 fontWeight = FontWeight.SemiBold,
                 fontSize = 16.sp,
-                maxLines = 2,
-                minLines = 2,
             )
             Spacer(Modifier.height(4.dp))
             SaiText(

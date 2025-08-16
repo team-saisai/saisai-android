@@ -13,8 +13,8 @@ data class CourseItemDto(
     val imageUrl: String? = null,
     val participantsCount: Int,
     val isBookmarked: Boolean = false,
-    val challengeStatus: String,
-    val challengeEndedAt: String,
+    val challengeStatus: String?,
+    val challengeEndedAt: String?,
     val isEventActive: Boolean,
     val reward: Int,
 )

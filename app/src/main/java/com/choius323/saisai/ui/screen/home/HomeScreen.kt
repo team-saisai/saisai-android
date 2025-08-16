@@ -1,10 +1,15 @@
 package com.choius323.saisai.ui.screen.home
 
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.scrollable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -124,11 +129,9 @@ fun HomeScreenContent(
                     // 부모가 준 최대 너비 제약에 오른쪽 패딩(22.dp)만큼을 더합니다.
                     val newConstraints = constraints.copy(
                         maxWidth = constraints.maxWidth + 22.dp.roundToPx()
-                    )
-                    // 새로 만든 '더 넓은' 제약 조건으로 LazyRow를 측정합니다.
-                    val placeable = measurable.measure(newConstraints)
 
-                    // 측정된 크기대로 레이아웃을 잡고 배치합니다.
+                    )
+                    val placeable = measurable.measure(newConstraints)
                     layout(placeable.width, placeable.height) {
                         placeable.placeRelative(0, 0)
                     }
@@ -144,7 +147,9 @@ fun HomeScreenContent(
                         endDate = courseInfo.challengeEndedAt,
                         reward = courseInfo.reward,
                         participantCount = courseInfo.participantsCount,
-                        modifier = Modifier.clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
                         isBookmarked = courseInfo.isBookmarked,
                         onClickBookmark = {
                             onEvent(

@@ -1,6 +1,5 @@
 package com.choius323.saisai.repository
 
-import com.choius323.saisai.data.course.remote.model.ChallengeInfoDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
 import com.choius323.saisai.data.course.remote.model.CourseItemDto
@@ -10,7 +9,6 @@ import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.ResumeRideDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
-import com.choius323.saisai.ui.model.ChallengeInfo
 import com.choius323.saisai.ui.model.CheckPoint
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.model.CourseListItem
@@ -51,13 +49,6 @@ fun CourseItemDto.toCourseListItem() = CourseListItem(
     reward = reward,
     isBookmarked = isBookmarked,
 )
-
-fun ChallengeInfoDto?.toChallengeInfo() = this?.run {
-    ChallengeInfo(
-        challengeStatus = challengeStatus,
-        challengeEndedTime = LocalDate.parse(challengeEndedTime, DateTimeFormat.dateFormat)
-    )
-}
 
 fun CourseDetailDto.toCourseDetail(): CourseDetail {
     return CourseDetail(

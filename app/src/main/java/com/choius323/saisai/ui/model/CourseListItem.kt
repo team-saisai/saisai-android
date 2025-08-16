@@ -12,8 +12,8 @@ data class CourseListItem(
     val imageUrl: String?,
     val participantsCount: Int,
     val isBookmarked: Boolean,
-    val challengeStatus: String,
-    val challengeEndedAt: LocalDate,
+    val challengeStatus: String?,
+    val challengeEndedAt: LocalDate?,
     val isEventActive: Boolean,
     val reward: Int,
 ) {

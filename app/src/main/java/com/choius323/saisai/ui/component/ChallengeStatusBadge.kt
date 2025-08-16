@@ -32,20 +32,20 @@ import org.threeten.bp.LocalDate
  */
 @Composable
 fun ChallengeStatusBadge(
-    endDate: LocalDate,
+    endDate: LocalDate?,
     modifier: Modifier = Modifier,
     isEvent: Boolean = false,
 ) {
-    val isFinished = remember(endDate) { endDate.isBefore(LocalDate.now()) }
+    val isFinished = remember(endDate) { endDate?.isBefore(LocalDate.now()) }
     Row(
         modifier
             .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(4.dp)
     ) {
-        if (isFinished) {
+        if (isFinished == true) {
             EndedBadge(Modifier)
-        } else {
+        } else if (isFinished == false && endDate != null) {
             DateBadge(endDate = endDate, modifier = Modifier)
         }
         if (isEvent) {

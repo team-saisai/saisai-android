@@ -12,6 +12,7 @@ import com.choius323.saisai.data.course.remote.saiFetch
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
+import io.ktor.client.request.patch
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
@@ -85,7 +86,7 @@ class AccountRemoteDataSourceImpl(
 
     override suspend fun changeNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>> =
         saiFetch {
-            client.post("my/profile/nickname") { setBody(mapOf("nickname" to nickname)) }
+            client.patch("my/profile/nickname") { setBody(mapOf("nickname" to nickname)) }
         }
 }
 

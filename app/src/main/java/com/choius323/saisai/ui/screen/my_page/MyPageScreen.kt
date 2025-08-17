@@ -18,6 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -87,6 +88,9 @@ fun MyPageScreen(
             )
         }
     )
+    LaunchedEffect(Unit) {
+        viewModel.onEvent(MyPageUiEvent.InitScreen)
+    }
     MyPageScreenContent(uiState, modifier, viewModel::onEvent)
     if (uiState.isLoading) {
         FullScreenLoading()

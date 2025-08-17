@@ -14,12 +14,8 @@ class MyPageViewModel(
     override val container: Container<MyPageUiState, MyPageSideEffect> =
         container(MyPageUiState())
 
-    init {
-        loadData()
-    }
-
-    // TODO: 이벤트 로직 추가
     fun onEvent(event: MyPageUiEvent) = when (event) {
+        MyPageUiEvent.InitScreen -> loadData()
         MyPageUiEvent.OnClickProfile -> intent {
             postSideEffect(MyPageSideEffect.GoProfile)
         }

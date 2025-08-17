@@ -17,6 +17,7 @@ sealed interface MyPageUiEvent {
     data object OnClickProfile : MyPageUiEvent
     data object OnClickTermsOfService : MyPageUiEvent
     data object OnClickNicknameEdit : MyPageUiEvent
+    data object InitScreen : MyPageUiEvent
 }
 
 sealed interface MyPageSideEffect {

@@ -3,6 +3,7 @@ package com.choius323.saisai.data.account
 import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.data.account.model.AccountTokenDto
 import com.choius323.saisai.data.account.model.LoginDto
+import com.choius323.saisai.data.account.model.TotalRewardDto
 import com.choius323.saisai.data.account.model.UserBadgeDetailDto
 import com.choius323.saisai.data.account.model.UserBadgeDto
 import com.choius323.saisai.data.account.model.UserInformationDto
@@ -33,6 +34,7 @@ interface AccountRemoteDataSource {
     suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>>
     suspend fun duplicateCheckNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>>
     suspend fun changeNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>>
+    suspend fun getTotalReward(): Flow<Result<SaiResponseDto<TotalRewardDto>>>
 }
 
 class AccountRemoteDataSourceImpl(
@@ -88,6 +90,9 @@ class AccountRemoteDataSourceImpl(
         saiFetch {
             client.patch("my/profile/nickname") { setBody(mapOf("nickname" to nickname)) }
         }
+
+    override suspend fun getTotalReward(): Flow<Result<SaiResponseDto<TotalRewardDto>>> =
+        saiFetch { client.get("my/rewards") }
 }
 
 private const val TAG = "AccountRemoteDataSource"

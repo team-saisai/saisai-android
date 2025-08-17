@@ -118,14 +118,6 @@ fun GpxPointDto.toGpxPoint(): GpxPoint = GpxPoint(
     totalDistance = totalDistance,
 )
 
-fun RewardInfoDto.toRewardUiInfo(): RewardInfo {
-    return RewardInfo(
-        rewardName = rewardName,
-        rewardImageUrl = rewardImageUrl,
-        startedAt = startedAt,
-        endedAt = endedAt
-    )
-}
 
 fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListItem {
     return PopularChallengeListItem(

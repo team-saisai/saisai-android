@@ -13,6 +13,7 @@ import com.choius323.saisai.ui.screen.nickname_edit.NicknameEditViewModel
 import com.choius323.saisai.ui.screen.record.RecordViewModel
 import com.choius323.saisai.ui.screen.ride_history.RideHistoryViewModel
 import com.choius323.saisai.ui.screen.settings.SettingsViewModel
+import com.choius323.saisai.ui.screen.total_reward.TotalRewardViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
 
@@ -30,4 +31,5 @@ val uiModule = module {
     viewModelOf(::NicknameEditViewModel)
     viewModelOf(::SettingsViewModel)
     viewModelOf(::RideHistoryViewModel)
+    viewModelOf(::TotalRewardViewModel)
 }

@@ -3,6 +3,7 @@ package com.choius323.saisai.repository
 import com.choius323.saisai.data.account.AccountLocalDataSource
 import com.choius323.saisai.data.account.AccountRemoteDataSource
 import com.choius323.saisai.ui.model.AccountToken
+import com.choius323.saisai.ui.model.TotalReward
 import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.model.UserBadgeDetail
 import com.choius323.saisai.ui.model.UserProfile
@@ -25,6 +26,7 @@ interface AccountRepository {
     suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>>
     suspend fun changeNickname(nickname: String): Flow<Result<Unit>>
     suspend fun getNowLoginType(): Flow<String?>
+    suspend fun getTotalReward(): Flow<Result<TotalReward>>
 }
 
 class AccountRepositoryImpl(
@@ -111,6 +113,13 @@ class AccountRepositoryImpl(
     override suspend fun changeNickname(nickname: String): Flow<Result<Unit>> =
         accountRemoteDataSource.changeNickname(nickname).map { result ->
             result.mapCatching { }
+        }.flowOn(ioDispatcher)
+
+    override suspend fun getTotalReward(): Flow<Result<TotalReward>> =
+        accountRemoteDataSource.getTotalReward().map { result ->
+            result.mapCatching { responseDto ->
+                responseDto.data.toTotalReward()
+            }
         }.flowOn(ioDispatcher)
 
     override suspend fun getNowLoginType(): Flow<String?> = accountLocalDataSource.loginType

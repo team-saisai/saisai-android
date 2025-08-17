@@ -2,14 +2,18 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.RecentRideProto
 import com.choius323.saisai.data.account.model.AccountTokenDto
+import com.choius323.saisai.data.account.model.TotalRewardDto
 import com.choius323.saisai.data.account.model.UserBadgeDetailDto
 import com.choius323.saisai.data.account.model.UserBadgeDto
 import com.choius323.saisai.data.account.model.UserProfileDto
 import com.choius323.saisai.ui.model.AccountToken
 import com.choius323.saisai.ui.model.RecentRide
+import com.choius323.saisai.ui.model.RewardInfo
+import com.choius323.saisai.ui.model.TotalReward
 import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.model.UserBadgeDetail
 import com.choius323.saisai.ui.model.UserProfile
+import com.choius323.saisai.util.DateTimeFormat
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
 
@@ -73,3 +77,14 @@ fun UserProfileDto.toUserProfile(): UserProfile {
         badgeCount = this.badgeCount
     )
 }
+
+fun TotalRewardDto.toTotalReward() = TotalReward(
+    totalReward = this.totalReward,
+    rewardInfoList = rewardInfoList.map {
+        RewardInfo(
+            reward = it.reward,
+            acquiredAt = LocalDate.parse(it.acquiredAt, DateTimeFormat.dateTimeFormat),
+            courseName = it.courseName
+        )
+    }
+)

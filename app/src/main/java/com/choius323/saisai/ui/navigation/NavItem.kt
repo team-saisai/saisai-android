@@ -38,6 +38,9 @@ sealed interface MainNavItem : NavItem {
     }
 
     @Serializable
+    data object TotalReward:MainNavItem
+
+    @Serializable
     data class Record(val courseId: Long) : MainNavItem
 
     @Serializable

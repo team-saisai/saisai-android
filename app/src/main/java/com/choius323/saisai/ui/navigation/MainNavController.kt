@@ -24,6 +24,7 @@ import com.choius323.saisai.ui.screen.notification_list.NotificationListScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
 import com.choius323.saisai.ui.screen.ride_history.RideHistoryScreen
 import com.choius323.saisai.ui.screen.settings.SettingsScreen
+import com.choius323.saisai.ui.screen.total_reward.TotalRewardScreen
 
 @Stable
 class MainNavController(controller: NavHostController) : SaiNavController(controller)
@@ -82,7 +83,7 @@ fun MainNavController(
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
                 goBookmarkCourses = { navController.navigate(MainNavItem.BookmarkList) },
                 goRideHistoryCourse = {navController.navigate(MainNavItem.RideHistory)},
-                goRewardHistory = {},
+                goRewardHistory = { navController.navigate(MainNavItem.TotalReward)},
                 goTermsOfService = {},
                 goNicknameEdit = { navController.navigate(MainNavItem.NicknameEdit(it)) },
             )
@@ -162,6 +163,15 @@ fun MainNavController(
                     }
                 },
                 goBack = { navController.upPress() },
+            )
+        }
+        composable<MainNavItem.TotalReward> { backStackEntry ->
+            TotalRewardScreen (
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = TopAppBarHeight)
+                    .fillMaxSize(),
+                goBack = { navController.upPress() }
             )
         }
     }

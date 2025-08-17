@@ -3,7 +3,6 @@ package com.choius323.saisai.ui.screen.ride_history
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,21 +20,14 @@ import androidx.compose.material.icons.rounded.Check
 import androidx.compose.material.icons.rounded.CheckCircleOutline
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.choius323.saisai.ui.component.CourseListItemHorizontal
 import com.choius323.saisai.ui.component.EmptyCourseList
-import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.theme.SaiColor
-import com.choius323.saisai.ui.theme.SaiTheme
-import com.jakewharton.threetenabp.AndroidThreeTen
 
 @Composable
 fun RideHistoryListSection(
@@ -58,8 +50,7 @@ fun RideHistoryListSection(
         if (courseList.isEmpty()) {
             item {
                 EmptyCourseList(
-                    content = "저장한 코스가 없습니다.\n" +
-                            "코스를 탐색해 나의 취향을 발견해보세요.",
+                    content = "주행한 코스가 없습니다.",
                     onClick = onClickEmptyButton,
                     modifier = Modifier.fillMaxSize()
                 )
@@ -67,7 +58,7 @@ fun RideHistoryListSection(
         }
         itemsIndexed(
             items = courseList,
-            key = { _, item -> item.courseId }
+            key = { _, item -> item.rideId }
         ) { index, item ->
             if (index !in deletedIndexList) {
                 RideHistoryListItem(

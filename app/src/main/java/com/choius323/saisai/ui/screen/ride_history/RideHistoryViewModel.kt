@@ -146,7 +146,7 @@ class RideHistoryViewModel(
 
     private fun deleteCourses(indexList: List<Int>) = intent {
         val firstIndex = indexList.min()
-        val selectedIds = indexList.map { state.courseList[it].courseId }
+        val selectedIds = indexList.map { state.courseList[it].rideId }
 
         reduce { state.copy(isLoading = true) }
         courseRepository.deleteRideHistory(selectedIds).collectLatest { result ->

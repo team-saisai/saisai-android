@@ -12,6 +12,7 @@ import com.choius323.saisai.data.course.remote.model.RideHistoryDataDto
 import com.choius323.saisai.data.course.remote.model.RideIdDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.model.SaveRideDto
+import com.choius323.saisai.di.SaiClientProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -49,17 +50,17 @@ interface CourseRemoteDataSource {
 }
 
 class CourseRemoteDataSourceImpl(
-    private val client: HttpClient,
+    private val saiClientProvider: SaiClientProvider,
 ) : CourseRemoteDataSource {
     override suspend fun getRecentCourse(): Flow<Result<SaiResponseDto<RecentCourseDto?>>> =
-        saiFetch { client.get("my/rides/recent") }
+        saiFetch { saiClientProvider.client.get("my/rides/recent") }
 
     override suspend fun getAllCourses(
         page: Int,
         courseType: String,
         sort: String,
     ): Flow<Result<SaiResponseDto<CourseDataDto>>> = saiFetch {
-        client.get("courses") {
+        saiClientProvider.client.get("courses") {
             parameter("page", page)
             parameter("type", courseType)
             parameter("sort", sort)
@@ -68,54 +69,54 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun getCourseDetail(
         courseId: Long,
-    ): Flow<Result<SaiResponseDto<CourseDetailDto>>> = saiFetch { client.get("courses/$courseId") }
+    ): Flow<Result<SaiResponseDto<CourseDetailDto>>> = saiFetch { saiClientProvider.client.get("courses/$courseId") }
 
     override suspend fun getPopularChallenge(): Flow<Result<SaiResponseDto<List<CourseItemDto>>>> =
-        saiFetch { client.get("challenges/popular") }
+        saiFetch { saiClientProvider.client.get("challenges/popular") }
 
     override suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>> =
-        saiFetch { client.post("courses/$courseId/rides") }
+        saiFetch { saiClientProvider.client.post("courses/$courseId/rides") }
 
     override suspend fun completeCourse(
         rideId: Long, completeCourseDto: CompleteCourseDto,
     ): Flow<Result<SaiResponseDto<Unit?>>> = saiFetch {
-        client.patch("rides/$rideId/complete") {
+        saiClientProvider.client.patch("rides/$rideId/complete") {
             setBody(completeCourseDto)
         }
     }
 
     override suspend fun resumeRide(rideId: Long): Flow<Result<SaiResponseDto<ResumeRideDto>>> =
-        saiFetch { client.patch("rides/$rideId/resume") }
+        saiFetch { saiClientProvider.client.patch("rides/$rideId/resume") }
 
     override suspend fun pauseRide(
         rideId: Long,
         body: SaveRideDto,
     ): Flow<Result<SaiResponseDto<RideIdDto>>> = saiFetch {
-        client.patch("rides/$rideId/pause") {
+        saiClientProvider.client.patch("rides/$rideId/pause") {
             setBody(body)
         }
     }
 
     override suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
-        saiFetch { client.post("courses/$courseId/bookmarks") }
+        saiFetch { saiClientProvider.client.post("courses/$courseId/bookmarks") }
 
     override suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
-        saiFetch { client.delete("courses/$courseId/bookmarks") }
+        saiFetch { saiClientProvider.client.delete("courses/$courseId/bookmarks") }
 
     override suspend fun getBookmarkedCourses(page: Int): Flow<Result<SaiResponseDto<CourseDataDto>>> =
-        saiFetch { client.get("my/bookmarks/courses?page=$page") }
+        saiFetch { saiClientProvider.client.get("my/bookmarks/courses?page=$page") }
 
     override suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>> =
-        saiFetch { client.delete("my/bookmarks/courses") { setBody(body) } }
+        saiFetch { saiClientProvider.client.delete("my/bookmarks/courses") { setBody(body) } }
 
     override suspend fun getRideHistory(page: Int, sort: String, notCompletedOnly: Boolean): Flow<Result<SaiResponseDto<RideHistoryDataDto>>> =
-        saiFetch { client.get("my/rides?page=$page&sort=$sort&notCompletedOnly=$notCompletedOnly") }
+        saiFetch { saiClientProvider.client.get("my/rides?page=$page&sort=$sort&notCompletedOnly=$notCompletedOnly") }
 
     override suspend fun deleteRideHistory(rideIds: List<Long>): Flow<Result<SaiResponseDto<Unit>>> =
-        saiFetch { client.delete("my/rides") { setBody(mapOf("rideIds" to rideIds)) } }
+        saiFetch { saiClientProvider.client.delete("my/rides") { setBody(mapOf("rideIds" to rideIds)) } }
 
     override suspend fun syncRide(
         rideId: Long, body: SaveRideDto
     ): Flow<Result<SaiResponseDto<Unit?>>> =
-        saiFetch { client.patch("rides/$rideId/sync") { setBody(body) } }
+        saiFetch { saiClientProvider.client.patch("rides/$rideId/sync") { setBody(body) } }
 }

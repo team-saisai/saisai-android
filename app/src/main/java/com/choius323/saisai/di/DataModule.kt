@@ -42,6 +42,7 @@ import kotlinx.serialization.json.Json
 import org.json.JSONArray
 import org.json.JSONObject
 import org.koin.android.ext.koin.androidContext
+import org.koin.core.Koin
 import org.koin.core.qualifier.named
 import org.koin.dsl.module
 
@@ -116,13 +117,21 @@ object KtorClient {
                         SessionManager.onLogout()
                         return@refreshTokens null
                     }
+                    val loginType = SessionManager.loginType.value ?: run {
+                        SessionManager.onLogout()
+                        return@refreshTokens null
+                    }
                     val response = defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/reissue") {
                         header(HttpHeaders.Authorization, "Bearer $refreshToken")
                     }
                     Log.d(TAG, "reissue refreshTokens: ${response.status}")
                     if (response.status.isSuccess()) {
                         val newTokens = response.body<SaiResponseDto<AccountTokenDto>>().data
-                        SessionManager.onLoginSuccess(newTokens.accessToken, newTokens.refreshToken, null)
+                        SessionManager.onLoginSuccess(
+                            newTokens.accessToken,
+                            newTokens.refreshToken,
+                            loginType
+                        )
 
                         val accessToken = SessionManager.accessToken.value
                         val refreshToken = SessionManager.refreshToken.value
@@ -141,14 +150,15 @@ object KtorClient {
 val dataModule = module {
     single<CoroutineDispatcher>(named(IO_DISPATCHER)) { Dispatchers.IO }
     single<HttpClient>(named(DEFAULT_CLIENT)) { KtorClient.defaultClient }
-    single<HttpClient>(named(SAI_CLIENT)) { KtorClient.saiClient() }
+    factory<HttpClient>(named(SAI_CLIENT)) { KtorClient.saiClient() }
+    single { SaiClientProvider(getKoin()) }
 
     single { AuthDataStore(androidContext()) }
     single { RideDataStore(androidContext()) }
 
     single<CourseRemoteDataSource> {
         CourseRemoteDataSourceImpl(
-            get(named(SAI_CLIENT))
+            get()
         )
     }
     single<CourseLocalDataSource> { CourseLocalDataSourceImpl(get()) }
@@ -160,12 +170,36 @@ val dataModule = module {
     }
     single<AccountRemoteDataSource> {
         AccountRemoteDataSourceImpl(
-            get(named(SAI_CLIENT)),
+            get(),
             get(named(DEFAULT_CLIENT))
         )
     }
     single<AccountLocalDataSource> { AccountLocalDataSourceImpl(get()) }
-    single<AccountRepository> { AccountRepositoryImpl(get(), get(), get(named(IO_DISPATCHER))) }
+    single<AccountRepository> {
+        AccountRepositoryImpl(
+            get(),
+            get(),
+            get(named(IO_DISPATCHER)),
+            get()
+        )
+    }
+}
+
+class SaiClientProvider(private val koin: Koin) {
+    val client: HttpClient
+        get() = _client ?: initClient()
+    private var _client: HttpClient? = null
+
+    private fun initClient(): HttpClient {
+        if (_client == null) {
+            _client = koin.get<HttpClient>(named(SAI_CLIENT))
+        }
+        return _client!!
+    }
+
+    fun reset() {
+        _client = null
+    }
 }
 
 private const val TAG = "DataModule"

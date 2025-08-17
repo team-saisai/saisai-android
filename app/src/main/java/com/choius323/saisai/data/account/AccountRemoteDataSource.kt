@@ -10,6 +10,7 @@ import com.choius323.saisai.data.account.model.UserInformationDto
 import com.choius323.saisai.data.account.model.UserProfileDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.saiFetch
+import com.choius323.saisai.di.SaiClientProvider
 import io.ktor.client.HttpClient
 import io.ktor.client.request.get
 import io.ktor.client.request.header
@@ -38,7 +39,7 @@ interface AccountRemoteDataSource {
 }
 
 class AccountRemoteDataSourceImpl(
-    private val client: HttpClient,
+    private val saiClientProvider: SaiClientProvider,
     private val defaultClient: HttpClient,
 ) : AccountRemoteDataSource {
     override suspend fun login(
@@ -59,40 +60,40 @@ class AccountRemoteDataSourceImpl(
     }
 
     override suspend fun getUserBadgeDetail(userBadgeId: Long): Flow<Result<SaiResponseDto<UserBadgeDetailDto>>> =
-        saiFetch { client.get("badges/me/$userBadgeId") }
+        saiFetch { saiClientProvider.client.get("badges/me/$userBadgeId") }
 
     override suspend fun getUserInfo():
             Flow<Result<SaiResponseDto<UserInformationDto>>> =
-        saiFetch<SaiResponseDto<UserInformationDto>> { client.get("my") }
+        saiFetch<SaiResponseDto<UserInformationDto>> { saiClientProvider.client.get("my") }
 
     override suspend fun getUserBadgeList(): Flow<Result<SaiResponseDto<List<UserBadgeDto>>>> =
-        saiFetch { client.get("badges/me") }
+        saiFetch { saiClientProvider.client.get("badges/me") }
 
     override suspend fun getUserProfile(): Flow<Result<SaiResponseDto<UserProfileDto>>> =
-        saiFetch { client.get("my/profile") }
+        saiFetch { saiClientProvider.client.get("my/profile") }
 
     override suspend fun loginWithGoogle(idToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
         saiFetch {
-            client.post("auth/login/google/android") { setBody(mapOf("token" to idToken)) }
+            saiClientProvider.client.post("auth/login/google/android") { setBody(mapOf("token" to idToken)) }
         }
 
     override suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
         saiFetch {
-            client.post("auth/login/kakao") { setBody(mapOf("token" to accessToken)) }
+            saiClientProvider.client.post("auth/login/kakao") { setBody(mapOf("token" to accessToken)) }
         }
 
     override suspend fun duplicateCheckNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>> =
         saiFetch {
-            client.get("my/profile/nickname/check?nickname=$nickname")
+            saiClientProvider.client.get("my/profile/nickname/check?nickname=$nickname")
         }
 
     override suspend fun changeNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>> =
         saiFetch {
-            client.patch("my/profile/nickname") { setBody(mapOf("nickname" to nickname)) }
+            saiClientProvider.client.patch("my/profile/nickname") { setBody(mapOf("nickname" to nickname)) }
         }
 
     override suspend fun getTotalReward(): Flow<Result<SaiResponseDto<TotalRewardDto>>> =
-        saiFetch { client.get("my/rewards") }
+        saiFetch { saiClientProvider.client.get("my/rewards") }
 }
 
 private const val TAG = "AccountRemoteDataSource"

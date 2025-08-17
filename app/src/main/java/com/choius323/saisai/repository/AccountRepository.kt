@@ -2,6 +2,7 @@ package com.choius323.saisai.repository
 
 import com.choius323.saisai.data.account.AccountLocalDataSource
 import com.choius323.saisai.data.account.AccountRemoteDataSource
+import com.choius323.saisai.di.SaiClientProvider
 import com.choius323.saisai.ui.model.AccountToken
 import com.choius323.saisai.ui.model.TotalReward
 import com.choius323.saisai.ui.model.UserBadge
@@ -33,6 +34,7 @@ class AccountRepositoryImpl(
     private val accountRemoteDataSource: AccountRemoteDataSource,
     private val accountLocalDataSource: AccountLocalDataSource,
     private val ioDispatcher: CoroutineDispatcher,
+    private val saiClientProvider: SaiClientProvider,
 ) : AccountRepository {
     override suspend fun login(
         email: String, password: String,
@@ -103,6 +105,7 @@ class AccountRepositoryImpl(
 
     override suspend fun logOut() {
         accountLocalDataSource.clearTokens()
+        saiClientProvider.reset()
     }
 
     override suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>> =

@@ -95,6 +95,7 @@ private fun RewardListSectionPreviewEmpty() {
     }
 }
 
+@Preview
 @Composable
 private fun RewardListSectionPreview() {
     AndroidThreeTen.init(LocalContext.current)

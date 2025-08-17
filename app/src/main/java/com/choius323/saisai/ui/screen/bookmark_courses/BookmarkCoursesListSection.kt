@@ -54,7 +54,7 @@ fun BookmarkCoursesListSection(
         modifier = modifier
             .padding(horizontal = 18.dp)
             .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 10.dp, horizontal = 18.dp)
+        contentPadding = PaddingValues(vertical = 10.dp)
     ) {
         if (courseList.isEmpty()) {
             item {

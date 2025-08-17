@@ -7,11 +7,11 @@ data class BadgeListUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val badgeList: List<UserBadge> = emptyList(),
-    val showBadgeDetail: UserBadgeDetail? = null,
+    val showBadgeDialog: UserBadge? = null,
 )
 
 sealed interface BadgeListUiEvent {
-    data class OnClickBadge(val badgeId: Long) : BadgeListUiEvent
+    data class OnClickBadge(val badge: UserBadge) : BadgeListUiEvent
     data object OnClickBack : BadgeListUiEvent
     data object CloseBadgeDialog : BadgeListUiEvent
 }

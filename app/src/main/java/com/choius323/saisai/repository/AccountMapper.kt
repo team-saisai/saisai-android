@@ -59,9 +59,11 @@ fun RecentRideProto.toDomainModel(): RecentRide {
 fun List<UserBadgeDto>.toUserBadgeList(): List<UserBadge> = map {
     it.run {
         UserBadge(
-            id = userBadgeId,
-            name = badgeName,
-            imageUrl = badgeImageUrl
+            id = id,
+            name = name,
+            imageUrl = imageUrl,
+            description = description,
+            condition = condition,
         )
     }
 }

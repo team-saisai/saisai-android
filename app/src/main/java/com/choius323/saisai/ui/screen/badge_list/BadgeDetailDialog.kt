@@ -28,16 +28,18 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.model.UserBadgeDetail
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 
 @Composable
 fun BadgeDetailDialog(
-    badgeDetail: UserBadgeDetail,
+    badge: UserBadge?,
     modifier: Modifier = Modifier,
     closeBadgeDialog: () -> Unit,
 ) {
+    if (badge == null) return
     Box(
         modifier
             .background(Color(0x804A4D50))
@@ -58,20 +60,20 @@ fun BadgeDetailDialog(
                     .padding(18.dp)
                     .clickable(onClick = closeBadgeDialog)
             )
-            BadgeDetailDialogContent(badgeDetail, Modifier.align(Alignment.Center))
+            BadgeDetailDialogContent(badge, Modifier.align(Alignment.Center))
         }
     }
 }
 
 @Composable
-private fun BadgeDetailDialogContent(badgeDetail: UserBadgeDetail, modifier: Modifier = Modifier) {
+private fun BadgeDetailDialogContent(badge: UserBadge, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .padding(top = 48.dp, start = 20.dp, end = 20.dp, bottom = 32.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            badgeDetail.imageUrl,
+            badge.imageUrl,
             contentDescription = "뱃지 이미지",
             modifier = Modifier
                 .size(140.dp)
@@ -80,13 +82,13 @@ private fun BadgeDetailDialogContent(badgeDetail: UserBadgeDetail, modifier: Mod
             contentScale = ContentScale.Crop,
         )
         Spacer(Modifier.height(12.dp))
-        BadgeDetailDialogDescription(badgeDetail)
+        BadgeDetailDialogDescription(badge)
     }
 }
 
 @Composable
 private fun BadgeDetailDialogDescription(
-    badgeDetail: UserBadgeDetail,
+    badge: UserBadge,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -97,7 +99,7 @@ private fun BadgeDetailDialogDescription(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             SaiText(
-                badgeDetail.name,
+                badge.name,
                 color = SaiColor.White,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.W500
@@ -109,7 +111,7 @@ private fun BadgeDetailDialogDescription(
         }
         Spacer(Modifier.height(16.dp))
         SaiText(
-            badgeDetail.description,
+            badge.description,
             color = SaiColor.Gray10,
             fontSize = 15.sp,
             fontWeight = FontWeight.W400,
@@ -125,7 +127,7 @@ private fun BadgeDetailDialogPreview() {
     SaiTheme {
         Surface {
             BadgeDetailDialog(
-                badgeDetail = UserBadgeDetail.sample1,
+                badge = UserBadge.sample1,
                 closeBadgeDialog = {}
             )
         }

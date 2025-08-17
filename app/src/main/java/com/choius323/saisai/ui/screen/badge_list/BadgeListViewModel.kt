@@ -2,6 +2,7 @@ package com.choius323.saisai.ui.screen.badge_list
 
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.repository.AccountRepository
+import com.choius323.saisai.ui.model.UserBadge
 import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
@@ -19,7 +20,7 @@ class BadgeListViewModel(
 
     fun onEvent(event: BadgeListUiEvent) = when (event) {
         BadgeListUiEvent.CloseBadgeDialog -> closeBadgeDialog()
-        is BadgeListUiEvent.OnClickBadge -> onClickBadge(event.badgeId)
+        is BadgeListUiEvent.OnClickBadge -> onClickBadge(event.badge)
         BadgeListUiEvent.OnClickBack -> intent {
             postSideEffect(BadgeListSideEffect.GoBack)
         }
@@ -44,25 +45,13 @@ class BadgeListViewModel(
 
     private fun closeBadgeDialog() = intent {
         reduce {
-            state.copy(showBadgeDetail = null)
+            state.copy(showBadgeDialog = null)
         }
     }
 
-    private fun onClickBadge(badgeId: Long) = intent {
+    private fun onClickBadge(badge: UserBadge) = intent {
         reduce {
-            state.copy(isLoading = true)
-        }
-        accountRepository.getUserBadgeDetail(badgeId).collectLatest { result ->
-            result.onSuccess { badgeDetail ->
-                reduce {
-                    state.copy(showBadgeDetail = badgeDetail, isLoading = false)
-                }
-            }.onFailure {
-                reduce {
-                    state.copy(isLoading = false)
-                }
-                postSideEffect(BadgeListSideEffect.ShowToast(it.message ?: "배지 상세 조회에 실패했습니다."))
-            }
+            state.copy(showBadgeDialog = badge)
         }
     }
 }

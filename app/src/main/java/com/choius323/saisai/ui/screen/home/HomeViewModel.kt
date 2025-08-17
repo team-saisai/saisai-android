@@ -2,6 +2,7 @@ package com.choius323.saisai.ui.screen.home
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.choius323.saisai.repository.AccountRepository
 import com.choius323.saisai.usecase.GetPopularChallengeUseCase
 import com.choius323.saisai.usecase.GetRecentCourseUseCase
 import com.choius323.saisai.usecase.GetUserInfoUseCase
@@ -17,6 +18,7 @@ class HomeViewModel(
     private val getPopularChallengeUseCase: GetPopularChallengeUseCase,
     private val getUserInfoUseCase: GetUserInfoUseCase,
     private val toggleBookmarkCourseUseCase: ToggleBookmarkCourseUseCase,
+    private val accountRepository: AccountRepository,
 ) : ViewModel(),
     ContainerHost<HomeUiState, HomeSideEffect> {
 
@@ -42,6 +44,7 @@ class HomeViewModel(
             state.copy(isLoading = true)
         }
         getUserName()
+        gerUserBadgeList()
         getRecentCourseUseCase().combine(getPopularChallengeUseCase()) { item1, item2 ->
             item1 to item2
         }.collect { (recentResult, popularResult) ->
@@ -67,20 +70,34 @@ class HomeViewModel(
         }
     }
 
-    private fun getUserName() = intent {
-        if (state.name.isNullOrBlank()) {
-            getUserInfoUseCase().collectLatest { result ->
-                runCatching {
-                    val name = result.getOrThrow()
-                    reduce {
-                        state.copy(name = name)
-                    }
-                }.onFailure { exception ->
-                    Log.e(TAG, exception.toString())
-                    postSideEffect(
-                        HomeSideEffect.ShowToast(exception.message ?: "Unknown error")
-                    )
+    private fun gerUserBadgeList() = intent {
+        accountRepository.getUserBadgeList().collectLatest { result ->
+            runCatching {
+                val badgeList = result.getOrThrow()
+                reduce {
+                    state.copy(badges = badgeList)
                 }
+            }.onFailure { throwable ->
+                Log.e(TAG, throwable.message, throwable)
+                postSideEffect(
+                    HomeSideEffect.ShowToast(throwable.message ?: "배지를 가져오지 못했습니다.")
+                )
+            }
+        }
+    }
+
+    private fun getUserName() = intent {
+        getUserInfoUseCase().collectLatest { result ->
+            runCatching {
+                val name = result.getOrThrow()
+                reduce {
+                    state.copy(name = name)
+                }
+            }.onFailure { exception ->
+                Log.e(TAG, exception.toString())
+                postSideEffect(
+                    HomeSideEffect.ShowToast(exception.message ?: "Unknown error")
+                )
             }
         }
     }

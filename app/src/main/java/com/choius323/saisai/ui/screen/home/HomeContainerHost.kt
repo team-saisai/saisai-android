@@ -1,8 +1,8 @@
 package com.choius323.saisai.ui.screen.home
 
-import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.RecentCourse
+import com.choius323.saisai.ui.model.UserBadge
 
 data class HomeUiState(
     val name: String? = null,
@@ -11,7 +11,7 @@ data class HomeUiState(
     val recentCourse: RecentCourse? = null,
     val popularChallenges: List<CourseListItem> = emptyList(),
     val aroundChallenges: List<CourseListItem> = emptyList(),
-    val badges: List<BadgeInfo> = emptyList(),
+    val badges: List<UserBadge> = emptyList(),
     val isLoading: Boolean = false,
     val errorMessage: String? = null,
     val isLoaded: Boolean = false,

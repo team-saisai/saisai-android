@@ -1,13 +1,9 @@
 package com.choius323.saisai.ui.screen.home
 
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.scrollable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -41,6 +37,7 @@ import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.RecentCourse
+import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.ui.theme.Typography
@@ -100,7 +97,7 @@ fun HomeScreenContent(
     name: String?,
     recentChallenge: RecentCourse?,
     trendChallenges: List<CourseListItem>,
-    badges: List<BadgeInfo>,
+    badges: List<UserBadge>,
     modifier: Modifier = Modifier,
     onEvent: (HomeUiEvent) -> Unit,
 ) {
@@ -148,7 +145,6 @@ fun HomeScreenContent(
                         reward = courseInfo.reward,
                         participantCount = courseInfo.participantsCount,
                         modifier = Modifier
-                            .fillMaxHeight()
                             .clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
                         isBookmarked = courseInfo.isBookmarked,
                         onClickBookmark = {
@@ -184,9 +180,7 @@ fun HomeScreenContentPreview() {
         CourseListItem.dummyItem4,
     )
     val dummyBadges = listOf(
-        BadgeInfo(1, "첫 완주", "badge1.url"),
-        BadgeInfo(2, "100km 돌파", "badge2.url"),
-        BadgeInfo(3, "산악왕", "badge3.url")
+        UserBadge.sample1, UserBadge.sample2, UserBadge.sample3, UserBadge.sample4,
     )
     val dummyRecentCourse = RecentCourse(
         courseName = "Chase McDonald",

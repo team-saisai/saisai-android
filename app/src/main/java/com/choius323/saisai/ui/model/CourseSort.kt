@@ -5,4 +5,7 @@ enum class CourseSort(val displayName: String) {
     levelDesc("난이도 높은순"), // 난이도 높은 순
     participantsDesc("참가자 많은순"), // 참가자 순
     endSoon("종료임박순"), // 종료일 순
+    newest("최신순"),
+    ordest("오래된 순"),
+    ;
 }

@@ -1,6 +1,7 @@
 package com.choius323.saisai.usecase
 
 import com.choius323.saisai.repository.CourseRepository
+import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.CourseSort
 import com.choius323.saisai.ui.model.CourseType
@@ -11,5 +12,5 @@ class GetAllCoursesUseCase(
 ) {
     suspend operator fun invoke(
         page: Int, courseType: CourseType, sort: CourseSort,
-    ): Flow<Result<CoursePage>> = courseRepository.getAllCourses(page, courseType, sort)
+    ): Flow<Result<CoursePage<CourseListItem>>> = courseRepository.getAllCourses(page, courseType, sort)
 }

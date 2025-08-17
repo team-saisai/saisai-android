@@ -8,6 +8,8 @@ import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.ResumeRideDto
 import com.choius323.saisai.data.course.remote.model.RewardInfoDto
+import com.choius323.saisai.data.course.remote.model.RideHistoryDataDto
+import com.choius323.saisai.data.course.remote.model.RideHistoryItemDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.ui.model.CheckPoint
 import com.choius323.saisai.ui.model.CourseDetail
@@ -19,10 +21,12 @@ import com.choius323.saisai.ui.model.PopularChallengeListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.ResumeRideInfo
 import com.choius323.saisai.ui.model.RewardInfo
+import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.util.DateTimeFormat
 import org.threeten.bp.LocalDate
 
 
+@JvmName("CourseDataDtoToCoursePage")
 fun SaiResponseDto<CourseDataDto>.toCoursePage() = CoursePage(
     content = data.content.map(CourseItemDto::toCourseListItem),
     totalElements = data.totalElements,
@@ -48,6 +52,35 @@ fun CourseItemDto.toCourseListItem() = CourseListItem(
     isEventActive = isEventActive,
     reward = reward,
     isBookmarked = isBookmarked,
+)
+
+@JvmName("RideHistoryDataDtoToCoursePage")
+fun SaiResponseDto<RideHistoryDataDto>.toCoursePage() = CoursePage(
+    content = data.content.map(RideHistoryItemDto::toRideHistoryItem),
+    totalElements = data.totalElements,
+    totalPages = data.totalPages,
+    currentPageNumber = data.number,
+    pageSize = data.size,
+    isFirstPage = data.first,
+    isLastPage = data.last,
+    isEmpty = data.empty
+)
+
+fun RideHistoryItemDto.toRideHistoryItem() = RideHistoryItem(
+    courseId = courseId,
+    courseName = courseName,
+    level = Level.from(level),
+    distance = distance,
+    estimatedTime = estimatedTime,
+    sigun = sigun,
+    imageUrl = imageUrl,
+    challengeStatus = challengeStatus,
+    challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateTimeFormat),
+    isEventActive = isEventActive,
+    rideId = 0,
+    lastRideDate = LocalDate.parse(lastRideDate, DateTimeFormat.dateTimeFormat),
+    progressRate = 0,
+    isCompleted = false,
 )
 
 fun CourseDetailDto.toCourseDetail(): CourseDetail {

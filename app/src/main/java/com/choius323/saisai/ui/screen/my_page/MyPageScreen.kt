@@ -50,7 +50,7 @@ fun MyPageScreen(
     goSetting: () -> Unit,
     goNotificationList: () -> Unit,
     goBookmarkCourses: () -> Unit,
-    goRodeListCourse: () -> Unit,
+    goRideHistoryCourse: () -> Unit,
     goRewardHistory: () -> Unit,
     goTermsOfService: () -> Unit,
     goNicknameEdit: (String) -> Unit,
@@ -68,7 +68,7 @@ fun MyPageScreen(
             MyPageSideEffect.GoSetting -> goSetting()
             MyPageSideEffect.GoNotification -> goNotificationList()
             MyPageSideEffect.GoBookmarkCourses -> goBookmarkCourses()
-            MyPageSideEffect.GoRodeListCourses -> goRodeListCourse()
+            MyPageSideEffect.GoRodeListCourses -> goRideHistoryCourse()
             MyPageSideEffect.GoRewardHistory -> goRewardHistory()
             MyPageSideEffect.GoTermsOfService -> goTermsOfService()
             is MyPageSideEffect.GoNicknameEdit -> goNicknameEdit(sideEffect.nickname)

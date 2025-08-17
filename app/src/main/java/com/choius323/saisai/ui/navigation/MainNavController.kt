@@ -22,6 +22,7 @@ import com.choius323.saisai.ui.screen.my_page.MyPageScreen
 import com.choius323.saisai.ui.screen.nickname_edit.NicknameEditScreen
 import com.choius323.saisai.ui.screen.notification_list.NotificationListScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
+import com.choius323.saisai.ui.screen.ride_history.RideHistoryScreen
 import com.choius323.saisai.ui.screen.settings.SettingsScreen
 
 @Stable
@@ -80,7 +81,7 @@ fun MainNavController(
                 goSetting = { navController.navigate(MainNavItem.AppSettings) },
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
                 goBookmarkCourses = { navController.navigate(MainNavItem.BookmarkList) },
-                goRodeListCourse = {},
+                goRideHistoryCourse = {navController.navigate(MainNavItem.RideHistory)},
                 goRewardHistory = {},
                 goTermsOfService = {},
                 goNicknameEdit = { navController.navigate(MainNavItem.NicknameEdit(it)) },
@@ -146,6 +147,21 @@ fun MainNavController(
                         }
                     }
                 }
+            )
+        }
+        composable<MainNavItem.RideHistory> { backStackEntry ->
+            RideHistoryScreen(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(top = TopAppBarHeight)
+                    .fillMaxSize(),
+                goCourseDetail = { navController.navigate(MainNavItem.CourseDetail(it)) },
+                goCourseList = {
+                    navController.navigate(MainNavItem.BottomNavItem.Course) {
+                        popUpTo(MainNavItem.BottomNavItem.MyPage)
+                    }
+                },
+                goBack = { navController.upPress() },
             )
         }
     }

@@ -8,6 +8,7 @@ import com.choius323.saisai.data.course.remote.model.CourseItemDto
 import com.choius323.saisai.data.course.remote.model.DeleteBookmarkCoursesDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.ResumeRideDto
+import com.choius323.saisai.data.course.remote.model.RideHistoryDataDto
 import com.choius323.saisai.data.course.remote.model.RideIdDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.model.SaveRideDto
@@ -34,6 +35,8 @@ interface CourseRemoteDataSource {
     suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
     suspend fun getBookmarkedCourses(page: Int): Flow<Result<SaiResponseDto<CourseDataDto>>>
     suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>>
+    suspend fun getRideHistory(page: Int, sort: String, notCompletedOnly: Boolean): Flow<Result<SaiResponseDto<RideHistoryDataDto>>>
+    suspend fun deleteRideHistory(rideIds: List<Long>): Flow<Result<SaiResponseDto<Unit>>>
     suspend fun syncRide(rideId: Long, body: SaveRideDto): Flow<Result<SaiResponseDto<Unit?>>>
     suspend fun pauseRide(
         rideId: Long,
@@ -104,6 +107,12 @@ class CourseRemoteDataSourceImpl(
 
     override suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>> =
         saiFetch { client.delete("my/bookmarks/courses") { setBody(body) } }
+
+    override suspend fun getRideHistory(page: Int, sort: String, notCompletedOnly: Boolean): Flow<Result<SaiResponseDto<RideHistoryDataDto>>> =
+        saiFetch { client.get("my/rides?page=$page&sort=$sort&notCompletedOnly=$notCompletedOnly") }
+
+    override suspend fun deleteRideHistory(rideIds: List<Long>): Flow<Result<SaiResponseDto<Unit>>> =
+        saiFetch { client.delete("my/rides") { setBody(mapOf("rideIds" to rideIds)) } }
 
     override suspend fun syncRide(
         rideId: Long, body: SaveRideDto

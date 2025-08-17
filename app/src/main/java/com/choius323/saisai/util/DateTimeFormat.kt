@@ -6,4 +6,5 @@ import java.util.Locale
 object DateTimeFormat {
     val monthDay = DateTimeFormatter.ofPattern("M/d", Locale.KOREA)!!
     val dateFormat = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.KOREA)!!
+    val dateTimeFormat: DateTimeFormatter? = DateTimeFormatter.ISO_LOCAL_DATE_TIME
 }

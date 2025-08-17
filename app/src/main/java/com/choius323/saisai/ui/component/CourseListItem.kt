@@ -61,7 +61,7 @@ fun CourseListItemHorizontal(
         verticalAlignment = Alignment.CenterVertically
     ) {
         if (course.challengeEndedAt != null) {
-            ImageSection(
+            CourseItemImageSection(
                 course.imageUrl,
                 course.challengeEndedAt,
                 course.isEventActive,
@@ -107,7 +107,7 @@ fun CourseListItemVertical(
             .background(Color(0xFF2B2E31)),
     ) {
         // 상단 이미지 및 날짜 배지 섹션
-        ImageSection(
+        CourseItemImageSection(
             imageUrl = imageUrl,
             endDate = endDate,
             isEventActive = isEventActive,
@@ -146,7 +146,7 @@ private fun CourseInformationSection(
     Column(
         modifier = modifier
     ) {
-        TitleSection(courseName, distance, level, isBookmarked, onClickBookmark = onClickBookmark)
+        CourseItemTitleSection(courseName, distance, level, isBookmarked, onClickBookmark = onClickBookmark)
 
         Spacer(
             modifier = Modifier
@@ -160,7 +160,7 @@ private fun CourseInformationSection(
 }
 
 @Composable
-private fun ImageSection(
+fun CourseItemImageSection(
     imageUrl: Any?,
     endDate: LocalDate?,
     isEventActive: Boolean,
@@ -182,7 +182,7 @@ private fun ImageSection(
 }
 
 @Composable
-private fun TitleSection(
+fun CourseItemTitleSection(
     courseName: String,
     distance: Double,
     level: Level,

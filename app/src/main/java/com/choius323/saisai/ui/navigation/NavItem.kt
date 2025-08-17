@@ -60,4 +60,7 @@ sealed interface MainNavItem : NavItem {
 
     @Serializable
     data class NicknameEdit(val nickname: String) : MainNavItem
+
+    @Serializable
+    data object RideHistory : MainNavItem
 }

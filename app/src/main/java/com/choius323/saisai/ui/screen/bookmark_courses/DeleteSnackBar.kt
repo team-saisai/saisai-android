@@ -21,7 +21,7 @@ import com.choius323.saisai.ui.component.bottomNavigationBarHeight
 import com.choius323.saisai.ui.theme.SaiColor
 
 @Composable
-fun DeleteSnackbar(
+fun DeleteSnackBar(
     count: Int,
     onClickDeleteAll: () -> Unit,
     onClickDeleteSelected: () -> Unit,
@@ -70,7 +70,7 @@ private fun TextButton(text: String, color: Color = Color.Unspecified, onClick: 
 @Composable
 @Preview
 private fun DeleteSnackbarPreview() {
-    DeleteSnackbar(
+    DeleteSnackBar(
         count = 3,
         onClickDeleteAll = {},
         onClickDeleteSelected = {}
@@ -80,5 +80,5 @@ private fun DeleteSnackbarPreview() {
 @Composable
 @Preview
 private fun DeleteSnackbarPreviewWithZeroCount() {
-    DeleteSnackbar(count = 0, onClickDeleteAll = {}, onClickDeleteSelected = {})
+    DeleteSnackBar(count = 0, onClickDeleteAll = {}, onClickDeleteSelected = {})
 }

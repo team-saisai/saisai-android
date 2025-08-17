@@ -92,7 +92,7 @@ private fun BookmarkCoursesScreenContent(
             onClickBookmark = { index -> onEvent(BookmarkCoursesUiEvent.OnClickBookmark(index)) },
         )
         if (uiState.editMode) {
-            DeleteSnackbar(
+            DeleteSnackBar(
                 uiState.selectedIndices.size,
                 onClickDeleteAll = { onEvent(BookmarkCoursesUiEvent.OnClickDeleteAll) },
                 onClickDeleteSelected = { onEvent(BookmarkCoursesUiEvent.OnClickDeleteSelected) },

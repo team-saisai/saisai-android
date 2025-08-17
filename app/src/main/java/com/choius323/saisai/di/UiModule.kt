@@ -11,6 +11,7 @@ import com.choius323.saisai.ui.screen.map.MapViewModel
 import com.choius323.saisai.ui.screen.my_page.MyPageViewModel
 import com.choius323.saisai.ui.screen.nickname_edit.NicknameEditViewModel
 import com.choius323.saisai.ui.screen.record.RecordViewModel
+import com.choius323.saisai.ui.screen.ride_history.RideHistoryViewModel
 import com.choius323.saisai.ui.screen.settings.SettingsViewModel
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -28,4 +29,5 @@ val uiModule = module {
     viewModelOf(::MyPageViewModel)
     viewModelOf(::NicknameEditViewModel)
     viewModelOf(::SettingsViewModel)
+    viewModelOf(::RideHistoryViewModel)
 }

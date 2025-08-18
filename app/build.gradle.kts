@@ -73,6 +73,16 @@ android {
         }
         create("releaseTest") {
             initWith(getByName("release"))
+            val kakaoKey = properties.getProperty("kakao.test.key")
+            manifestPlaceholders["KAKAO_KEY"] = kakaoKey ?: ""
+            buildConfigField("String", "KAKAO_KEY", "\"$kakaoKey\"")
+            buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
+            buildConfigField(
+                "String",
+                "GOOGLE_WEB_CLIENT_ID",
+                "\"${properties.getProperty("google.web.client.id")}\""
+            )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

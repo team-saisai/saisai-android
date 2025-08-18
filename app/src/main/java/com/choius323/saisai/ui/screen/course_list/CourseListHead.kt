@@ -48,6 +48,7 @@ import com.choius323.saisai.ui.theme.SaiTheme
 fun CourseListHead(
     courseType: CourseType,
     courseSort: CourseSort,
+    sortList: List<CourseSort>,
     onSelectedSort: (CourseSort) -> Unit,
     setCourseType: (CourseType) -> Unit,
     modifier: Modifier = Modifier,
@@ -61,6 +62,7 @@ fun CourseListHead(
         SortDropDown(
             selected = courseSort,
             onSelectedSort = onSelectedSort,
+            sortList = sortList,
             modifier = Modifier,
         )
     }
@@ -126,15 +128,10 @@ private fun CourseTypeButtonGroupItem(
 @Composable
 private fun SortDropDown(
     selected: CourseSort,
+    sortList:List<CourseSort>,
     onSelectedSort: (CourseSort) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val sortList = listOf(
-        CourseSort.levelAsc,
-        CourseSort.levelDesc,
-        CourseSort.participantsDesc,
-        CourseSort.endSoon,
-    )
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = modifier) {
@@ -215,11 +212,18 @@ private fun ColumnScope.CourseSortDropDownItem(
 @Preview
 @Composable
 private fun CourseListHeadPreview() {
+    val sortList = listOf(
+        CourseSort.levelAsc,
+        CourseSort.levelDesc,
+        CourseSort.participantsDesc,
+        CourseSort.endSoon,
+    )
     SaiTheme {
         Surface {
             CourseListHead(
                 CourseType.challenge,
                 CourseSort.levelAsc,
+                sortList,
                 {},
                 {},
                 Modifier.fillMaxWidth()
@@ -231,6 +235,12 @@ private fun CourseListHeadPreview() {
 @Preview(showBackground = true, backgroundColor = 0xFF202326)
 @Composable
 private fun CourseSortDropDownPreview() {
+    val sortList = listOf(
+        CourseSort.levelAsc,
+        CourseSort.levelDesc,
+        CourseSort.participantsDesc,
+        CourseSort.endSoon,
+    )
     SaiTheme {
         Box(
             Modifier
@@ -239,6 +249,7 @@ private fun CourseSortDropDownPreview() {
             SortDropDown(
                 selected = CourseSort.endSoon,
                 onSelectedSort = {},
+                sortList = sortList,
             )
         }
     }

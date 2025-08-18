@@ -60,14 +60,12 @@ fun CourseListItemHorizontal(
             .height(IntrinsicSize.Min),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        if (course.challengeEndedAt != null) {
-            CourseItemImageSection(
-                course.imageUrl,
-                course.challengeEndedAt,
-                course.isEventActive,
-                Modifier.size(width = 160.dp, height = 132.dp)
-            )
-        }
+        CourseItemImageSection(
+            course.imageUrl,
+            course.challengeEndedAt,
+            course.isEventActive,
+            Modifier.size(width = 160.dp, height = 132.dp)
+        )
         Spacer(Modifier.width(4.dp))
         CourseInformationSection(
             courseName = course.courseName,
@@ -146,7 +144,13 @@ private fun CourseInformationSection(
     Column(
         modifier = modifier
     ) {
-        CourseItemTitleSection(courseName, distance, level, isBookmarked, onClickBookmark = onClickBookmark)
+        CourseItemTitleSection(
+            courseName,
+            distance,
+            level,
+            isBookmarked,
+            onClickBookmark = onClickBookmark
+        )
 
         Spacer(
             modifier = Modifier

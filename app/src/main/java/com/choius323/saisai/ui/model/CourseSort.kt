@@ -8,4 +8,9 @@ enum class CourseSort(val displayName: String) {
     newest("최신순"),
     ordest("오래된 순"),
     ;
+
+    companion object {
+        val CHALLENGE_COURSE = listOf(levelAsc, levelDesc, participantsDesc, endSoon)
+        val GENERAL_COURSE = listOf(levelAsc, levelDesc, participantsDesc)
+    }
 }

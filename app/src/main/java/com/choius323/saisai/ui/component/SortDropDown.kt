@@ -134,6 +134,7 @@ private fun CourseListHeadPreview() {
             CourseListHead(
                 CourseType.challenge,
                 CourseSort.levelAsc,
+                CourseSort.CHALLENGE_COURSE,
                 {},
                 {},
                 Modifier.fillMaxWidth()

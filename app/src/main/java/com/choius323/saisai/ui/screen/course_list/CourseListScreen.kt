@@ -72,6 +72,7 @@ fun CourseListScreenContent(
         CourseListHead(
             courseType = uiState.selectedCourseType,
             courseSort = uiState.selectedSort,
+            sortList = uiState.sortList,
             onSelectedSort = { onEvent(CourseListUiEvent.OnClickSortType(it)) },
             setCourseType = { onEvent(CourseListUiEvent.OnClickCourseType(it)) },
             modifier = Modifier

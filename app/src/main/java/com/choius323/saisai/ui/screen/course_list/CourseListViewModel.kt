@@ -2,6 +2,7 @@ package com.choius323.saisai.ui.screen.course_list
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.choius323.saisai.ui.model.CourseType
 import com.choius323.saisai.usecase.GetAllCoursesUseCase
 import com.choius323.saisai.usecase.ToggleBookmarkCourseUseCase
 import kotlinx.coroutines.flow.collectLatest
@@ -26,7 +27,12 @@ class CourseListViewModel(
         }
 
         is CourseListUiEvent.OnClickCourseType -> intent {
-            reduce { state.copy(selectedCourseType = event.courseType) }
+            reduce {
+                state.copy(
+                    selectedCourseType = event.courseType,
+                    sortList = CourseType.getSortList(event.courseType)
+                )
+            }
             fetchCourseList()
         }
 
@@ -71,6 +77,7 @@ class CourseListViewModel(
                         isLoadingMore = false,
                     )
                 }
+                Log.e(TAG, it.message, it)
                 postSideEffect(CourseListSideEffect.ShowToast(it.message ?: "목록을 불러오지 못했습니다."))
             }
         }

@@ -47,9 +47,11 @@ fun CourseItemDto.toCourseListItem() = CourseListItem(
     imageUrl = imageUrl,
     participantsCount = participantsCount,
     challengeStatus = challengeStatus,
-    challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
-    isEventActive = isEventActive,
-    reward = reward,
+    challengeEndedAt = challengeEndedAt?.let {
+        LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat)
+    },
+    isEventActive = isEventActive ?: false,
+    reward = reward ?: 0,
     isBookmarked = isBookmarked,
 )
 
@@ -74,7 +76,9 @@ fun RideHistoryItemDto.toRideHistoryItem() = RideHistoryItem(
     sigun = sigun,
     imageUrl = imageUrl,
     challengeStatus = challengeStatus,
-    challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateTimeFormat),
+    challengeEndedAt = challengeEndedAt?.let {
+        LocalDate.parse(challengeEndedAt, DateTimeFormat.dateTimeFormat)
+    },
     isEventActive = isEventActive,
     rideId = rideId,
     lastRideDate = LocalDate.parse(lastRideDate, DateTimeFormat.dateTimeFormat),
@@ -97,7 +101,9 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
         gpxPointList = gpxPointDtoList.map(GpxPointDto::toGpxPoint),
         rideId = rideId,
         challengeStatus = challengeStatus,
-        challengeEndedAt = LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat),
+        challengeEndedAt = challengeEndedAt?.let {
+            LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat)
+        },
         isEventActive = isEventActive,
         checkPointList = checkpointList.toCheckPointList(gpxPointDtoList)
     )

@@ -12,6 +12,7 @@ data class CourseListUiState(
     val isLastPage: Boolean = false,
     val page: Int = 1,
     val selectedCourseType: CourseType = CourseType.challenge,
+    val sortList: List<CourseSort> = CourseType.getSortList(selectedCourseType),
     val selectedSort: CourseSort = CourseSort.levelAsc,
 )
 

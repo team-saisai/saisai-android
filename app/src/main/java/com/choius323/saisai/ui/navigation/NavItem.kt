@@ -21,19 +21,37 @@ sealed interface MainNavItem : NavItem {
         @get:DrawableRes
         val iconRes: Int
 
+        @get:DrawableRes
+        val iconSelectedRes: Int
+
+        val displayName: String
+
         @Serializable
         data object Home : BottomNavItem {
             override val iconRes = R.drawable.icon_home_mono
+            override val iconSelectedRes = R.drawable.icon_home_fill
+            override val displayName = "홈"
         }
 
         @Serializable
         data object Course : BottomNavItem {
             override val iconRes = R.drawable.icon_lightning_mono
+            override val iconSelectedRes: Int = R.drawable.icon_lightning_fill
+            override val displayName = "코스"
         }
 
         @Serializable
         data object MyPage : BottomNavItem {
             override val iconRes = R.drawable.icon_user_mono
+            override val iconSelectedRes: Int = R.drawable.icon_user_fill
+            override val displayName = "마이"
+        }
+
+        @Serializable
+        data object RideHistory : BottomNavItem {
+            override val iconRes = R.drawable.icon_clock_mono
+            override val iconSelectedRes: Int = R.drawable.icon_clock_mono
+            override val displayName = "기록"
         }
     }
 
@@ -63,7 +81,4 @@ sealed interface MainNavItem : NavItem {
 
     @Serializable
     data class NicknameEdit(val nickname: String) : MainNavItem
-
-    @Serializable
-    data object RideHistory : MainNavItem
 }

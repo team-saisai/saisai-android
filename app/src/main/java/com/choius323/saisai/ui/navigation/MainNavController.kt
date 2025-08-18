@@ -82,8 +82,8 @@ fun MainNavController(
                 goSetting = { navController.navigate(MainNavItem.AppSettings) },
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
                 goBookmarkCourses = { navController.navigate(MainNavItem.BookmarkList) },
-                goRideHistoryCourse = {navController.navigate(MainNavItem.RideHistory)},
-                goRewardHistory = { navController.navigate(MainNavItem.TotalReward)},
+                goRideHistoryCourse = { navController.navigate(MainNavItem.BottomNavItem.RideHistory) },
+                goRewardHistory = { navController.navigate(MainNavItem.TotalReward) },
                 goTermsOfService = {},
                 goNicknameEdit = { navController.navigate(MainNavItem.NicknameEdit(it)) },
             )
@@ -150,7 +150,7 @@ fun MainNavController(
                 }
             )
         }
-        composable<MainNavItem.RideHistory> { backStackEntry ->
+        composable<MainNavItem.BottomNavItem.RideHistory> { backStackEntry ->
             RideHistoryScreen(
                 modifier = Modifier
                     .statusBarsPadding()
@@ -166,7 +166,7 @@ fun MainNavController(
             )
         }
         composable<MainNavItem.TotalReward> { backStackEntry ->
-            TotalRewardScreen (
+            TotalRewardScreen(
                 modifier = Modifier
                     .statusBarsPadding()
                     .padding(top = TopAppBarHeight)

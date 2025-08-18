@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -70,15 +69,18 @@ fun HomeScreen(
     LaunchedEffect(Unit) {
         viewModel.onEvent(HomeUiEvent.LoadData())
     }
-    ProvideAppBar(navigationIcon = {
-        SaiText("사이사이", style = Typography.AppTitle)
-    }, actions = {
-        Icon(
-            Icons.Outlined.Notifications,
-            "Notifications",
-            Modifier.clickable { viewModel.onEvent(HomeUiEvent.OnClickNotification) }
-        )
-    })
+    ProvideAppBar(
+        navigationIcon = {
+            SaiText("사이사이", style = Typography.AppTitle)
+        },
+//        actions = {
+//            Icon(
+//                Icons.Outlined.Notifications,
+//                "Notifications",
+//                Modifier.clickable { viewModel.onEvent(HomeUiEvent.OnClickNotification) }
+//            )
+//        }
+    )
 
     HomeScreenContent(
         name = uiState.name,

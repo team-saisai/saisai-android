@@ -79,14 +79,14 @@ fun MyPageScreen(
         navigationIcon = {
             SaiText("Mypage", style = Typography.AppTitle)
         },
-        actions = {
-            Icon(
-                Icons.Outlined.Notifications, contentDescription = "Notifications",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable(onClick = goNotificationList)
-            )
-        }
+//        actions = {
+//            Icon(
+//                Icons.Outlined.Notifications, contentDescription = "Notifications",
+//                modifier = Modifier
+//                    .size(24.dp)
+//                    .clickable(onClick = goNotificationList)
+//            )
+//        }
     )
     LaunchedEffect(Unit) {
         viewModel.onEvent(MyPageUiEvent.InitScreen)

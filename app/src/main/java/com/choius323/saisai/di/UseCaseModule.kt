@@ -6,6 +6,7 @@ import com.choius323.saisai.usecase.GetCourseDetailUseCase
 import com.choius323.saisai.usecase.GetPopularChallengeUseCase
 import com.choius323.saisai.usecase.GetRecentCourseUseCase
 import com.choius323.saisai.usecase.GetUserInfoUseCase
+import com.choius323.saisai.usecase.LogoutUseCase
 import com.choius323.saisai.usecase.PauseRideUseCase
 import com.choius323.saisai.usecase.ReissueTokenUseCase
 import com.choius323.saisai.usecase.ResumeRideUseCase
@@ -28,4 +29,5 @@ val useCaseModule = module {
     singleOf(::ResumeRideUseCase)
     singleOf(::PauseRideUseCase)
     singleOf(::ToggleBookmarkCourseUseCase)
+    singleOf(::LogoutUseCase)
 }

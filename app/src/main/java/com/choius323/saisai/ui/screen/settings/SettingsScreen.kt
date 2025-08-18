@@ -18,6 +18,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -32,10 +33,9 @@ import com.choius323.saisai.ui.component.SaiDialog
 import com.choius323.saisai.ui.component.SaiSwitch
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
-import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.ui.theme.SaiColor
-import com.choius323.saisai.util.GoogleAccountUtil
-import com.choius323.saisai.util.KakaoAccountUtil
+import com.choius323.saisai.util.AccountUtil
+import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -45,9 +45,11 @@ fun SettingsScreen(
     modifier: Modifier = Modifier,
     viewModel: SettingsViewModel = koinViewModel(),
     goBack: () -> Unit,
+    goLogin: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
+    val coroutineScope = rememberCoroutineScope()
     ProvideAppBar(navigationIcon = {
         Icon(
             Icons.AutoMirrored.Default.ArrowBackIos,
@@ -64,31 +66,20 @@ fun SettingsScreen(
         when (sideEffect) {
             SettingsSideEffect.GoBack -> goBack()
             is SettingsSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
-            is SettingsSideEffect.LogOutOAuth -> {
-                when (sideEffect.type) {
-                    LoginType.KAKAO -> KakaoAccountUtil.logout(
-                        {
-                            viewModel.onEvent(SettingsUiEvent.OnLogOutSuccess)
-                        },
-                        { context.SaiToast("로그아웃을 실패했습니다.") })
-
-                    LoginType.GOOGLE -> GoogleAccountUtil.googleSignOut(
-                        context,
-                        { viewModel.onEvent(SettingsUiEvent.OnLogOutSuccess) },
-                        { context.SaiToast("로그아웃을 실패했습니다.") })
-                }
-            }
-
-            is SettingsSideEffect.DeleteAccountOAuth -> {
-                when (sideEffect.type) {
-                    LoginType.KAKAO -> KakaoAccountUtil.unlink(
-                        {
-                            viewModel.onEvent(SettingsUiEvent.OnLogOutSuccess)
-                        },
-                        { context.SaiToast("회원탈퇴를 실패했습니다.") })
-
-                    LoginType.GOOGLE -> TODO("Implement Google unlink logic")
-                }
+            SettingsSideEffect.GoLogin -> goLogin()
+            is SettingsSideEffect.ReLoginOAuth -> coroutineScope.launch {
+                AccountUtil.deleteAccount(
+                    context, sideEffect.loginType,
+                    { accessToken ->
+                        viewModel.onEvent(
+                            SettingsUiEvent.OnReLoginSuccess(
+                                sideEffect.loginType,
+                                accessToken
+                            )
+                        )
+                    }, {
+                        viewModel.onEvent(SettingsUiEvent.OnAccountManageFailed(it.message.toString()))
+                    })
             }
         }
     }

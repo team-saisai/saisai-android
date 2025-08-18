@@ -20,11 +20,13 @@ sealed interface SettingsUiEvent {
     data object OnLogOutSuccess : SettingsUiEvent
     data object OnDeleteAccountSuccess : SettingsUiEvent
     data class OnAccountManageFailed(val message: String) : SettingsUiEvent
+    data class OnReLoginSuccess(val loginType: LoginType, val socialAccessToken: String) : SettingsUiEvent
 }
 
 sealed interface SettingsSideEffect {
     data class ShowToast(val message: String) : SettingsSideEffect
     data object GoBack : SettingsSideEffect
-    data class LogOutOAuth(val type: LoginType) : SettingsSideEffect
-    data class DeleteAccountOAuth(val type: LoginType) : SettingsSideEffect
+    data object GoLogin : SettingsSideEffect
+    data class ReLoginOAuth(val loginType: LoginType) :
+        SettingsSideEffect
 }

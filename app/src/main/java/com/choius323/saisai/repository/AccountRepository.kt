@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onEach
 
 interface AccountRepository {
     suspend fun login(email: String, password: String): Flow<Result<AccountToken>>
@@ -23,11 +24,12 @@ interface AccountRepository {
     suspend fun loginWithGoogle(idToken: String): Flow<Result<AccountToken>>
     suspend fun loginWithKakao(kakaoAccessToken: String): Flow<Result<AccountToken>>
     suspend fun saveToken(accountToken: AccountToken, loginType: String)
-    suspend fun logOut()
     suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>>
     suspend fun changeNickname(nickname: String): Flow<Result<Unit>>
     suspend fun getNowLoginType(): Flow<String?>
     suspend fun getTotalReward(): Flow<Result<TotalReward>>
+    suspend fun logout(): Flow<Result<Unit>>
+    suspend fun deleteAccount(loginType: String, socialAccessToken: String): Flow<Result<Unit>>
 }
 
 class AccountRepositoryImpl(
@@ -103,11 +105,6 @@ class AccountRepositoryImpl(
         )
     }
 
-    override suspend fun logOut() {
-        accountLocalDataSource.clearTokens()
-        saiClientProvider.reset()
-    }
-
     override suspend fun duplicateCheckNickname(nickname: String): Flow<Result<Unit>> =
         accountRemoteDataSource.duplicateCheckNickname(nickname).map { result ->
             result.mapCatching { }
@@ -124,6 +121,21 @@ class AccountRepositoryImpl(
                 responseDto.data.toTotalReward()
             }
         }.flowOn(ioDispatcher)
+
+    override suspend fun logout(): Flow<Result<Unit>> =
+        accountRemoteDataSource.logout().onEach { result ->
+            accountLocalDataSource.clearTokens()
+            saiClientProvider.reset()
+        }
+
+    override suspend fun deleteAccount(
+        loginType: String,
+        socialAccessToken: String
+    ): Flow<Result<Unit>> =
+        accountRemoteDataSource.deleteAccount(socialAccessToken).onEach {
+            accountLocalDataSource.clearTokens()
+            saiClientProvider.reset()
+        }
 
     override suspend fun getNowLoginType(): Flow<String?> = accountLocalDataSource.loginType
 }

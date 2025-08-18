@@ -12,6 +12,7 @@ import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.saiFetch
 import com.choius323.saisai.di.SaiClientProvider
 import io.ktor.client.HttpClient
+import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.header
 import io.ktor.client.request.patch
@@ -36,6 +37,8 @@ interface AccountRemoteDataSource {
     suspend fun duplicateCheckNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>>
     suspend fun changeNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>>
     suspend fun getTotalReward(): Flow<Result<SaiResponseDto<TotalRewardDto>>>
+    suspend fun logout(): Flow<Result<Unit>>
+    suspend fun deleteAccount(socialAccessToken: String): Flow<Result<Unit>>
 }
 
 class AccountRemoteDataSourceImpl(
@@ -74,12 +77,16 @@ class AccountRemoteDataSourceImpl(
 
     override suspend fun loginWithGoogle(idToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
         saiFetch {
-            saiClientProvider.client.post("auth/login/google/android") { setBody(mapOf("token" to idToken)) }
+            defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/login/google/android") {
+                setBody(mapOf("token" to idToken))
+            }
         }
 
     override suspend fun loginWithKakao(accessToken: String): Flow<Result<SaiResponseDto<AccountTokenDto>>> =
         saiFetch {
-            saiClientProvider.client.post("auth/login/kakao") { setBody(mapOf("token" to accessToken)) }
+            defaultClient.post("${BuildConfig.SAI_BASE_URL}auth/login/kakao") {
+                setBody(mapOf("token" to accessToken))
+            }
         }
 
     override suspend fun duplicateCheckNickname(nickname: String): Flow<Result<SaiResponseDto<Unit>>> =
@@ -94,6 +101,18 @@ class AccountRemoteDataSourceImpl(
 
     override suspend fun getTotalReward(): Flow<Result<SaiResponseDto<TotalRewardDto>>> =
         saiFetch { saiClientProvider.client.get("my/rewards") }
+
+    override suspend fun logout(): Flow<Result<Unit>> =
+        saiFetch {
+            saiClientProvider.client.post("auth/logout")
+        }
+
+    override suspend fun deleteAccount(socialAccessToken: String): Flow<Result<Unit>> =
+        saiFetch {
+            saiClientProvider.client.delete("auth/withdraw") {
+                setBody(mapOf("socialAccessToken" to socialAccessToken))
+            }
+        }
 }
 
 private const val TAG = "AccountRemoteDataSource"

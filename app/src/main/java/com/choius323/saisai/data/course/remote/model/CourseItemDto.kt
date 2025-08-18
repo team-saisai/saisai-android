@@ -15,6 +15,6 @@ data class CourseItemDto(
     val isBookmarked: Boolean = false,
     val challengeStatus: String?,
     val challengeEndedAt: String?,
-    val isEventActive: Boolean,
-    val reward: Int,
+    val isEventActive: Boolean?,
+    val reward: Int?,
 )

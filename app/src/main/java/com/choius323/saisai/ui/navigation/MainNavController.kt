@@ -135,7 +135,14 @@ fun MainNavController(
         composable<MainNavItem.AppSettings> { backStackEntry ->
             SettingsScreen(
                 modifier = modifier.fillMaxSize(),
-                goBack = { navController.upPress() }
+                goBack = { navController.upPress() },
+                goLogin = {
+                    navController.navigate(MainNavItem.Login) {
+                        popUpTo(MainNavItem.Login) {
+                            inclusive = true
+                        }
+                    }
+                }
             )
         }
         composable<MainNavItem.NicknameEdit> { backStackEntry ->

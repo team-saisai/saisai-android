@@ -2,7 +2,6 @@ package com.choius323.saisai.util
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.os.Build
 import androidx.annotation.StringRes
 import com.choius323.saisai.R
 
@@ -18,7 +17,7 @@ fun getPermissionMap(permissions: List<String>) =
 val permissionsMap = mapOf(
     android.Manifest.permission.ACCESS_FINE_LOCATION to AccessFineLocationPermissionDescriptionProvider,
     android.Manifest.permission.ACCESS_COARSE_LOCATION to AccessCoarseLocationPermissionDescriptionProvider,
-    android.Manifest.permission.POST_NOTIFICATIONS to PostNotificationPermissionDescriptionProvider,
+//    android.Manifest.permission.POST_NOTIFICATIONS to PostNotificationPermissionDescriptionProvider,
 )
 
 val locationPermissions =
@@ -27,11 +26,11 @@ val locationPermissions =
         android.Manifest.permission.ACCESS_COARSE_LOCATION,
     )
 
-val postNotificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-    listOf(android.Manifest.permission.POST_NOTIFICATIONS)
-} else {
-    emptyList()
-}
+//val postNotificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+//    listOf(android.Manifest.permission.POST_NOTIFICATIONS)
+//} else {
+//    emptyList()
+//}
 
 sealed interface PermissionDescriptionProvider {
     fun getTitle(context: Context): String

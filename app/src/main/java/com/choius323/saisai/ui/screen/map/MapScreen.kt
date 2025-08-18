@@ -24,7 +24,6 @@ import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.util.locationPermissions
-import com.choius323.saisai.util.postNotificationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationCallback
@@ -50,7 +49,8 @@ fun MapScreen(
     val context = LocalContext.current
 
     val permissionState = rememberMultiplePermissionsState(
-        postNotificationPermissions + locationPermissions
+//        postNotificationPermissions +
+        locationPermissions
     ) { resultMap ->
         viewModel.onEvent(MapUiEvent.SetPermissionGranted(resultMap.all { it.value }))
     }

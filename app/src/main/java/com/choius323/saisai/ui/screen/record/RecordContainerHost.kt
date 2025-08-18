@@ -14,7 +14,7 @@ data class RecordUiState(
     val lastTimestamp: Long = 0,
     val isShowPermissionDialog: Boolean = false,
     val isCameraTracking: Boolean = false,
-    val nowCheckPointIndex: Int = 0,
+    val nowCheckPointIndex: Int = -1,
     val nowLatLng: LatLng? = null,
     val rideId: Long = 0,
     val isShowCompleteDialog: Boolean = false,

@@ -33,7 +33,6 @@ import com.choius323.saisai.ui.component.TopAppBarHeight
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.util.locationPermissions
-import com.choius323.saisai.util.postNotificationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
@@ -78,7 +77,8 @@ fun RecordScreen(
     )
 
     val permissionState = rememberMultiplePermissionsState(
-        postNotificationPermissions + locationPermissions
+//        postNotificationPermissions +
+                locationPermissions
     ) { resultMap ->
         val allGranted = resultMap.all { it.value }
         viewModel.onEvent(RecordUiEvent.SetPermissionGranted(allGranted))

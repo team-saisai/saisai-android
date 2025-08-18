@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -51,10 +52,15 @@ fun LoginScreen(
     val context = LocalContext.current
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
-            is LoginSideEffect.LoginSuccess -> goHome()
             is LoginSideEffect.ShowToast -> {
                 context.SaiToast(sideEffect.message)
             }
+        }
+    }
+
+    LaunchedEffect(uiState.isDelayed, uiState.isLoginSuccess) {
+        if (uiState.isDelayed && uiState.isLoginSuccess) {
+            goHome()
         }
     }
 
@@ -63,7 +69,7 @@ fun LoginScreen(
         modifier = modifier,
         onEvent = viewModel::onEvent
     )
-    if (uiState.isLoading) {
+    if (uiState.isLoading && uiState.isDelayed) {
         FullScreenLoading()
     }
 }
@@ -117,6 +123,7 @@ fun LoginScreenContent(
         }
         LoginButtons(
             modifier = Modifier.offset(y = 130.dp),
+            isShow = uiState.isDelayed,
             onGoogleSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.GOOGLE, it)) },
             onKakaoSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.KAKAO, it)) },
             onError = { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
@@ -126,6 +133,7 @@ fun LoginScreenContent(
 
 @Composable
 fun LoginButtons(
+    isShow: Boolean,
     modifier: Modifier = Modifier,
     onGoogleSuccess: (idToken: String) -> Unit,
     onKakaoSuccess: (accessToken: String) -> Unit,
@@ -133,31 +141,33 @@ fun LoginButtons(
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
-    Row(
-        horizontalArrangement = Arrangement.spacedBy(32.dp), modifier = modifier
-    ) {
-        Image(
-            painterResource(R.drawable.ic_google),
-            "구글 로그인",
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .clickable {
-                    coroutineScope.launch {
-                        GoogleAccountUtil.googleSignIn(context, onGoogleSuccess, onError)
-                    }
-                },
-        )
-        Image(
-            painterResource(R.drawable.ic_kakao_talk),
-            "구글 로그인",
-            modifier = Modifier
-                .size(48.dp)
-                .clip(CircleShape)
-                .clickable {
-                    KakaoAccountUtil.kakaoLogin(context, onKakaoSuccess, onError)
-                },
-        )
+    if (isShow) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(32.dp), modifier = modifier
+        ) {
+            Image(
+                painterResource(R.drawable.ic_google),
+                "구글 로그인",
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        coroutineScope.launch {
+                            GoogleAccountUtil.googleSignIn(context, onGoogleSuccess, onError)
+                        }
+                    },
+            )
+            Image(
+                painterResource(R.drawable.ic_kakao_talk),
+                "구글 로그인",
+                modifier = Modifier
+                    .size(48.dp)
+                    .clip(CircleShape)
+                    .clickable {
+                        KakaoAccountUtil.kakaoLogin(context, onKakaoSuccess, onError)
+                    },
+            )
+        }
     }
 }
 

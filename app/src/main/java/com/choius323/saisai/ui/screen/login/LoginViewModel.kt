@@ -1,11 +1,14 @@
 package com.choius323.saisai.ui.screen.login
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.usecase.LoginUseCase
 import com.choius323.saisai.usecase.ReissueTokenUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
@@ -18,11 +21,15 @@ class LoginViewModel(
 
     init {
         intent {
+            viewModelScope.launch {
+                delay(2000L)
+                reduce { state.copy(isDelayed = true) }
+            }
             reduce { state.copy(isLoading = true) }
             if (SessionManager.refreshToken.value != null) {
                 reissueTokenUseCase().collectLatest { result ->
                     result.onSuccess {
-                        postSideEffect(LoginSideEffect.LoginSuccess)
+                        reduce { state.copy(isLoginSuccess = true) }
                     }.onFailure {
                         reduce { state.copy(isLoading = false) }
                         postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
@@ -45,7 +52,7 @@ class LoginViewModel(
         reduce { state.copy(isLoading = true) }
         loginUseCase(token, loginType).collectLatest { result ->
             result.onSuccess {
-                postSideEffect(LoginSideEffect.LoginSuccess)
+                reduce { state.copy(isLoginSuccess = true) }
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
                 postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))

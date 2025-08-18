@@ -2,6 +2,11 @@ package com.choius323.saisai.ui.navigation
 
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -38,10 +43,30 @@ fun MainNavController(
         navController = navController.navController,
         modifier = Modifier,
         startDestination = MainNavItem.Login,
-        enterTransition = { EnterTransition.None },
-        popEnterTransition = { EnterTransition.None },
-        exitTransition = { ExitTransition.None },
-        popExitTransition = { ExitTransition.None },
+        enterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { fullWidth -> fullWidth }, // Starts off-screen to the right
+                animationSpec = tween(durationMillis = 500)
+            ) + fadeIn(animationSpec = tween(durationMillis = 300))
+        },
+        exitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { fullWidth -> -fullWidth }, // Moves off-screen to the left
+                animationSpec = tween(durationMillis = 500)
+            ) + fadeOut(animationSpec = tween(durationMillis = 300))
+        },
+        popEnterTransition = {
+            slideInHorizontally(
+                initialOffsetX = { fullWidth -> -fullWidth }, // Reverse direction for back navigation
+                animationSpec = tween(durationMillis = 500)
+            ) + fadeIn(animationSpec = tween(durationMillis = 300))
+        },
+        popExitTransition = {
+            slideOutHorizontally(
+                targetOffsetX = { fullWidth -> fullWidth }, // Reverse exit direction
+                animationSpec = tween(durationMillis = 500)
+            ) + fadeOut(animationSpec = tween(durationMillis = 300))
+        }
     ) {
         composable<MainNavItem.BottomNavItem.Home> { backStackEntry ->
             HomeScreen(

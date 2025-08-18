@@ -72,7 +72,7 @@ private fun RecordMapSetting(
                 TAG,
                 "isRecording: ${uiState.rideState}, nowLatLng: ${uiState.nowLatLng}"
             )
-            kakaoMap.moveCamera(uiState.nowLatLng)
+//            kakaoMap.moveCamera(uiState.nowLatLng)
         }
     }
     LaunchedEffect(kakaoMap, uiState.route) {
@@ -83,7 +83,7 @@ private fun RecordMapSetting(
         } else {
             kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
         }
-//        kakaoMap.moveCamera(latLngList)
+        kakaoMap.moveCamera(latLngList)
     }
     LaunchedEffect(uiState.courseDetail?.checkPointList) {
         val checkPointList =

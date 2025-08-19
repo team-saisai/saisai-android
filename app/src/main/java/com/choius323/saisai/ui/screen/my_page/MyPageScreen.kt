@@ -1,5 +1,7 @@
 package com.choius323.saisai.ui.screen.my_page
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -13,7 +15,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowForwardIos
-import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
@@ -28,6 +29,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.net.toUri
 import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
@@ -38,6 +40,7 @@ import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.ui.theme.Typography
+import com.choius323.saisai.util.SAISAI_TERM_OF_SERVICE
 import org.koin.compose.viewmodel.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -71,8 +74,17 @@ fun MyPageScreen(
             MyPageSideEffect.GoBookmarkCourses -> goBookmarkCourses()
             MyPageSideEffect.GoRodeListCourses -> goRideHistoryCourse()
             MyPageSideEffect.GoRewardHistory -> goRewardHistory()
-            MyPageSideEffect.GoTermsOfService -> goTermsOfService()
             is MyPageSideEffect.GoNicknameEdit -> goNicknameEdit(sideEffect.nickname)
+            MyPageSideEffect.GoTermsOfService -> {
+                val intent = Intent(Intent.ACTION_VIEW, SAISAI_TERM_OF_SERVICE.toUri())
+                try {
+                    context.startActivity(intent)
+                } catch (e: ActivityNotFoundException) {
+                    context.SaiToast("웹 페이지를 열 수 있는 앱이 설치되어 있지 않습니다.")
+                } catch (e: Exception) {
+                    context.SaiToast("알 수 없는 오류가 발생했습니다.")
+                }
+            }
         }
     }
     ProvideAppBar(

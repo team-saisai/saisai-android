@@ -1,5 +1,6 @@
 package com.choius323.saisai.data.account
 
+import android.content.Context
 import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.data.account.model.AccountTokenDto
 import com.choius323.saisai.data.account.model.LoginDto
@@ -11,6 +12,7 @@ import com.choius323.saisai.data.account.model.UserProfileDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.saiFetch
 import com.choius323.saisai.di.SaiClientProvider
+import com.google.android.gms.auth.GoogleAuthUtil
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
@@ -20,6 +22,7 @@ import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.http.HttpHeaders
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.onEach
 
 interface AccountRemoteDataSource {
     suspend fun login(
@@ -44,6 +47,7 @@ interface AccountRemoteDataSource {
 class AccountRemoteDataSourceImpl(
     private val saiClientProvider: SaiClientProvider,
     private val defaultClient: HttpClient,
+    private val context: Context,
 ) : AccountRemoteDataSource {
     override suspend fun login(
         email: String,
@@ -108,10 +112,12 @@ class AccountRemoteDataSourceImpl(
         }
 
     override suspend fun deleteAccount(socialAccessToken: String): Flow<Result<Unit>> =
-        saiFetch {
+        saiFetch<Unit> {
             saiClientProvider.client.delete("auth/withdraw") {
                 setBody(mapOf("socialAccessToken" to socialAccessToken))
             }
+        }.onEach {
+            GoogleAuthUtil.clearToken(context, socialAccessToken)
         }
 }
 

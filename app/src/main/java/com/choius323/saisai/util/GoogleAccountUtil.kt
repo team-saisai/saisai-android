@@ -119,12 +119,6 @@ object GoogleAccountUtil {
         }
     }
 
-    fun signIn(activity: Activity) {
-        val googleSignInClient = GoogleSignIn.getClient(activity.baseContext, gso)
-        val signInIntent = googleSignInClient.signInIntent
-        activity.startActivityForResult(signInIntent, 1000)
-    }
-
     // Nonce(Number used once) 랜덤 생성
     private fun generateNonce(length: Int = 16): String {
         val nonceBytes = ByteArray(length)

@@ -126,16 +126,16 @@ class AccountRepositoryImpl(
         accountRemoteDataSource.logout().onEach { result ->
             accountLocalDataSource.clearTokens()
             saiClientProvider.reset()
-        }
+        }.flowOn(ioDispatcher)
 
     override suspend fun deleteAccount(
         loginType: String,
         socialAccessToken: String
     ): Flow<Result<Unit>> =
         accountRemoteDataSource.deleteAccount(socialAccessToken).onEach {
-            accountLocalDataSource.clearTokens()
             saiClientProvider.reset()
-        }
+            accountLocalDataSource.clearTokens()
+        }.flowOn(ioDispatcher)
 
     override suspend fun getNowLoginType(): Flow<String?> = accountLocalDataSource.loginType
 }

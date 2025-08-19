@@ -171,7 +171,8 @@ val dataModule = module {
     single<AccountRemoteDataSource> {
         AccountRemoteDataSourceImpl(
             get(),
-            get(named(DEFAULT_CLIENT))
+            get(named(DEFAULT_CLIENT)),
+            context = androidContext(),
         )
     }
     single<AccountLocalDataSource> { AccountLocalDataSourceImpl(get()) }

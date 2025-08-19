@@ -26,6 +26,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.TextUnit
@@ -49,6 +50,7 @@ fun SaiText(
     style: TextStyle = LocalTextStyle.current,
     letterSpacing: TextUnit = TextUnit.Unspecified,
     fontFamily: FontFamily? = null,
+    textDecoration: TextDecoration? = null,
     minLines: Int = 1,
 ) {
     val adjustedStyle = remember {
@@ -77,7 +79,8 @@ fun SaiText(
         style = adjustedStyle,
         letterSpacing = letterSpacing,
         fontFamily = fontFamily ?: adjustedStyle.fontFamily ?: pretendardFamily,
-        minLines = 1,
+        minLines = minLines,
+        textDecoration = textDecoration,
     )
 }
 

@@ -2,8 +2,15 @@ package com.choius323.saisai.util
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.util.Base64
 import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.platform.LocalContext
 import androidx.credentials.ClearCredentialStateRequest
 import androidx.credentials.CredentialManager
 import androidx.credentials.CustomCredential
@@ -12,11 +19,17 @@ import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.ClearCredentialException
 import androidx.credentials.exceptions.GetCredentialException
 import com.choius323.saisai.BuildConfig
+import com.google.android.gms.auth.GoogleAuthUtil
 import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.google.android.gms.common.api.Scope
 import com.google.android.libraries.identity.googleid.GetSignInWithGoogleOption
 import com.google.android.libraries.identity.googleid.GoogleIdTokenCredential
 import com.google.android.libraries.identity.googleid.GoogleIdTokenParsingException
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.security.SecureRandom
 
 object GoogleAccountUtil {
@@ -124,6 +137,50 @@ object GoogleAccountUtil {
         .requestServerAuthCode(WEB_CLIENT_ID)
         .requestEmail()
         .build()
+
+    @Composable
+    fun rememberGoogleSignInLauncherWithAccount(
+        onSuccess: (googleAccount: GoogleSignInAccount, accessToken: String) -> Unit,
+        onError: (message: String, exception: Exception?) -> Unit
+    ): ActivityResultLauncher<Intent> {
+        val context = LocalContext.current
+        val coroutineScope = rememberCoroutineScope()
+
+        return rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.StartActivityForResult()
+        ) { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.result // Can throw ApiException
+                    Log.d("GoogleLogin", "로그인 성공: ${account.email}")
+
+                    coroutineScope.launch {
+                        try {
+                            val accessToken = withContext(Dispatchers.IO) {
+                                GoogleAuthUtil.getToken(
+                                    context,
+                                    account.account!!, // Consider null safety here
+                                    "oauth2:${Scope("https://www.googleapis.com/auth/userinfo.profile").scopeUri}"
+                                )
+                            }
+                            Log.d("GoogleLogin", "액세스 토큰 수신 성공: $accessToken")
+                            onSuccess(account, accessToken)
+                        } catch (e: Exception) {
+                            Log.e("GoogleLogin", "액세스 토큰 요청 실패", e)
+                            onError("액세스 토큰 요청 실패", e)
+                        }
+                    }
+                } catch (e: Exception) { // Catches ApiException from task.result
+                    Log.e("GoogleLogin", "로그인 결과 처리 실패", e)
+                    onError("로그인 결과 처리 실패", e)
+                }
+            } else {
+                Log.w("GoogleLogin", "로그인 결과가 OK가 아닙니다. resultCode: ${result.resultCode}")
+                onError("로그인 취소됨 (결과 코드: ${result.resultCode})", null)
+            }
+        }
+    }
 
     private const val TAG = "GoogleAccountUtil"
 }

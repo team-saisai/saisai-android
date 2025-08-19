@@ -1,5 +1,9 @@
 package com.choius323.saisai.ui.screen.settings
 
+import android.app.Activity
+import android.util.Log
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -18,6 +22,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,9 +38,18 @@ import com.choius323.saisai.ui.component.SaiDialog
 import com.choius323.saisai.ui.component.SaiSwitch
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.util.AccountUtil
+import com.choius323.saisai.util.GoogleAccountUtil
+import com.choius323.saisai.util.KakaoAccountUtil
+import com.google.android.gms.auth.GoogleAuthUtil
+import com.google.android.gms.auth.api.signin.GoogleSignIn
+import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.Scope
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -50,6 +64,43 @@ fun SettingsScreen(
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
+
+    val googleSignInClient = remember { GoogleSignIn.getClient(context, GoogleAccountUtil.gso) }
+    val signInLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.StartActivityForResult(),
+        onResult = { result ->
+            if (result.resultCode == Activity.RESULT_OK) {
+                val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
+                try {
+                    val account = task.result // 로그인 성공한 Google 계정 정보
+                    Log.d("GoogleLogin", "로그인 성공: ${account.email}")
+
+                    // 액세스 토큰은 백그라운드 스레드에서 가져와야 합니다. (네트워크 통신 발생)
+                    coroutineScope.launch {
+                        try {
+                            val accessToken = withContext(Dispatchers.IO) {
+                                // "oauth2:" 접두사와 함께 필요한 스코프를 명시합니다.
+                                GoogleAuthUtil.getToken(
+                                    context,
+                                    account.account!!,
+                                    "oauth2:${Scope("https://www.googleapis.com/auth/userinfo.profile").scopeUri}"
+                                )
+                            }
+                            Log.d("GoogleLogin", "액세스 토큰 수신 성공: $accessToken")
+                            viewModel.onEvent(SettingsUiEvent.OnReLoginSuccess(LoginType.GOOGLE,accessToken))
+
+                        } catch (e: Exception) {
+                            Log.e("GoogleLogin", "액세스 토큰 요청 실패", e)
+                        }
+                    }
+                } catch (e: Exception) {
+                    Log.e("GoogleLogin", "로그인 결과 처리 실패", e)
+                }
+            } else {
+                Log.w("GoogleLogin", "로그인 결과가 OK가 아닙니다. resultCode: ${result.resultCode}")
+            }
+        }
+    )
     ProvideAppBar(navigationIcon = {
         Icon(
             Icons.AutoMirrored.Default.ArrowBackIos,
@@ -67,10 +118,9 @@ fun SettingsScreen(
             SettingsSideEffect.GoBack -> goBack()
             is SettingsSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
             SettingsSideEffect.GoLogin -> goLogin()
-            is SettingsSideEffect.ReLoginOAuth -> coroutineScope.launch {
-                AccountUtil.deleteAccount(
-                    context, sideEffect.loginType,
-                    { accessToken ->
+            is SettingsSideEffect.ReLoginOAuth ->when (sideEffect.loginType) {
+                LoginType.KAKAO -> {
+                    KakaoAccountUtil.kakaoLogin(context, { accessToken ->
                         viewModel.onEvent(
                             SettingsUiEvent.OnReLoginSuccess(
                                 sideEffect.loginType,
@@ -80,6 +130,11 @@ fun SettingsScreen(
                     }, {
                         viewModel.onEvent(SettingsUiEvent.OnAccountManageFailed(it.message.toString()))
                     })
+                }
+                LoginType.GOOGLE -> {
+                    val signInIntent = googleSignInClient.signInIntent
+                    signInLauncher.launch(signInIntent)
+                }
             }
         }
     }

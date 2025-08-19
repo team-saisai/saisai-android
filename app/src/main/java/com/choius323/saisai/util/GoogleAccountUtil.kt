@@ -1,5 +1,6 @@
 package com.choius323.saisai.util
 
+import android.app.Activity
 import android.content.Context
 import android.util.Base64
 import android.util.Log
@@ -105,12 +106,24 @@ object GoogleAccountUtil {
         }
     }
 
+    fun signIn(activity: Activity) {
+        val googleSignInClient = GoogleSignIn.getClient(activity.baseContext, gso)
+        val signInIntent = googleSignInClient.signInIntent
+        activity.startActivityForResult(signInIntent, 1000)
+    }
+
     // Nonce(Number used once) 랜덤 생성
     private fun generateNonce(length: Int = 16): String {
         val nonceBytes = ByteArray(length)
         SecureRandom().nextBytes(nonceBytes)
         return Base64.encodeToString(nonceBytes, Base64.URL_SAFE)
     }
+
+    val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+        .requestIdToken(WEB_CLIENT_ID)
+        .requestServerAuthCode(WEB_CLIENT_ID)
+        .requestEmail()
+        .build()
 
     private const val TAG = "GoogleAccountUtil"
 }

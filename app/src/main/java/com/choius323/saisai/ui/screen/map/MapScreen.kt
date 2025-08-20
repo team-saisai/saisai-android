@@ -48,39 +48,13 @@ fun MapScreen(
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
 
-    val permissionState = rememberMultiplePermissionsState(
-//        postNotificationPermissions +
-        locationPermissions
-    ) { resultMap ->
-        viewModel.onEvent(MapUiEvent.SetPermissionGranted(resultMap.all { it.value }))
-    }
-    HandlePermissionActions(
-        permissionState,
-        isShowPermissionDialog = uiState.isShowPermissionDialog,
-        setShowPermissionDialog = { viewModel.onEvent(MapUiEvent.SetShowPermissionDialog(it)) },
-        onPermissionAllGranted = {
-            if (permissionState.allPermissionsGranted) {
-                viewModel.onEvent(MapUiEvent.SetPermissionGranted(true))
-            } else {
-                viewModel.onEvent(MapUiEvent.SetShowPermissionDialog(true))
-            }
-        })
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MapSideEffect.NavigateBack -> goBack()
-            is MapSideEffect.PermissionRequest -> permissionState.launchMultiplePermissionRequest()
             is MapSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
-            is MapSideEffect.PermissionCheck -> viewModel.onEvent(
-                MapUiEvent.SetPermissionGranted(
-                    permissionState.allPermissionsGranted
-                )
-            )
         }
     }
 
-    LaunchedEffect(Unit) {
-        viewModel.onEvent(MapUiEvent.SetPermissionGranted(permissionState.allPermissionsGranted))
-    }
     MapScreen(
         uiState = uiState, modifier = modifier, viewModel::onEvent
     )
@@ -105,11 +79,6 @@ private fun MapScreen(
         kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
         kakaoMap.moveCamera(latLngList)
         kakaoMap.initCircles(uiState.checkPointList.map { it.toLatLng() })
-    }
-    LaunchedEffect(uiState.nowLatLng) {
-        if (uiState.nowLatLng != null) {
-            kakaoMap.createDirectionLabel(uiState.nowLatLng)
-        }
     }
     Box(modifier = modifier) {
         AndroidView(

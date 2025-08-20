@@ -25,26 +25,6 @@ class MapViewModel(
                     )
                 }
             }
-
-            is MapUiEvent.SetIsTracking -> setIsTracking(event)
-            is MapUiEvent.SetNowLatLng -> setNowLatLng(event)
-            is MapUiEvent.SetPermissionGranted -> intent {
-                reduce { state.copy(permissionGranted = event.changed) }
-            }
-
-            is MapUiEvent.SetShowPermissionDialog -> intent {
-                reduce { state.copy(isShowPermissionDialog = event.isShow) }
-            }
         }
-    }
-
-    private fun setIsTracking(event: MapUiEvent.SetIsTracking) = intent {
-        reduce {
-            state.copy(isTracking = true)
-        }
-    }
-
-    private fun setNowLatLng(event: MapUiEvent.SetNowLatLng) = intent {
-        reduce { state.copy(nowLatLng = event.latLng) }
     }
 }

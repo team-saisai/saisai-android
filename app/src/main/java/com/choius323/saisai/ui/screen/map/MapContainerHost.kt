@@ -9,26 +9,15 @@ data class MapUiState(
     val error: String? = null,
     val route: List<GpxPoint> = emptyList(),
     val checkPointList: List<CheckPoint> = emptyList(),
-    val nowLatLng: LatLng? = null,
-    val isTracking: Boolean = false,
-    val permissionGranted: Boolean = false,
-    val isShowPermissionDialog: Boolean = false,
 )
 
 sealed interface MapUiEvent {
     data object BackClicked : MapUiEvent
     data class SetRoute(val route: List<GpxPoint>, val checkPointList: List<CheckPoint>) :
         MapUiEvent
-
-    data class SetNowLatLng(val latLng: LatLng) : MapUiEvent
-    data class SetIsTracking(val isTracking: Boolean) : MapUiEvent
-    data class SetPermissionGranted(val changed: Boolean) : MapUiEvent
-    data class SetShowPermissionDialog(val isShow: Boolean) : MapUiEvent
 }
 
 sealed interface MapSideEffect {
-    data object PermissionCheck : MapSideEffect
     data object NavigateBack : MapSideEffect
-    data object PermissionRequest : MapSideEffect
     data class ShowToast(val message: String) : MapSideEffect
 }

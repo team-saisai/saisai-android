@@ -91,6 +91,7 @@ fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
 }
 
 fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
+    println(list.joinToString("\n") { "${it.latitude}, ${it.longitude}"})
     val layer = this?.labelManager?.addLayer(LabelLayerOptions.from(CIRCLE_LAYER_ID)) ?: return
     val resource = if (isColor) R.drawable.ic_circle_lime else R.drawable.ic_circle_gray
     list.forEachIndexed { index, latLng ->

@@ -94,9 +94,8 @@ fun MainNavController(
                         popUpTo(MainNavItem.CourseDetail)
                     }
                 },
-            ) {
-                navController.upPress()
-            }
+                onBack = { navController.upPress() }
+            )
         }
         composable<MainNavItem.BottomNavItem.MyPage> { backStackEntry ->
             MyPageScreen(

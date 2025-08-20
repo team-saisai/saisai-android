@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
@@ -30,12 +29,14 @@ import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.TopAppBarHeight
+import com.choius323.saisai.ui.screen.map.getCurrentLocation
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.util.locationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.accompanist.permissions.MultiplePermissionsState
 import com.google.accompanist.permissions.rememberMultiplePermissionsState
+import com.kakao.vectormap.LatLng
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -78,16 +79,21 @@ fun RecordScreen(
 
     val permissionState = rememberMultiplePermissionsState(
 //        postNotificationPermissions +
-                locationPermissions
+        locationPermissions
     ) { resultMap ->
         val allGranted = resultMap.all { it.value }
         viewModel.onEvent(RecordUiEvent.SetPermissionGranted(allGranted))
         if (allGranted) {
-            viewModel.onEvent(
-                RecordUiEvent.StartRecording(
-                    isPermissionGranted = true,
-                )
-            )
+            getCurrentLocation(
+                context = context,
+                callbackLocation = { location ->
+                    viewModel.onEvent(
+                        RecordUiEvent.StartRecording(
+                            isPermissionGranted = true,
+                            latLng = LatLng.from(location.latitude, location.longitude)
+                        )
+                    )
+                })
         }
     }
     HandlePermissionActions(
@@ -107,23 +113,37 @@ fun RecordScreen(
             is RecordSideEffect.PermissionRequest -> permissionState.launchMultiplePermissionRequest()
             is RecordSideEffect.ShowToast -> context.SaiToast(sideEffect.msg)
 
-            is RecordSideEffect.PermissionCheck -> viewModel.onEvent(
-                RecordUiEvent.SetPermissionGranted(
-                    permissionState.allPermissionsGranted
-                )
-            )
-
-            is RecordSideEffect.StartRecording -> {
+            is RecordSideEffect.PermissionCheck ->
                 if (permissionState.allPermissionsGranted) {
-                    viewModel.onEvent(
-                        RecordUiEvent.StartRecording(
-                            isPermissionGranted = permissionState.allPermissionsGranted,
-                        )
-                    )
+                    getCurrentLocation(
+                        context = context,
+                        callbackLocation = { location ->
+                            viewModel.onEvent(
+                                RecordUiEvent.StartRecording(
+                                    isPermissionGranted = permissionState.allPermissionsGranted,
+                                    latLng = LatLng.from(location.latitude, location.longitude)
+                                )
+                            )
+                        })
                 } else {
                     viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
                 }
-            }
+
+            is RecordSideEffect.StartRecording ->
+                if (permissionState.allPermissionsGranted) {
+                    getCurrentLocation(
+                        context = context,
+                        callbackLocation = { location ->
+                            viewModel.onEvent(
+                                RecordUiEvent.StartRecording(
+                                    isPermissionGranted = permissionState.allPermissionsGranted,
+                                    latLng = LatLng.from(location.latitude, location.longitude)
+                                )
+                            )
+                        })
+                } else {
+                    viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
+                }
         }
     }
     LaunchedEffect(Unit) {
@@ -167,6 +187,7 @@ fun RecordScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (RecordUiEvent) -> Unit = {},
 ) {
+    val context = LocalContext.current
     Box(modifier) {
         RecordMapSection(uiState, Modifier.fillMaxSize(), onEvent)
         RecordTimerText(
@@ -183,11 +204,16 @@ fun RecordScreenContent(
                 .width(354.dp)
                 .padding(bottom = 32.dp),
             startRecording = {
-                onEvent(
-                    RecordUiEvent.StartRecording(
-                        isPermissionGranted = permissionState.allPermissionsGranted,
-                    )
-                )
+                getCurrentLocation(
+                    context = context,
+                    callbackLocation = { location ->
+                        onEvent(
+                            RecordUiEvent.StartRecording(
+                                isPermissionGranted = permissionState.allPermissionsGranted,
+                                latLng = LatLng.from(location.latitude, location.longitude)
+                            )
+                        )
+                    })
             },
             toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },
             toggleExpanded = { onEvent(RecordUiEvent.OnToggleExpandedSummary) }
@@ -195,15 +221,16 @@ fun RecordScreenContent(
     }
 }
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Preview(showBackground = true)
 @Composable
 fun RecordScreenContentPreview() {
-
     SaiTheme {
         Surface {
-            // RecordScreenContent(
-            //
-            // )
+            RecordScreenContent(
+                RecordUiState(),
+                rememberMultiplePermissionsState(listOf())
+            ) {}
         }
     }
 }

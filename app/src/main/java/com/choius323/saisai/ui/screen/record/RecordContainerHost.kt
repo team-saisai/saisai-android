@@ -39,7 +39,7 @@ sealed interface RecordUiEvent {
     data class SetNowLatLng(val latLng: LatLng) : RecordUiEvent
     data class SetShowPermissionDialog(val isShow: Boolean) : RecordUiEvent
     data class SetCameraTracking(val isCameraTracking: Boolean) : RecordUiEvent
-    data class StartRecording(val isPermissionGranted: Boolean) : RecordUiEvent
+    data class StartRecording(val isPermissionGranted: Boolean, val latLng: LatLng) : RecordUiEvent
     data object StopRecording : RecordUiEvent
     data object ResumeRecording : RecordUiEvent
     data object OnToggleExpandedSummary : RecordUiEvent

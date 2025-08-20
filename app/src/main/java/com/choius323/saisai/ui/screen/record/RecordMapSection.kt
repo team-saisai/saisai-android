@@ -95,8 +95,8 @@ private fun RecordMapSetting(
             kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
-    LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState == RideState.RECORDING) {
-        if (uiState.courseDetail != null && uiState.rideState == RideState.RECORDING && uiState.nowCheckPointIndex >= 0) {
+    LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState) {
+        if (uiState.courseDetail != null && uiState.rideState == RideState.RECORDING) {
             val list = uiState.courseDetail.checkPointList.map { LatLng.from(it.lat, it.lng) }
             kakaoMap.setCirclesStyle(list, uiState.nowCheckPointIndex)
         }

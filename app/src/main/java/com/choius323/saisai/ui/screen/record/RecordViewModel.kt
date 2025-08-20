@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.record
 
+import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +8,7 @@ import androidx.navigation.toRoute
 import com.choius323.saisai.repository.CourseRepository
 import com.choius323.saisai.ui.navigation.MainNavItem
 import com.choius323.saisai.ui.screen.map.calculateDistance
+import com.kakao.vectormap.LatLng
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
@@ -50,7 +52,7 @@ class RecordViewModel(
     fun onEvent(event: RecordUiEvent) = when (event) {
         is RecordUiEvent.ClickedStart -> clickStart(event)
         is RecordUiEvent.SetNowLatLng -> setNowLatLng(event)
-        is RecordUiEvent.StartRecording -> startRecording(event.isPermissionGranted)
+        is RecordUiEvent.StartRecording -> startRecording(event.isPermissionGranted, event.latLng)
         RecordUiEvent.StopRecording -> pauseRecording()
         RecordUiEvent.ResumeRecording -> resumeRecording()
         RecordUiEvent.OnClickToggleRecording -> intent {
@@ -89,12 +91,15 @@ class RecordViewModel(
         }
     }
 
-    private fun startRecording(isPermissionGranted: Boolean) = intent {
+    private fun startRecording(isPermissionGranted: Boolean, nowLatLng: LatLng) = intent {
         reduce { state.copy(isLoading = true) }
         when {
             isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
             state.rideState == RideState.RECORDING -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
             state.rideId != 0L -> resumeRecording()
+            calculateDistance(nowLatLng, state.route.first().toLatLng()) > 25f ->
+                postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다. 시작지점 근처로 이동해주세요."))
+
             state.route.isNotEmpty() -> startRecording()
             else -> postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다."))
         }
@@ -130,7 +135,7 @@ class RecordViewModel(
         val nextLatLng = state.courseDetail?.gpxPointList[nextCheckPoint.gpxPointIdx]?.toLatLng()
             ?: return@intent
         val distance = calculateDistance(event.latLng, nextLatLng)
-        if (distance < 10f) {
+        if (distance < 25f) {
             reduce {
                 state.copy(
                     nowCheckPointIndex = nextCheckPointIndex,
@@ -228,10 +233,11 @@ class RecordViewModel(
     }
 
     private fun saveRideState(checkPointIndex: Int) = intent {
-        if (checkPointIndex == 0 || checkPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
+        if (checkPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
         courseRepository.syncRide(state.rideId, state.totalSeconds, checkPointIndex)
             .collectLatest { result ->
                 result.onSuccess {
+                    postSideEffect(RecordSideEffect.ShowToast("${checkPointIndex + 1}번째 체크 포인트를 저장했습니다."))
                 }.onFailure {
                     postSideEffect(
                         RecordSideEffect.ShowToast(
@@ -243,6 +249,7 @@ class RecordViewModel(
     }
 
     private fun onClickBack() = intent {
+        Log.d(TAG, "onClickBack")
         if (state.rideState == RideState.RECORDING) {
             reduce { state.copy(isShowBackDialog = true) }
         } else {
@@ -252,7 +259,7 @@ class RecordViewModel(
 
     private fun onClickBackDialog(isConfirm: Boolean) = intent {
         if (isConfirm) {
-            pauseRecording(true)
+            onClickBack()
         } else {
             reduce { state.copy(isShowBackDialog = false) }
         }
@@ -281,3 +288,5 @@ class RecordViewModel(
         timerJob?.cancel()
     }
 }
+
+private const val TAG = "RecordViewModel"

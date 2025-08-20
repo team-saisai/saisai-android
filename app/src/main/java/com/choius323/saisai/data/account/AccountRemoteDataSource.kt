@@ -4,6 +4,7 @@ import android.content.Context
 import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.data.account.model.AccountTokenDto
 import com.choius323.saisai.data.account.model.LoginDto
+import com.choius323.saisai.data.account.model.NewUserCheckDto
 import com.choius323.saisai.data.account.model.TotalRewardDto
 import com.choius323.saisai.data.account.model.UserBadgeDetailDto
 import com.choius323.saisai.data.account.model.UserBadgeDto
@@ -43,6 +44,8 @@ interface AccountRemoteDataSource {
     suspend fun getTotalReward(): Flow<Result<SaiResponseDto<TotalRewardDto>>>
     suspend fun logout(): Flow<Result<Unit>>
     suspend fun deleteAccount(socialAccessToken: String): Flow<Result<Unit>>
+    suspend fun getIsNewUserKakao(token: String): Flow<Result<SaiResponseDto<NewUserCheckDto>>>
+    suspend fun getIsNewUserGoogle(token: String): Flow<Result<SaiResponseDto<NewUserCheckDto>>>
 }
 
 class AccountRemoteDataSourceImpl(
@@ -111,7 +114,7 @@ class AccountRemoteDataSourceImpl(
         saiFetch<Unit> {
             saiClientProvider.client.post("auth/logout")
         }.onEach {
-            KakaoAccountUtil.logout({},{})
+            KakaoAccountUtil.logout({}, {})
         }
 
     override suspend fun deleteAccount(socialAccessToken: String): Flow<Result<Unit>> =
@@ -122,6 +125,22 @@ class AccountRemoteDataSourceImpl(
         }.onEach {
             GoogleAuthUtil.clearToken(context, socialAccessToken)
         }
+
+    override suspend fun getIsNewUserKakao(
+        token: String
+    ): Flow<Result<SaiResponseDto<NewUserCheckDto>>> = saiFetch {
+        defaultClient.post("${BuildConfig.SAI_BASE_URL}kakao/isJoin") {
+            setBody(mapOf("token" to token))
+        }
+    }
+
+    override suspend fun getIsNewUserGoogle(
+        token: String
+    ): Flow<Result<SaiResponseDto<NewUserCheckDto>>> = saiFetch {
+        defaultClient.post("${BuildConfig.SAI_BASE_URL}google/android/isJoin") {
+            setBody(mapOf("token" to token))
+        }
+    }
 }
 
 private const val TAG = "AccountRemoteDataSource"

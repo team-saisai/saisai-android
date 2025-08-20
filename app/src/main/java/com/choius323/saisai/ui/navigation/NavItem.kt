@@ -56,13 +56,16 @@ sealed interface MainNavItem : NavItem {
     }
 
     @Serializable
-    data object TotalReward:MainNavItem
+    data object TotalReward : MainNavItem
 
     @Serializable
     data class Record(val courseId: Long) : MainNavItem
 
     @Serializable
     data object Login : MainNavItem
+
+    @Serializable
+    data class SignUp(val token: String, val loginType: String) : MainNavItem
 
     @Serializable
     data class CourseDetail(val courseId: Long) : MainNavItem

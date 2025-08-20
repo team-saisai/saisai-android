@@ -6,4 +6,5 @@ import kotlinx.serialization.Serializable
 data class AccountTokenDto(
     val accessToken: String,
     val refreshToken: String,
+    val isNewUser: Boolean = false,
 )

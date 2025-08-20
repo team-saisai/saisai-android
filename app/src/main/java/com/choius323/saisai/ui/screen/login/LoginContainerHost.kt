@@ -5,7 +5,7 @@ import com.choius323.saisai.ui.model.LoginType
 data class LoginUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
-    val isLoginSuccess: Boolean = false,
+    val isNewUser: Boolean = false,
     val isDelayed: Boolean = false,
 )
 
@@ -15,4 +15,6 @@ sealed interface LoginUiEvent {
 
 sealed interface LoginSideEffect {
     data class ShowToast(val message: String) : LoginSideEffect
+    data class GoSignUp(val token: String, val loginType: LoginType) : LoginSideEffect
+    data object GoHome : LoginSideEffect
 }

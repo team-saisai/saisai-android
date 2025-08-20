@@ -1,7 +1,5 @@
 package com.choius323.saisai.ui.navigation
 
-import androidx.compose.animation.EnterTransition
-import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
@@ -29,6 +27,7 @@ import com.choius323.saisai.ui.screen.notification_list.NotificationListScreen
 import com.choius323.saisai.ui.screen.record.RecordScreen
 import com.choius323.saisai.ui.screen.ride_history.RideHistoryScreen
 import com.choius323.saisai.ui.screen.settings.SettingsScreen
+import com.choius323.saisai.ui.screen.sign_up.SignUpScreen
 import com.choius323.saisai.ui.screen.total_reward.TotalRewardScreen
 
 @Stable
@@ -123,11 +122,25 @@ fun MainNavController(
         composable<MainNavItem.Login> { backStackEntry ->
             LoginScreen(
                 modifier = Modifier,
+                goSignUp = { token, loginType ->
+                    navController.navigate(MainNavItem.SignUp(token, loginType))
+                },
                 goHome = {
                     navController.navigate(MainNavItem.BottomNavItem.Home) {
                         popUpTo(MainNavItem.Login) { inclusive = true }
                     }
                 }
+            )
+        }
+        composable<MainNavItem.SignUp> { backStackEntry ->
+            SignUpScreen(
+                modifier = modifier,
+                goHome = {
+                    navController.navigate(MainNavItem.BottomNavItem.Home) {
+                        popUpTo(MainNavItem.Login) { inclusive = true }
+                    }
+                },
+                goBack = { navController.upPress() }
             )
         }
         composable<MainNavItem.BadgeList> { backStackEntry ->

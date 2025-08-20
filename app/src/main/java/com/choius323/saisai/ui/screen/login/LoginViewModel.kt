@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.ui.model.LoginType
+import com.choius323.saisai.ui.screen.sign_up.SignUpSideEffect
 import com.choius323.saisai.usecase.LoginUseCase
 import com.choius323.saisai.usecase.ReissueTokenUseCase
 import kotlinx.coroutines.delay
@@ -29,7 +30,7 @@ class LoginViewModel(
             if (SessionManager.refreshToken.value != null) {
                 reissueTokenUseCase().collectLatest { result ->
                     result.onSuccess {
-                        reduce { state.copy(isLoginSuccess = true) }
+                        postSideEffect(LoginSideEffect.GoHome)
                     }.onFailure {
                         reduce { state.copy(isLoading = false) }
                         postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
@@ -51,11 +52,16 @@ class LoginViewModel(
     private fun login(loginType: LoginType, token: String) = intent {
         reduce { state.copy(isLoading = true) }
         loginUseCase(token, loginType).collectLatest { result ->
-            result.onSuccess {
-                reduce { state.copy(isLoginSuccess = true) }
+            result.onSuccess { isNewUser ->
+                reduce { state.copy(isLoading = false) }
+                if(isNewUser) {
+                    postSideEffect(LoginSideEffect.GoSignUp(token, loginType))
+                } else {
+                    postSideEffect(LoginSideEffect.GoHome)
+                }
             }.onFailure {
                 reduce { state.copy(isLoading = false) }
-                postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
+                postSideEffect(LoginSideEffect.ShowToast(it.message ?: "로그인 실패"))
             }
         }
     }

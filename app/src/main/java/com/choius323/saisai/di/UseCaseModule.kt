@@ -1,5 +1,6 @@
 package com.choius323.saisai.di
 
+import com.choius323.saisai.usecase.AccessServiceUseCase
 import com.choius323.saisai.usecase.LoginUseCase
 import com.choius323.saisai.usecase.GetAllCoursesUseCase
 import com.choius323.saisai.usecase.GetCourseDetailUseCase
@@ -30,4 +31,5 @@ val useCaseModule = module {
     singleOf(::PauseRideUseCase)
     singleOf(::ToggleBookmarkCourseUseCase)
     singleOf(::LogoutUseCase)
+    singleOf(::AccessServiceUseCase)
 }

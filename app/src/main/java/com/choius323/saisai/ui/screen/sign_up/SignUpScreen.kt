@@ -96,7 +96,7 @@ private fun SignUpScreenContent(
 ) {
     Column(
         modifier
-            .padding(horizontal = 20.dp, vertical = 32.dp)
+            .padding(horizontal = 20.dp, vertical = 20.dp)
             .verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)
     ) {
         Row(Modifier.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {

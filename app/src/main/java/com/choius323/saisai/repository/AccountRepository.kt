@@ -30,6 +30,8 @@ interface AccountRepository {
     suspend fun getTotalReward(): Flow<Result<TotalReward>>
     suspend fun logout(): Flow<Result<Unit>>
     suspend fun deleteAccount(loginType: String, socialAccessToken: String): Flow<Result<Unit>>
+    suspend fun isNewUserGoogle(token: String): Flow<Result<Boolean>>
+    suspend fun isNewUserKakao(token: String): Flow<Result<Boolean>>
 }
 
 class AccountRepositoryImpl(
@@ -136,6 +138,16 @@ class AccountRepositoryImpl(
             saiClientProvider.reset()
             accountLocalDataSource.clearTokens()
         }.flowOn(ioDispatcher)
+
+    override suspend fun isNewUserGoogle(token: String): Flow<Result<Boolean>> =
+        accountRemoteDataSource.getIsNewUserGoogle(token).map {result ->
+            result.mapCatching { it.data.isNewUser }
+        }
+
+    override suspend fun isNewUserKakao(token: String): Flow<Result<Boolean>> =
+        accountRemoteDataSource.getIsNewUserKakao(token).map {result ->
+            result.mapCatching { it.data.isNewUser }
+        }
 
     override suspend fun getNowLoginType(): Flow<String?> = accountLocalDataSource.loginType
 }

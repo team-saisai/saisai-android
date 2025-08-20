@@ -14,7 +14,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -46,21 +49,35 @@ import org.orbitmvi.orbit.compose.collectSideEffect
 fun LoginScreen(
     modifier: Modifier = Modifier,
     viewModel: LoginViewModel = koinViewModel(),
+    goSignUp: (token: String, loginType: String) -> Unit,
     goHome: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
+    var pendingNavigation by remember { mutableStateOf<(() -> Unit)?>(null) }
+
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is LoginSideEffect.ShowToast -> {
                 context.SaiToast(sideEffect.message)
             }
+
+            is LoginSideEffect.GoHome -> {
+                pendingNavigation = { goHome() }
+            }
+
+            is LoginSideEffect.GoSignUp -> {
+                pendingNavigation = {
+                    goSignUp(sideEffect.token, sideEffect.loginType.name)
+                }
+            }
         }
     }
 
-    LaunchedEffect(uiState.isDelayed, uiState.isLoginSuccess) {
-        if (uiState.isDelayed && uiState.isLoginSuccess) {
-            goHome()
+    LaunchedEffect(uiState.isDelayed, pendingNavigation) {
+        if (uiState.isDelayed && pendingNavigation != null) {
+            pendingNavigation?.invoke()
+            pendingNavigation = null
         }
     }
 

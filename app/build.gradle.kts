@@ -18,8 +18,8 @@ android {
         applicationId = "com.choius323.saisai"
         minSdk = 27
         targetSdk = 35
-        versionCode = 2
-        versionName = "1.0.1"
+        versionCode = 4
+        versionName = "1.0.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -70,19 +70,6 @@ android {
             )
             applicationIdSuffix = ".debug"
             manifestPlaceholders.put("applicationLabel", "@string/app_name_debug")
-        }
-        create("releaseTest") {
-            initWith(getByName("release"))
-            val kakaoKey = properties.getProperty("kakao.test.key")
-            manifestPlaceholders["KAKAO_KEY"] = kakaoKey ?: ""
-            buildConfigField("String", "KAKAO_KEY", "\"$kakaoKey\"")
-            buildConfigField("String", "SAI_BASE_URL", "\"${properties.getProperty("sai.url")}\"")
-            buildConfigField(
-                "String",
-                "GOOGLE_WEB_CLIENT_ID",
-                "\"${properties.getProperty("google.web.client.id")}\""
-            )
-            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {

@@ -86,7 +86,7 @@ class RideHistoryViewModel(
         courseRepository.getRideHistory(
             page = nextPage,
             sort = state.sort.name,
-            notCompletedOnly = state.isRidingOnly
+            notCompletedOnly = state.isRidingOnly,
         ).collectLatest { result ->
             result.onSuccess { coursePage ->
                 reduce {

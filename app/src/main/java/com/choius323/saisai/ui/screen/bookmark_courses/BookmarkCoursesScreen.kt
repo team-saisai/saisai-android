@@ -2,8 +2,11 @@ package com.choius323.saisai.ui.screen.bookmark_courses
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -20,6 +23,8 @@ import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.SortDropDown
+import com.choius323.saisai.ui.model.CourseSort
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -36,13 +41,7 @@ fun BookmarkCoursesScreen(
     val context = LocalContext.current
 
     HandleAppBar(uiState.editMode, onEvent = viewModel::onEvent)
-    BackHandler {
-        when {
-            uiState.showDeleteDialog -> viewModel.onEvent(BookmarkCoursesUiEvent.OnClickDialogDismiss)
-            uiState.editMode -> viewModel.onEvent(BookmarkCoursesUiEvent.OnClickCancel)
-            else -> viewModel.onEvent(BookmarkCoursesUiEvent.OnClickBack)
-        }
-    }
+    BackHandler { viewModel.onEvent(BookmarkCoursesUiEvent.OnClickBack) }
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is BookmarkCoursesSideEffect.GoBack -> goBack()
@@ -78,6 +77,12 @@ private fun BookmarkCoursesScreenContent(
     onEvent: (BookmarkCoursesUiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
+        BookmarkHeadLine(
+            isEditMode = uiState.editMode,
+            selectedCourseSort = uiState.sort,
+            modifier = Modifier,
+            onSelectedCourseSort = { onEvent(BookmarkCoursesUiEvent.OnSelectedCourseSort(it)) },
+        )
         BookmarkCoursesListSection(
             courseList = uiState.courseList,
             selectedIndexList = uiState.selectedIndices,
@@ -97,6 +102,27 @@ private fun BookmarkCoursesScreenContent(
                 onClickDeleteAll = { onEvent(BookmarkCoursesUiEvent.OnClickDeleteAll) },
                 onClickDeleteSelected = { onEvent(BookmarkCoursesUiEvent.OnClickDeleteSelected) },
                 modifier = Modifier
+            )
+        }
+    }
+}
+
+@Composable
+fun BookmarkHeadLine(
+    isEditMode: Boolean,
+    selectedCourseSort: CourseSort,
+    modifier: Modifier,
+    onSelectedCourseSort: (CourseSort) -> Unit
+) {
+    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+        if (isEditMode.not()) {
+            SortDropDown(
+                sortList = listOf(
+                    CourseSort.newest,
+                    CourseSort.ordest,
+                ),
+                selected = selectedCourseSort,
+                onSelectedSort = onSelectedCourseSort,
             )
         }
     }

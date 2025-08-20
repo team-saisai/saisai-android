@@ -49,21 +49,13 @@ fun RideHistoryScreen(
     val context = LocalContext.current
 
     HandleAppBar(uiState.editMode, onEvent = viewModel::onEvent)
-    BackHandler {
-        when {
-            uiState.showDeleteDialog -> viewModel.onEvent(RideHistoryUiEvent.OnClickDialogDismiss)
-            uiState.editMode -> viewModel.onEvent(RideHistoryUiEvent.OnClickCancel)
-            else -> viewModel.onEvent(RideHistoryUiEvent.OnClickBack)
-        }
-    }
+    BackHandler { viewModel.onEvent(RideHistoryUiEvent.OnClickBack) }
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is RideHistorySideEffect.GoBack -> goBack()
             is RideHistorySideEffect.GoCourseDetail -> goCourseDetail(sideEffect.courseId)
             is RideHistorySideEffect.GoCourseList -> goCourseList()
-            is RideHistorySideEffect.ShowToast -> {
-                context.SaiToast(sideEffect.message)
-            }
+            is RideHistorySideEffect.ShowToast -> context.SaiToast(sideEffect.message)
         }
     }
 
@@ -90,16 +82,12 @@ private fun RideHistoryScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (RideHistoryUiEvent) -> Unit,
 ) {
-    Column(
-        modifier = modifier
-            .fillMaxSize()
-            .padding(horizontal = 18.dp)
-    ) {
+    Column(modifier = modifier.fillMaxSize()) {
         RidingHeadLine(
             isEditMode = uiState.editMode,
             isRidingOnly = uiState.isRidingOnly,
             selectedCourseSort = uiState.sort,
-            modifier = Modifier,
+            modifier = Modifier.padding(horizontal = 18.dp),
             onSelectedCourseSort = { onEvent(RideHistoryUiEvent.OnSelectedCourseSort(it)) },
             onClickShowRidingOnly = { onEvent(RideHistoryUiEvent.OnClickShowRidingOnly(it)) },
         )

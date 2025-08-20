@@ -29,7 +29,7 @@ interface CourseRepository {
     suspend fun pauseRide(rideId: Long, duration: Long, checkPointIdx: Int): Flow<Result<Unit>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<Boolean>>
     suspend fun addBookmark(courseId: Long): Flow<Result<Boolean>>
-    suspend fun getBookmarkedCourses(page: Int): Flow<Result<CoursePage<CourseListItem>>>
+    suspend fun getBookmarkedCourses(page: Int, sort: String): Flow<Result<CoursePage<CourseListItem>>>
     suspend fun deleteBookmarkedCourses(courseIds: List<Long>): Flow<Result<Unit>>
     suspend fun getAllCourses(
         page: Int, courseType: CourseType, sort: CourseSort,
@@ -132,8 +132,8 @@ class CourseRepositoryImpl(
                 result.mapCatching { it.data.isCourseBookmarked }
             }.flowOn(ioDispatcher)
 
-    override suspend fun getBookmarkedCourses(page: Int): Flow<Result<CoursePage<CourseListItem>>> =
-        courseRemoteDataSource.getBookmarkedCourses(page).map { result ->
+    override suspend fun getBookmarkedCourses(page: Int, sort: String): Flow<Result<CoursePage<CourseListItem>>> =
+        courseRemoteDataSource.getBookmarkedCourses(page, sort).map { result ->
             result.mapCatching { it.toCoursePage() }
         }.flowOn(ioDispatcher)
 

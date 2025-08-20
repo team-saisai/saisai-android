@@ -25,7 +25,13 @@ class RideHistoryViewModel(
         is RideHistoryUiEvent.OnClickDeleteAll -> showDeleteDialog()
         is RideHistoryUiEvent.OnClickDialogConfirm -> deleteSelectedCourses()
         is RideHistoryUiEvent.OnClickDialogDismiss -> dismissDeleteDialog()
-        is RideHistoryUiEvent.OnClickBack -> goBack()
+        is RideHistoryUiEvent.OnClickBack -> intent{
+            when {
+                state.showDeleteDialog -> dismissDeleteDialog()
+                state.editMode -> cancelEditMode()
+                else -> goBack()
+            }
+        }
         is RideHistoryUiEvent.LoadMore -> fetchCourses(true)
         is RideHistoryUiEvent.OnClickDeleteItem -> toggleItemSelection(event.index)
         is RideHistoryUiEvent.OnClickRideHistory -> deleteCourses(listOf(event.index))

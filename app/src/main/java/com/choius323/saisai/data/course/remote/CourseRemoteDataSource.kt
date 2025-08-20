@@ -13,7 +13,6 @@ import com.choius323.saisai.data.course.remote.model.RideIdDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.model.SaveRideDto
 import com.choius323.saisai.di.SaiClientProvider
-import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
 import io.ktor.client.request.get
 import io.ktor.client.request.parameter
@@ -34,7 +33,7 @@ interface CourseRemoteDataSource {
     suspend fun startCourse(courseId: Long): Flow<Result<SaiResponseDto<RideIdDto>>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
     suspend fun addBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>>
-    suspend fun getBookmarkedCourses(page: Int): Flow<Result<SaiResponseDto<CourseDataDto>>>
+    suspend fun getBookmarkedCourses(page: Int, sort: String): Flow<Result<SaiResponseDto<CourseDataDto>>>
     suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>>
     suspend fun getRideHistory(page: Int, sort: String, notCompletedOnly: Boolean): Flow<Result<SaiResponseDto<RideHistoryDataDto>>>
     suspend fun deleteRideHistory(rideIds: List<Long>): Flow<Result<SaiResponseDto<Unit>>>
@@ -103,8 +102,8 @@ class CourseRemoteDataSourceImpl(
     override suspend fun deleteBookmark(courseId: Long): Flow<Result<SaiResponseDto<BookmarkDto>>> =
         saiFetch { saiClientProvider.client.delete("courses/$courseId/bookmarks") }
 
-    override suspend fun getBookmarkedCourses(page: Int): Flow<Result<SaiResponseDto<CourseDataDto>>> =
-        saiFetch { saiClientProvider.client.get("my/bookmarks/courses?page=$page") }
+    override suspend fun getBookmarkedCourses(page: Int, sort: String): Flow<Result<SaiResponseDto<CourseDataDto>>> =
+        saiFetch { saiClientProvider.client.get("my/bookmarks/courses?page=$page&sort=$sort") }
 
     override suspend fun deleteBookmarkedCourses(body: DeleteBookmarkCoursesDto): Flow<Result<SaiResponseDto<Unit>>> =
         saiFetch { saiClientProvider.client.delete("my/bookmarks/courses") { setBody(body) } }

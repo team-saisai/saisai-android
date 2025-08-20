@@ -25,7 +25,13 @@ class BookmarkCoursesViewModel(
         is BookmarkCoursesUiEvent.OnClickDeleteAll -> showDeleteDialog()
         is BookmarkCoursesUiEvent.OnClickDialogConfirm -> deleteSelectedCourses()
         is BookmarkCoursesUiEvent.OnClickDialogDismiss -> dismissDeleteDialog()
-        is BookmarkCoursesUiEvent.OnClickBack -> goBack()
+        is BookmarkCoursesUiEvent.OnClickBack -> intent{
+            when {
+                state.showDeleteDialog -> dismissDeleteDialog()
+                state.editMode -> cancelEditMode()
+                else -> goBack()
+            }
+        }
         is BookmarkCoursesUiEvent.LoadMore -> fetchCourses(true)
         is BookmarkCoursesUiEvent.OnClickDeleteItem -> toggleItemSelection(event.index)
         BookmarkCoursesUiEvent.OnClickEmptyButton -> intent {
@@ -51,6 +57,10 @@ class BookmarkCoursesViewModel(
         }
 
         is BookmarkCoursesUiEvent.OnClickBookmark -> deleteCourses(listOf(event.index))
+        is BookmarkCoursesUiEvent.OnSelectedCourseSort -> intent {
+            reduce { state.copy(sort = event.sort) }
+            fetchCourses()
+        }
     }
 
     private fun fetchCourses(isLoadMore: Boolean = false, nextPageParam: Int? = null) = intent {
@@ -66,7 +76,10 @@ class BookmarkCoursesViewModel(
             reduce { state.copy(isLoading = true) }
         }
 
-        courseRepository.getBookmarkedCourses(page = nextPage).collectLatest { result ->
+        courseRepository.getBookmarkedCourses(
+            page = nextPage,
+            sort = state.sort.name,
+        ).collectLatest { result ->
             result.onSuccess { coursePage ->
                 reduce {
                     state.copy(

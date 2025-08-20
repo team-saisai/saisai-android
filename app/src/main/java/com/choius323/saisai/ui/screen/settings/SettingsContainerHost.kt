@@ -8,7 +8,8 @@ data class SettingsUiState(
     val error: String? = null,
     val isGPSPermissionGranted: Boolean = false,
     val isShowLogOutDialog: Boolean = false,
-    val isShowDeleteAccountDialog: Boolean = false
+    val isShowDeleteAccountDialog: Boolean = false,
+    val isShowPermissionDialog: Boolean = false,
 )
 
 sealed interface SettingsUiEvent {
@@ -20,7 +21,12 @@ sealed interface SettingsUiEvent {
     data object OnLogOutSuccess : SettingsUiEvent
     data object OnDeleteAccountSuccess : SettingsUiEvent
     data class OnAccountManageFailed(val message: String) : SettingsUiEvent
-    data class OnReLoginSuccess(val loginType: LoginType, val socialAccessToken: String) : SettingsUiEvent
+    data class OnReLoginSuccess(val loginType: LoginType, val socialAccessToken: String) :
+        SettingsUiEvent
+
+    data class SetPermissionGranted(val isGranted: Boolean) : SettingsUiEvent
+    data class SetShowPermissionDialog(val isShow: Boolean) : SettingsUiEvent
+    data object PermissionRequest : SettingsUiEvent
 }
 
 sealed interface SettingsSideEffect {
@@ -29,4 +35,5 @@ sealed interface SettingsSideEffect {
     data object GoLogin : SettingsSideEffect
     data class ReLoginOAuth(val loginType: LoginType) :
         SettingsSideEffect
+    data object PermissionRequest : SettingsSideEffect
 }

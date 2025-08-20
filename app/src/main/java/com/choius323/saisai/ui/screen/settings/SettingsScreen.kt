@@ -1,5 +1,8 @@
 package com.choius323.saisai.ui.screen.settings
 
+import android.content.Intent
+import android.net.Uri
+import android.provider.Settings
 import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -18,6 +21,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBackIos
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -29,6 +33,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
+import com.choius323.saisai.ui.component.HandlePermissionActions
+import com.choius323.saisai.ui.component.PermissionDialog
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiDialog
 import com.choius323.saisai.ui.component.SaiSwitch
@@ -38,11 +44,15 @@ import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.util.GoogleAccountUtil
 import com.choius323.saisai.util.KakaoAccountUtil
+import com.choius323.saisai.util.locationPermissions
+import com.google.accompanist.permissions.ExperimentalPermissionsApi
+import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+@OptIn(ExperimentalPermissionsApi::class)
 @Composable
 fun SettingsScreen(
     modifier: Modifier = Modifier,
@@ -64,6 +74,27 @@ fun SettingsScreen(
         }
     )
 
+    val permissionState = rememberMultiplePermissionsState(
+        locationPermissions
+    ) { resultMap ->
+        val allGranted = resultMap.all { it.value }
+        viewModel.onEvent(SettingsUiEvent.SetPermissionGranted(allGranted))
+    }
+    LaunchedEffect(permissionState.allPermissionsGranted) {
+        viewModel.onEvent(SettingsUiEvent.SetPermissionGranted(permissionState.allPermissionsGranted))
+    }
+    HandlePermissionActions(
+        permissionState,
+        isShowPermissionDialog = uiState.isShowPermissionDialog,
+        setShowPermissionDialog = { viewModel.onEvent(SettingsUiEvent.SetShowPermissionDialog(it)) },
+        onPermissionAllGranted = {
+            if (permissionState.allPermissionsGranted) {
+                viewModel.onEvent(SettingsUiEvent.SetPermissionGranted(true))
+            } else {
+                viewModel.onEvent(SettingsUiEvent.SetShowPermissionDialog(true))
+            }
+        })
+
     ProvideAppBar(navigationIcon = {
         Icon(
             Icons.AutoMirrored.Default.ArrowBackIos,
@@ -81,7 +112,7 @@ fun SettingsScreen(
             SettingsSideEffect.GoBack -> goBack()
             is SettingsSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
             SettingsSideEffect.GoLogin -> goLogin()
-            is SettingsSideEffect.ReLoginOAuth ->when (sideEffect.loginType) {
+            is SettingsSideEffect.ReLoginOAuth -> when (sideEffect.loginType) {
                 LoginType.KAKAO -> {
                     KakaoAccountUtil.kakaoLogin(context, { accessToken ->
                         viewModel.onEvent(
@@ -94,11 +125,14 @@ fun SettingsScreen(
                         viewModel.onEvent(SettingsUiEvent.OnAccountManageFailed(it.message.toString()))
                     })
                 }
+
                 LoginType.GOOGLE -> {
                     val signInIntent = googleSignInClient.signInIntent
                     googleSignInLauncher.launch(signInIntent)
                 }
             }
+
+            SettingsSideEffect.PermissionRequest -> permissionState.launchMultiplePermissionRequest()
         }
     }
     SettingsScreenContent(uiState, modifier, viewModel::onEvent)
@@ -131,6 +165,7 @@ private fun SettingsScreenContent(
     modifier: Modifier = Modifier,
     onEvent: (SettingsUiEvent) -> Unit,
 ) {
+    val context = LocalContext.current
     Column(
         modifier
             .padding(horizontal = 20.dp)
@@ -140,7 +175,16 @@ private fun SettingsScreenContent(
         Row(
             Modifier
                 .fillMaxWidth()
-                .clickable { onEvent(SettingsUiEvent.OnGPSPermissionGranted(!uiState.isGPSPermissionGranted)) },
+                .clickable {
+                    if (uiState.isGPSPermissionGranted) {
+                        val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS).apply {
+                            data = Uri.fromParts("package", context.packageName, null)
+                        }
+                        context.startActivity(intent)
+                    } else {
+                        onEvent(SettingsUiEvent.PermissionRequest)
+                    }
+                },
             verticalAlignment = Alignment.CenterVertically
         ) {
             MenuText("위치 정보 수집 권한")
@@ -187,5 +231,7 @@ private fun MenuText(text: String, modifier: Modifier = Modifier) {
 @Composable
 private fun SettingsScreenContentPreview() {
     SettingsScreenContent(
-        uiState = SettingsUiState(), modifier = Modifier, onEvent = {})
+        uiState = SettingsUiState(),
+        modifier = Modifier,
+        onEvent = {})
 }

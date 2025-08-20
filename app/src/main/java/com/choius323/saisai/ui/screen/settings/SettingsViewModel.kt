@@ -21,7 +21,11 @@ class SettingsViewModel(
             onClickDeleteAccountDialogButton(event.isConfirmed)
 
         is SettingsUiEvent.OnGPSPermissionGranted -> intent {
-            reduce { state.copy(isGPSPermissionGranted = event.isGranted) }
+            if (event.isGranted.not()) {
+                reduce { state.copy(isGPSPermissionGranted = event.isGranted) }
+            } else {
+                reduce { state.copy(isShowPermissionDialog = true) }
+            }
         }
 
         SettingsUiEvent.OnClickLogOut -> intent {
@@ -59,6 +63,18 @@ class SettingsViewModel(
             event.loginType,
             event.socialAccessToken
         )
+
+        is SettingsUiEvent.SetPermissionGranted -> intent {
+            reduce { state.copy(isGPSPermissionGranted = event.isGranted) }
+        }
+
+        is SettingsUiEvent.SetShowPermissionDialog -> intent {
+            reduce { state.copy(isShowPermissionDialog = event.isShow) }
+        }
+
+        is SettingsUiEvent.PermissionRequest -> intent {
+            postSideEffect(SettingsSideEffect.PermissionRequest)
+        }
     }
 
     private fun onClickLogOutDialogButton(isConfirm: Boolean) = intent {

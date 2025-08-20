@@ -4,7 +4,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.ui.model.LoginType
-import com.choius323.saisai.ui.screen.sign_up.SignUpSideEffect
 import com.choius323.saisai.usecase.LoginUseCase
 import com.choius323.saisai.usecase.ReissueTokenUseCase
 import kotlinx.coroutines.delay
@@ -23,7 +22,9 @@ class LoginViewModel(
     init {
         intent {
             viewModelScope.launch {
-                delay(2000L)
+                if (isShownSplash.not()) {
+                    delay(2000L)
+                }
                 reduce { state.copy(isDelayed = true) }
             }
             reduce { state.copy(isLoading = true) }
@@ -54,7 +55,7 @@ class LoginViewModel(
         loginUseCase(token, loginType).collectLatest { result ->
             result.onSuccess { isNewUser ->
                 reduce { state.copy(isLoading = false) }
-                if(isNewUser) {
+                if (isNewUser) {
                     postSideEffect(LoginSideEffect.GoSignUp(token, loginType))
                 } else {
                     postSideEffect(LoginSideEffect.GoHome)

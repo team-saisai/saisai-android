@@ -45,6 +45,8 @@ import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 
+var isShownSplash = false
+
 @Composable
 fun LoginScreen(
     modifier: Modifier = Modifier,
@@ -76,6 +78,7 @@ fun LoginScreen(
 
     LaunchedEffect(uiState.isDelayed, pendingNavigation) {
         if (uiState.isDelayed && pendingNavigation != null) {
+            isShownSplash = true
             pendingNavigation?.invoke()
             pendingNavigation = null
         }

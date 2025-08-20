@@ -17,6 +17,7 @@ import androidx.credentials.CustomCredential
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
 import androidx.credentials.exceptions.ClearCredentialException
+import androidx.credentials.exceptions.GetCredentialCancellationException
 import androidx.credentials.exceptions.GetCredentialException
 import com.choius323.saisai.BuildConfig
 import com.google.android.gms.auth.GoogleAuthUtil
@@ -59,6 +60,9 @@ object GoogleAccountUtil {
                 request = request, context = context,
             )
             handleSignInWithGoogleOption(result, onSignedIn, onError)
+        } catch (e: GetCredentialCancellationException) {
+            // 사용자가 로그인을 취소한 경우
+            Log.i(TAG, "User cancelled Google Sign-In.", e)
         } catch (e: GetCredentialException) {
             Log.e(TAG, "Error getting credential", e)
             onError(e)

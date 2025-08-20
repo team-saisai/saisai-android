@@ -135,8 +135,7 @@ fun List<PointDto>.toCheckPointList(gpxPointDtoList: List<GpxPointDto>): List<Ch
             null
         }
     }
-    println(newCheckPointList)
-    return newCheckPointList
+    return newCheckPointList.sortedBy(CheckPoint::gpxPointIdx)
 }
 
 

@@ -245,7 +245,7 @@ private fun CourseListItemHorizontalPreview() {
 
 @Preview(showBackground = true)
 @Composable
-fun CourseListItemPreview() {
+private fun CourseListItemPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val courseListItem = CourseListItem.dummyItem4
 

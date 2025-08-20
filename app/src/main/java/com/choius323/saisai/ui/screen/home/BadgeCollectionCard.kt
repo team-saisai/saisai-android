@@ -85,7 +85,7 @@ private fun BadgeGridItem(
 
 @Preview(showBackground = true)
 @Composable
-fun BadgeCollectionCardPreview() {
+private fun BadgeCollectionCardPreview() {
     val sampleBadges = listOf(
         UserBadge.sample1, UserBadge.sample2, UserBadge.sample3,
         UserBadge.sample4

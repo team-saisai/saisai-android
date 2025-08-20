@@ -119,7 +119,7 @@ private fun BackDialogButtons(
 
 @Preview(device = "spec:width=1080px,height=1080px,dpi=440")
 @Composable
-fun RecordBackDialogPreview() {
+private fun RecordBackDialogPreview() {
     RecordBackDialog(
         isShow = true,
         onClickButton = {}

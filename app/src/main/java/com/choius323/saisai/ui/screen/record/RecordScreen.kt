@@ -226,7 +226,7 @@ fun RecordScreenContent(
 @OptIn(ExperimentalPermissionsApi::class)
 @Preview(showBackground = true)
 @Composable
-fun RecordScreenContentPreview() {
+private fun RecordScreenContentPreview() {
     SaiTheme {
         Surface {
             RecordScreenContent(

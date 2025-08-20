@@ -193,7 +193,7 @@ fun ParticipantRewardInfo(
 
 @Preview(showBackground = true, name = "진행 중인 챌린지")
 @Composable
-fun ThemedChallengeCardOngoingPreview() {
+private fun ThemedChallengeCardOngoingPreview() {
     val sampleChallenge = CourseInfo.dummyItem
     AndroidThreeTen.init(LocalContext.current)
     SaiTheme {
@@ -205,7 +205,7 @@ fun ThemedChallengeCardOngoingPreview() {
 
 @Preview(showBackground = true, name = "종료된 챌린지")
 @Composable
-fun ThemedChallengeCardFinishedPreview() {
+private fun ThemedChallengeCardFinishedPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleChallenge = CourseInfo.dummyItem.copy(endDate = LocalDate.now().minusDays(1))
     SaiTheme {

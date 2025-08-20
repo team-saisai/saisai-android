@@ -148,7 +148,7 @@ fun NotificationItem(notification: Notification, modifier: Modifier = Modifier) 
 
 @Preview(showBackground = true)
 @Composable
-fun NotificationScreenContentPreview() {
+private fun NotificationScreenContentPreview() {
     val sampleNotifications = listOf(
         Notification.sample1, Notification.sample2, Notification.sample3,
         Notification.sample4, Notification.sample5, Notification.sample6

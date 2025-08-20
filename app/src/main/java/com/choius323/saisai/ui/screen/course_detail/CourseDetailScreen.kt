@@ -119,9 +119,9 @@ fun CourseDetailScreenContent(
     }
 }
 
-@Preview(showBackground = true)
+@Preview(heightDp = 400)
 @Composable
-fun CourseDetailScreenContentPreview() {
+private fun CourseDetailScreenContentPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleDetails = CourseDetail.sample
 

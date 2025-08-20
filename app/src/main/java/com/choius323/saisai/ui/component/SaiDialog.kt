@@ -137,7 +137,7 @@ private fun DialogButtons(
 
 @Preview(heightDp = 400)
 @Composable
-fun SaiDialogPreview() {
+private fun SaiDialogPreview() {
     SaiDialog(
         isShow = true,
         content = "정말로 로그아웃 하시겠어요?",
@@ -149,7 +149,7 @@ fun SaiDialogPreview() {
 
 @Preview(heightDp = 400)
 @Composable
-fun SaiDialogPreviewWithSubContent() {
+private fun SaiDialogPreviewWithSubContent() {
     SaiDialog(
         isShow = true,
         content = "정말로 로그아웃 하시겠어요?",

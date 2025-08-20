@@ -163,7 +163,7 @@ fun RecentCourseCard(
 
 @Preview(showBackground = true, backgroundColor = 0xFF202326)
 @Composable
-fun RecentCourseCardCompletedPreview() {
+private fun RecentCourseCardCompletedPreview() {
     val sampleCourse = RecentCourse(
         courseId = 1L,
         courseName = "샘플 코스",
@@ -184,7 +184,7 @@ fun RecentCourseCardCompletedPreview() {
 
 @Preview(showBackground = true, backgroundColor = 0xFF202326)
 @Composable
-fun RecentCourseCardInProgressPreview() {
+private fun RecentCourseCardInProgressPreview() {
     val sampleCourse = RecentCourse(
         courseId = 2L,
         courseName = "진행중 코스",

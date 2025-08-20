@@ -47,7 +47,6 @@ import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
 import org.threeten.bp.LocalDate
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HomeScreen(
     modifier: Modifier = Modifier,
@@ -179,7 +178,7 @@ fun HomeScreenContent(
 
 @Preview(showBackground = true, name = "HomeScreenContent Preview")
 @Composable
-fun HomeScreenContentPreview() {
+private fun HomeScreenContentPreview() {
     AndroidThreeTen.init(LocalContext.current)
     val dummyCourses = listOf(
         CourseListItem.dummyItem1,
@@ -214,10 +213,7 @@ fun HomeScreenContentPreview() {
 
 @Preview(showBackground = true, name = "HomeScreenContent Preview (No Contents Challenge)")
 @Composable
-fun HomeScreenContentPreviewNoContents() {
-    emptyList<CourseListItem>()
-    emptyList<BadgeInfo>()
-
+private fun HomeScreenContentPreviewNoContents() {
     SaiTheme {
         Scaffold { innerPadding ->
             HomeScreenContent(

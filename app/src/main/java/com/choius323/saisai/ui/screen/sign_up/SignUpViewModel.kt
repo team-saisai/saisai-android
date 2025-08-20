@@ -56,7 +56,7 @@ class SignUpViewModel(
         if (state.isAllChecked) {
             reduce { state.copy(isCheckedAge = false, isCheckedTermOfService = false) }
         } else {
-            reduce { state.copy(isCheckedAge = false, isCheckedTermOfService = false) }
+            reduce { state.copy(isCheckedAge = true, isCheckedTermOfService = true) }
         }
     }
 

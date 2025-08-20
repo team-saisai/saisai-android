@@ -10,10 +10,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -96,19 +98,31 @@ private fun SignUpScreenContent(
 ) {
     Column(
         modifier
-            .padding(horizontal = 20.dp, vertical = 20.dp)
-            .verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)
+            .fillMaxSize()
+            .padding(horizontal = 20.dp, vertical = 16.dp)
+            .verticalScroll(rememberScrollState()),
+        verticalArrangement = Arrangement.Bottom,
     ) {
-        Row(Modifier.padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .clickable { onEvent(SignUpUiEvent.OnClickAllCheckBox) }
+                .padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
                 if (uiState.isAllChecked) Icons.Default.CheckCircle else Icons.Default.Check,
                 "체크",
-                Modifier.clickable { onEvent(SignUpUiEvent.OnClickAllCheckBox) }
+                Modifier
+                    .size(22.dp)
+                    .clip(CircleShape),
+                tint = Color(0xFF6556B3),
             )
             Spacer(Modifier.width(6.dp))
             SaiText("서비스 약관 전체 동의")
         }
+        Spacer(Modifier.height(6.dp))
         HorizontalDivider(color = Color(0xFF34383C))
+        Spacer(Modifier.height(6.dp))
         Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
             CheckItem(
                 uiState.isCheckedTermOfService,
@@ -124,7 +138,7 @@ private fun SignUpScreenContent(
                 onCheckedChange = { onEvent(SignUpUiEvent.OnClickAgeCheckBox) }
             )
         }
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(37.dp))
         SaiText(
             "회원가입",
             Modifier
@@ -182,18 +196,26 @@ private fun CheckItem(
     onCheckedChange: () -> Unit,
 ) {
     Row(
-        modifier.padding(6.dp),
+        modifier,
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Icon(
-            if (isChecked) Icons.Default.CheckCircle else Icons.Default.Check,
-            "체크",
-            Modifier.clickable(onClick = onCheckedChange)
-        )
-        SaiText(content, fontSize = 14.sp, color = Color(0xFFD3D5D9))
-        Spacer(Modifier.weight(1f))
+        Row(Modifier
+            .weight(1f)
+            .clickable(onClick = onCheckedChange)
+            .padding(vertical = 6.dp)
+        ) {
+            Icon(
+                if (isChecked) Icons.Default.CheckCircle else Icons.Default.Check,
+                "체크",
+                Modifier.size(22.dp),
+                tint = Color(0xFF6556B3),
+            )
+            Spacer(Modifier.width(6.dp))
+            SaiText(content, fontSize = 14.sp, color = Color(0xFFD3D5D9))
+        }
         if (onClickDetail != null) {
+            Spacer(Modifier.width(6.dp))
             SaiText(
                 "자세히",
                 Modifier.clickable { onClickDetail() },

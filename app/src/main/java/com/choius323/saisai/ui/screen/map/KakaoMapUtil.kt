@@ -33,7 +33,7 @@ fun KakaoMap?.drawRoute(route: List<LatLng>, color: Int = SaiColor.Lime.toArgb()
     val segment = RouteLineSegment.from(route)
         .setStyles(style)
     val routeLine = layer.addRouteLine(RouteLineOptions.from(segment))
-    routeLine.zOrder = 3
+    routeLine.zOrder = 2
 }
 
 fun KakaoMap?.drawRideRoute(route: List<LatLng>, startIndex: Int, endIndex: Int) {

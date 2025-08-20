@@ -1,31 +1,21 @@
 package com.choius323.saisai.ui.screen.record
 
 import android.util.Log
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
 import com.choius323.saisai.ui.screen.map.ObserveLocation
 import com.choius323.saisai.ui.screen.map.createDirectionLabel
+import com.choius323.saisai.ui.screen.map.drawRideRoute
 import com.choius323.saisai.ui.screen.map.drawRoute
 import com.choius323.saisai.ui.screen.map.initCircles
 import com.choius323.saisai.ui.screen.map.moveCamera
@@ -96,9 +86,16 @@ private fun RecordMapSetting(
         }
     }
     LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState) {
-        if (uiState.courseDetail != null && uiState.rideState == RideState.RECORDING) {
-            val list = uiState.courseDetail.checkPointList.map { LatLng.from(it.lat, it.lng) }
-            kakaoMap.setCirclesStyle(list, uiState.nowCheckPointIndex)
+        val courseDetail = uiState.courseDetail
+        val nowCheckPointIdx = uiState.nowCheckPointIndex
+        if (courseDetail != null && uiState.rideState == RideState.RECORDING && nowCheckPointIdx >= 0) {
+            val checkPointList = courseDetail.checkPointList.map { LatLng.from(it.lat, it.lng) }
+            kakaoMap.setCirclesStyle(checkPointList, nowCheckPointIdx)
+            kakaoMap.drawRideRoute(
+                uiState.route,
+                courseDetail.checkPointList.getOrNull(nowCheckPointIdx - 1)?.gpxPointIdx ?: 0,
+                courseDetail.checkPointList[nowCheckPointIdx].gpxPointIdx
+            )
         }
     }
     ObserveLocation(

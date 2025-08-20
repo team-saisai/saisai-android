@@ -27,7 +27,6 @@ data class RecordUiState(
         get() = courseDetail?.checkPointList?.getOrNull(nowCheckPointIndex)?.gpxPointIdx?.let { idx ->
             courseDetail.gpxPointList[idx].totalDistance
         } ?: 0.0
-
     val totalSeconds: Long
         get() = totalTime / 1000
 }

@@ -12,6 +12,7 @@ import com.choius323.saisai.data.account.model.UserProfileDto
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
 import com.choius323.saisai.data.course.remote.saiFetch
 import com.choius323.saisai.di.SaiClientProvider
+import com.choius323.saisai.util.KakaoAccountUtil
 import com.google.android.gms.auth.GoogleAuthUtil
 import io.ktor.client.HttpClient
 import io.ktor.client.request.delete
@@ -107,8 +108,10 @@ class AccountRemoteDataSourceImpl(
         saiFetch { saiClientProvider.client.get("my/rewards") }
 
     override suspend fun logout(): Flow<Result<Unit>> =
-        saiFetch {
+        saiFetch<Unit> {
             saiClientProvider.client.post("auth/logout")
+        }.onEach {
+            KakaoAccountUtil.logout({},{})
         }
 
     override suspend fun deleteAccount(socialAccessToken: String): Flow<Result<Unit>> =

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
@@ -88,7 +89,8 @@ private fun BottomNavigationBarContent(
                         modifier = Modifier
                             .weight(1f)
                             .clickable { navigate(screen) }
-                            .padding(top = 10.dp, bottom = 32.dp),
+                            .padding(top = 10.dp, bottom = 16.dp)
+                            .navigationBarsPadding(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

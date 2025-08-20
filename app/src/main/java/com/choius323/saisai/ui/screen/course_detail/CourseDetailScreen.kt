@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
@@ -110,7 +111,8 @@ fun CourseDetailScreenContent(
                 modifier = Modifier
                     .align(Alignment.BottomCenter)
                     .width(354.dp)
-                    .padding(bottom = 32.dp),
+                    .padding(bottom = 16.dp)
+                    .navigationBarsPadding(),
                 onChallengeClick = { onEvent(CourseDetailUiEvent.CourseStartClicked) }
             )
         }

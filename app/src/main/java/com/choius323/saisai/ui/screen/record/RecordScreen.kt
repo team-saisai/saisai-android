@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -202,7 +203,8 @@ fun RecordScreenContent(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .width(354.dp)
-                .padding(bottom = 32.dp),
+                .padding(bottom = 16.dp)
+                .navigationBarsPadding(),
             startRecording = {
                 getCurrentLocation(
                     context = context,

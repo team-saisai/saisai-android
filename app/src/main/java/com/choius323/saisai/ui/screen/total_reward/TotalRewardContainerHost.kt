@@ -7,14 +7,16 @@ data class TotalRewardUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val totalPoints: Int = 0,
-    val rewardInfoList: List<RewardInfo> = emptyList()
+    val rewardInfoList: List<RewardInfo> = emptyList(),
 )
 
 sealed interface TotalRewardUiEvent {
     data object OnClickBack : TotalRewardUiEvent
+    data object OnClickEmpty : TotalRewardUiEvent
 }
 
 sealed interface TotalRewardSideEffect {
     data object GoBack : TotalRewardSideEffect
     data class ShowToast(val message: String) : TotalRewardSideEffect
+    data object GoToCourseList : TotalRewardSideEffect
 }

@@ -24,10 +24,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.EmptyCourseList
 import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.theme.SaiColor
+import com.choius323.saisai.ui.theme.SaiTheme
 
 @Composable
 fun RideHistoryListSection(
@@ -42,53 +44,50 @@ fun RideHistoryListSection(
     loadMore: () -> Unit,
     onClickEmptyButton: () -> Unit,
 ) {
-    LazyColumn(
-        modifier = modifier
-            .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 10.dp)
-    ) {
-        if (courseList.isEmpty()) {
-            item {
-                EmptyCourseList(
-                    content = "주행한 코스가 없습니다.",
-                    onClick = onClickEmptyButton,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
-        itemsIndexed(
-            items = courseList,
-            key = { _, item -> item.rideId }
-        ) { index, item ->
-            if (index !in deletedIndexList) {
-                RideHistoryListItem(
-                    item = item,
-                    isEditMode = isEditMode,
-                    isSelected = index in selectedIndexList,
-                    onItemClick = {
-                        if (isEditMode) {
-                            onCourseSelect(index)
-                        } else {
-                            onCourseClick(index)
-                        }
-                    },
-                )
-                if (index != courseList.lastIndex) {
-                    Spacer(Modifier.height(18.dp))
+    if (courseList.isEmpty()) {
+        EmptyCourseList(
+            content = "주행한 코스가 없습니다.",
+            onClick = onClickEmptyButton,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        LazyColumn(
+            modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 10.dp)
+        ) {
+            itemsIndexed(
+                items = courseList, key = { _, item -> item.rideId }
+            ) { index, item ->
+                if (index !in deletedIndexList) {
+                    RideHistoryListItem(
+                        item = item,
+                        isEditMode = isEditMode,
+                        isSelected = index in selectedIndexList,
+                        onItemClick = {
+                            if (isEditMode) {
+                                onCourseSelect(index)
+                            } else {
+                                onCourseClick(index)
+                            }
+                        },
+                    )
+                    if (index != courseList.lastIndex) {
+                        Spacer(Modifier.height(18.dp))
+                    }
+                }
+                if (index == courseList.lastIndex) {
+                    loadMore()
                 }
             }
-            if (index == courseList.lastIndex) {
-                loadMore()
-            }
-        }
-        if (isLoadingMore) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+
+            if (isLoadingMore) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
                 }
             }
         }
@@ -129,5 +128,23 @@ private fun RideHistoryListItem(
             course = item,
             modifier = Modifier.weight(1f),
         )
+    }
+}
+
+@Preview
+@Composable
+private fun RideHistoryListSectionPreviewEmpty() {
+    SaiTheme {
+        RideHistoryListSection(
+            emptyList(),
+            emptyList(),
+            emptyList(),
+            isEditMode = true,
+            isLoadingMore = false,
+            modifier = Modifier,
+            onCourseClick = {},
+            onCourseSelect = {},
+            loadMore = {},
+            {})
     }
 }

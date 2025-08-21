@@ -50,56 +50,56 @@ fun BookmarkCoursesListSection(
     onClickEmptyButton: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    LazyColumn(
-        modifier = modifier
-            .padding(horizontal = 18.dp)
-            .fillMaxSize(),
-        contentPadding = PaddingValues(vertical = 10.dp)
-    ) {
-        if (courseList.isEmpty()) {
-            item {
-                EmptyCourseList(
-                    content = "저장한 코스가 없습니다.\n" +
-                            "코스를 탐색해 나의 취향을 발견해보세요.",
-                    onClick = onClickEmptyButton,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
-        itemsIndexed(
-            items = courseList,
-            key = { _, item -> item.courseId }
-        ) { index, item ->
-            if (index !in deletedIndexList) {
-                BookmarkCourseListItem(
-                    item = item,
-                    isEditMode = isEditMode,
-                    isSelected = index in selectedIndexList,
-                    onItemClick = {
-                        if (isEditMode) {
-                            onCourseSelect(index)
-                        } else {
-                            onCourseClick(index)
-                        }
-                    },
-                    onClickBookmark = { onClickBookmark(index) }
-                )
-                if (index != courseList.lastIndex) {
-                    Spacer(Modifier.height(18.dp))
+    if (courseList.isEmpty()) {
+        EmptyCourseList(
+            content = "저장한 코스가 없습니다.\n" +
+                    "코스를 탐색해 나의 취향을 발견해보세요.",
+            onClick = onClickEmptyButton,
+            modifier = Modifier.fillMaxSize()
+        )
+    } else {
+        LazyColumn(
+            modifier = modifier
+                .padding(horizontal = 18.dp)
+                .fillMaxSize(),
+            contentPadding = PaddingValues(vertical = 10.dp)
+        ) {
+
+            itemsIndexed(
+                items = courseList,
+                key = { _, item -> item.courseId }
+            ) { index, item ->
+                if (index !in deletedIndexList) {
+                    BookmarkCourseListItem(
+                        item = item,
+                        isEditMode = isEditMode,
+                        isSelected = index in selectedIndexList,
+                        onItemClick = {
+                            if (isEditMode) {
+                                onCourseSelect(index)
+                            } else {
+                                onCourseClick(index)
+                            }
+                        },
+                        onClickBookmark = { onClickBookmark(index) }
+                    )
+                    if (index != courseList.lastIndex) {
+                        Spacer(Modifier.height(18.dp))
+                    }
+                }
+                if (index == courseList.lastIndex) {
+                    loadMore()
                 }
             }
-            if (index == courseList.lastIndex) {
-                loadMore()
-            }
-        }
-        if (isLoadingMore) {
-            item {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp)
-                ) {
-                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+            if (isLoadingMore) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp)
+                    ) {
+                        CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                    }
                 }
             }
         }

@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -38,7 +37,9 @@ fun RewardListSection(
         if (rewardInfoList.isEmpty()) {
             EmptyCourseList(
                 content = "획득한 리워드가 없습니다.",
-                modifier = Modifier.fillMaxSize(),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 20.dp),
                 onClick = onClickEmptyButton
             )
         }
@@ -87,7 +88,7 @@ private fun RewardInfoItem(rewardInfo: RewardInfo) {
     }
 }
 
-@Preview(heightDp = 300)
+@Preview(heightDp = 500)
 @Composable
 private fun RewardListSectionPreviewEmpty() {
     SaiTheme {

@@ -97,7 +97,9 @@ private fun RideHistoryScreenContent(
             isEditMode = uiState.editMode,
             onCourseClick = { index -> onEvent(RideHistoryUiEvent.OnClickCourse(index)) },
             onCourseSelect = { index -> onEvent(RideHistoryUiEvent.OnClickDeleteItem(index)) },
-            modifier = Modifier.weight(1f).padding(horizontal = 18.dp),
+            modifier = Modifier
+                .weight(1f)
+                .padding(horizontal = 18.dp),
             loadMore = { onEvent(RideHistoryUiEvent.LoadMore) },
             isLoadingMore = uiState.isLoadingMore,
             onClickEmptyButton = { onEvent(RideHistoryUiEvent.OnClickEmptyButton) },

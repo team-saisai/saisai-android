@@ -41,6 +41,7 @@ import java.util.Locale
 fun TotalRewardScreen(
     modifier: Modifier = Modifier,
     viewModel: TotalRewardViewModel = koinViewModel(),
+    goToCourseList: () -> Unit,
     goBack: () -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
@@ -49,6 +50,7 @@ fun TotalRewardScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is TotalRewardSideEffect.GoBack -> goBack()
+            TotalRewardSideEffect.GoToCourseList -> goToCourseList()
             is TotalRewardSideEffect.ShowToast -> {
                 context.SaiToast(sideEffect.message)
             }
@@ -97,7 +99,12 @@ private fun TotalRewardScreenContent(
     ) {
         TotalRewardHeader(totalPoints = uiState.totalPoints)
         Spacer(modifier = Modifier.height(32.dp))
-        RewardListSection(rewardInfoList = uiState.rewardInfoList) {}
+        RewardListSection(
+            rewardInfoList = uiState.rewardInfoList,
+            modifier = Modifier.fillMaxSize()
+        ) {
+            onEvent(TotalRewardUiEvent.OnClickEmpty)
+        }
     }
 }
 

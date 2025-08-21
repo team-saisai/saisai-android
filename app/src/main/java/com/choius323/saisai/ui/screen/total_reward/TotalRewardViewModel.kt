@@ -2,14 +2,14 @@ package com.choius323.saisai.ui.screen.total_reward
 
 import androidx.lifecycle.ViewModel
 import com.choius323.saisai.repository.AccountRepository
-import com.choius323.saisai.ui.model.TotalReward // com.choius323.saisai.ui.model.TotalReward 사용
+import com.choius323.saisai.ui.model.TotalReward
 import kotlinx.coroutines.flow.collectLatest
 import org.orbitmvi.orbit.Container
 import org.orbitmvi.orbit.ContainerHost
 import org.orbitmvi.orbit.viewmodel.container
 
 class TotalRewardViewModel(
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
 ) : ViewModel(), ContainerHost<TotalRewardUiState, TotalRewardSideEffect> {
 
     override val container: Container<TotalRewardUiState, TotalRewardSideEffect> =
@@ -21,9 +21,8 @@ class TotalRewardViewModel(
 
     fun onEvent(event: TotalRewardUiEvent) = intent {
         when (event) {
-            TotalRewardUiEvent.OnClickBack -> {
-                postSideEffect(TotalRewardSideEffect.GoBack)
-            }
+            TotalRewardUiEvent.OnClickBack -> postSideEffect(TotalRewardSideEffect.GoBack)
+            TotalRewardUiEvent.OnClickEmpty -> postSideEffect(TotalRewardSideEffect.GoToCourseList)
         }
     }
 

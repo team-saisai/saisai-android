@@ -215,6 +215,13 @@ fun MainNavController(
                     .statusBarsPadding()
                     .padding(top = TopAppBarHeight)
                     .fillMaxSize(),
+                goToCourseList = {
+                    navController.navigate(MainNavItem.BottomNavItem.Course) {
+                        popUpTo(MainNavItem.BottomNavItem.MyPage) {
+                            inclusive = true
+                        }
+                    }
+                },
                 goBack = { navController.upPress() }
             )
         }

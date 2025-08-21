@@ -13,7 +13,6 @@ class NicknameEditViewModel(
     private val accountRepository: AccountRepository,
     savedStateHandle: SavedStateHandle,
 ) : ViewModel(), ContainerHost<NicknameEditUiState, NicknameEditSideEffect> {
-
     override val container =
         container<NicknameEditUiState, NicknameEditSideEffect>(NicknameEditUiState())
 
@@ -27,7 +26,6 @@ class NicknameEditViewModel(
     fun onEvent(event: NicknameEditUiEvent) {
         when (event) {
             is NicknameEditUiEvent.OnNicknameChanged -> onNicknameChanged(event.nickname)
-            NicknameEditUiEvent.OnClickDuplicateCheck -> onClickDuplicateCheck()
             NicknameEditUiEvent.OnClickDone -> onClickDone()
             NicknameEditUiEvent.OnClickBack -> intent {
                 postSideEffect(NicknameEditSideEffect.NavigateBack)
@@ -36,7 +34,7 @@ class NicknameEditViewModel(
     }
 
     private fun onClickDone() = intent {
-        if (state.isDuplicateCheckDone.not()) return@intent
+        if (state.isValid.not()) return@intent
         reduce { state.copy(isLoading = true) }
 
         accountRepository.changeNickname(state.nickname).collectLatest { result ->
@@ -50,62 +48,21 @@ class NicknameEditViewModel(
         }
     }
 
-    private fun onClickDuplicateCheck() {
-        intent {
-            if (state.isDuplicateCheckDone || state.isNicknameValid.not()) return@intent
-            reduce { state.copy(isLoading = true) }
-
-            accountRepository.duplicateCheckNickname(state.nickname).collectLatest { result ->
-                result.onSuccess {
-                    reduce {
-                        state.copy(
-                            isDuplicateCheckDone = true,
-                            supportingTextType = SupportingTextType.CHECK_SUCCESS,
-                            isLoading = false,
-                        )
-                    }
-                }.onFailure { throwable ->
-                    if (throwable.message?.contains("USER_ER_03") == true) {
-                        reduce {
-                            state.copy(
-                                isDuplicateCheckDone = false,
-                                isNicknameValid = false,
-                                isLoading = false,
-                                supportingTextType = SupportingTextType.DUPLICATED,
-                            )
-                        }
-                    } else {
-                        reduce {
-                            state.copy(
-                                isDuplicateCheckDone = false,
-                                isNicknameValid = false,
-                                isLoading = false,
-                                supportingTextType = SupportingTextType.NONE,
-                            )
-                        }
-                        postSideEffect(
-                            NicknameEditSideEffect.ShowToast(
-                                throwable.message ?: "닉네임을 변경하지 못했습니다."
-                            )
-                        )
-                    }
-                }
-            }
-        }
-    }
-
     private fun onNicknameChanged(inputNickname: String) = intent {
         val newNickname =
-            inputNickname.take(state.maxNicknameLength).filterNot { it.isWhitespace() }
-        val isValid =
-            newNickname.length in 1..state.maxNicknameLength && newNickname != state.currentNickname
+            inputNickname.filterNot { it.isWhitespace() }.take(NICKNAME_MAX_LENGTH)
         reduce {
             state.copy(
                 nickname = newNickname,
-                isNicknameValid = isValid,
-                isDuplicateCheckDone = false,
-                supportingTextType = SupportingTextType.NONE,
+                isLengthValid = newNickname.length in 1..NICKNAME_MAX_LENGTH,
+                isPatternValid = NICKNAME_PATTERN.matches(newNickname),
             )
         }
     }
+
+    companion object {
+        private val NICKNAME_PATTERN = "^[가-힣a-zA-Z0-9]+$".toRegex()
+        private const val NICKNAME_MAX_LENGTH = 7
+    }
 }
+

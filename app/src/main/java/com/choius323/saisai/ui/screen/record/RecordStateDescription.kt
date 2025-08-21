@@ -5,11 +5,9 @@ import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,14 +22,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.derivedStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -43,7 +37,6 @@ import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
-import java.text.DecimalFormat
 
 @Composable
 fun RecordStateDescription(
@@ -90,36 +83,7 @@ fun RecordStateDescription(
             RecordingToggleButton(
                 uiState.rideState,
                 startRecording = startRecording,
-                toggleRecording = toggleRecording
-            )
-        }
-    }
-}
-
-@Composable
-private fun DescriptionNormalContent(
-    distanceString: AnnotatedString,
-    rideDistance: Double,
-    totalDistance: Double,
-    modifier: Modifier = Modifier,
-) {
-    Column(
-        modifier = modifier
-    ) {
-        SaiText(distanceString, fontSize = 22.sp)
-        Spacer(Modifier.height(8.dp))
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .height(4.dp)
-                .clip(RoundedCornerShape(12.dp))
-                .background(SaiColor.Gray70)
-        ) {
-            Box(
-                Modifier
-                    .fillMaxWidth((rideDistance / totalDistance).toFloat())
-                    .fillMaxHeight()
-                    .background(SaiColor.Lime)
+                toggleRecording = toggleRecording,
             )
         }
     }
@@ -272,7 +236,7 @@ private fun RecordStateDescriptionPreview() {
                 uiState = RecordUiState(
                     courseDetail = CourseDetail.sample,
                     rideState = RideState.RECORDING,
-                    nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
+                    nowCheckPointIndex = CourseDetail.sample.checkPointList.lastIndex / 2,
                 ), Modifier, {}, {}, {}
             )
         }
@@ -288,7 +252,7 @@ private fun RecordStateDescriptionStopPreview() {
                 uiState = RecordUiState(
                     courseDetail = CourseDetail.sample,
                     rideState = RideState.PAUSED,
-                    nowCheckPointIndex = CourseDetail.sample.checkPointList.size / 2,
+                    nowCheckPointIndex = CourseDetail.sample.checkPointList.lastIndex / 2,
                 ), Modifier, {}, {}, {}
             )
         }

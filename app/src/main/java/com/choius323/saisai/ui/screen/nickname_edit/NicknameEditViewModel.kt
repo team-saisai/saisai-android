@@ -19,7 +19,8 @@ class NicknameEditViewModel(
     init {
         val nickname = savedStateHandle.toRoute<MainNavItem.NicknameEdit>().nickname
         intent {
-            reduce { state.copy(currentNickname = nickname, nickname = nickname) }
+            reduce { state.copy(currentNickname = nickname) }
+            onNicknameChanged(nickname)
         }
     }
 

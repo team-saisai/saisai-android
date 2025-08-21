@@ -7,9 +7,7 @@ import com.choius323.saisai.R
 
 @Suppress("UNCHECKED_CAST")
 fun getPermissionMap(permissions: List<String>) =
-    permissions.associate {
-        it to permissionsMap[it]
-    }.filterValues {
+    permissions.associateWith { permissionsMap[it] }.filterValues {
         it != null
     } as Map<String, PermissionDescriptionProvider>
 
@@ -20,13 +18,12 @@ val permissionsMap = mapOf(
 //    android.Manifest.permission.POST_NOTIFICATIONS to PostNotificationPermissionDescriptionProvider,
 )
 
-val locationPermissions =
-    listOf(
-        android.Manifest.permission.ACCESS_FINE_LOCATION,
-        android.Manifest.permission.ACCESS_COARSE_LOCATION,
-    )
+val locationPermissions = listOf(
+    android.Manifest.permission.ACCESS_FINE_LOCATION,
+    android.Manifest.permission.ACCESS_COARSE_LOCATION,
+)
 
-//val postNotificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+// val postNotificationPermissions = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
 //    listOf(android.Manifest.permission.POST_NOTIFICATIONS)
 //} else {
 //    emptyList()

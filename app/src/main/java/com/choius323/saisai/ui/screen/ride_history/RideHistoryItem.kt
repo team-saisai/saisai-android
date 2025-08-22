@@ -14,6 +14,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.CornerSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -32,6 +35,8 @@ import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.theme.SaiColor
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @Composable
 fun RideHistoryItem(
@@ -58,8 +63,8 @@ fun RideHistoryItem(
             distance = course.distance,
             level = course.level,
             rideDate = course.lastRideDate,
-            rideDistance = 3.2,
-            rideProgress = 15,
+            estimatedTime = course.estimatedTime,
+            rideProgress = course.progressRate,
             modifier = Modifier
                 .weight(1f)
                 .padding(top = 12.dp, bottom = 18.dp, end = 10.dp),
@@ -73,7 +78,7 @@ private fun CourseInformationSection(
     distance: Double,
     level: Level,
     rideDate: LocalDate,
-    rideDistance: Double,
+    estimatedTime: Double,
     rideProgress: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -94,17 +99,28 @@ private fun CourseInformationSection(
         )
 
         // 현재 도전 인원 정보
-        RideInfo(rideDate, rideDistance, rideProgress)
+        RideInfo(rideDate, estimatedTime, rideProgress)
     }
 }
 
 @Composable
 private fun RideInfo(
     rideDate: LocalDate,
-    rideDistance: Double,
+    estimatedTime: Double,
     rideProgress: Int,
     modifier: Modifier = Modifier,
 ) {
+    val timeFormatted by remember(estimatedTime) {
+        derivedStateOf {
+            estimatedTime.toLong().let {
+                val hours = TimeUnit.SECONDS.toHours(it)
+                val minutes = TimeUnit.SECONDS.toMinutes(it) % 60
+                val seconds = it % 60
+
+                String.Companion.format(Locale.KOREA, "%02d:%02d:%02d", hours, minutes, seconds)
+            }
+        }
+    }
     val annotatedString = buildAnnotatedString {
         withStyle(
             SpanStyle(
@@ -113,7 +129,7 @@ private fun RideInfo(
                 fontSize = 13.sp
             )
         ) {
-            append("${rideDistance}km")
+            append(timeFormatted)
             append(" ∙ 완주율")
             withStyle(SpanStyle(fontWeight = FontWeight.W500, color = SaiColor.Lime)) {
                 append("${rideProgress}%")

@@ -24,6 +24,7 @@ class RecordViewModel(
     override val container: Container<RecordUiState, RecordSideEffect> = container(RecordUiState())
     val courseId = savedStateHandle.toRoute<MainNavItem.Record>().courseId
     private var timerJob: Job? = null
+    private var lastSyncIndex = -1
 
     init {
         intent {
@@ -94,8 +95,10 @@ class RecordViewModel(
             isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
             state.rideState == RideState.RECORDING -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
             state.rideId != 0L -> resumeRecording()
-            calculateDistance(nowLatLng, state.route.first().toLatLng()) > DISTANCE_STANDARD ->
+            calculateDistance(nowLatLng, state.route.first().toLatLng()) > DISTANCE_STANDARD -> {
+                reduce { state.copy(nowLatLng = nowLatLng) }
                 postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다. 시작지점 근처로 이동해주세요."))
+            }
 
             state.route.isNotEmpty() -> startRecording()
             else -> postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다."))
@@ -126,26 +129,32 @@ class RecordViewModel(
         val courseDetail = state.courseDetail
         if (state.permissionGranted.not() || courseDetail == null) return@intent
         reduce { state.copy(nowLatLng = event.latLng) }
-        if (state.rideState != RideState.RECORDING && state.nowCheckPointIndex == courseDetail.checkPointList.lastIndex) return@intent
+        if (state.rideState != RideState.RECORDING) return@intent
         val nextCheckPointIndex = state.nowCheckPointIndex + 1
         val nextLatLng =
-            if (state.nowCheckPointIndex == courseDetail.checkPointList.lastIndex) {
+            if (nextCheckPointIndex >= courseDetail.checkPointList.size) {
                 courseDetail.gpxPointList.last()
             } else {
                 courseDetail.gpxPointList[courseDetail.checkPointList[nextCheckPointIndex].gpxPointIdx]
             }.toLatLng()
         val distance = calculateDistance(event.latLng, nextLatLng)
         if (distance < DISTANCE_STANDARD) {
-            if (nextCheckPointIndex == courseDetail.checkPointList.size) {
-                completeRecording()
+            reduce { state.copy(nowCheckPointIndex = nextCheckPointIndex) }
+        }
+        syncRecordingState(courseDetail.checkPointList.size)
+    }
+
+    private fun syncRecordingState(checkPointSize: Int) = intent {
+        if (state.nowCheckPointIndex > lastSyncIndex) {
+            if (state.nowCheckPointIndex >= checkPointSize) {
+                completeRecording(state.nowCheckPointIndex)
             } else {
-                reduce { state.copy(nowCheckPointIndex = nextCheckPointIndex) }
-                saveRideState(checkPointIndex = nextCheckPointIndex)
+                saveRideState(checkPointIndex = state.nowCheckPointIndex)
             }
         }
     }
 
-    private fun completeRecording() = intent {
+    private fun completeRecording(checkPointIndex: Int) = intent {
         delay(300)
         reduce {
             state.copy(
@@ -164,6 +173,7 @@ class RecordViewModel(
                         isLoading = false,
                     )
                 }
+                lastSyncIndex = checkPointIndex
                 stopTimer()
             }.onFailure {
                 reduce {
@@ -228,11 +238,11 @@ class RecordViewModel(
     }
 
     private fun saveRideState(checkPointIndex: Int) = intent {
-        if (checkPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
         courseRepository.syncRide(state.rideId, state.totalSeconds, checkPointIndex)
             .collectLatest { result ->
                 result.onSuccess {
                     postSideEffect(RecordSideEffect.ShowToast("${checkPointIndex + 1}번째 체크 포인트를 저장했습니다."))
+                    lastSyncIndex = checkPointIndex
                 }.onFailure {
                     postSideEffect(
                         RecordSideEffect.ShowToast(
@@ -254,7 +264,7 @@ class RecordViewModel(
 
     private fun onClickBackDialog(isConfirm: Boolean) = intent {
         if (isConfirm) {
-            onClickBack()
+            postSideEffect(RecordSideEffect.NavigateBack)
         } else {
             reduce { state.copy(isShowBackDialog = false) }
         }

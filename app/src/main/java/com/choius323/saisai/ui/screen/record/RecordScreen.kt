@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.record
 
+import android.location.Location
 import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
@@ -87,13 +88,17 @@ fun RecordScreen(
         if (allGranted) {
             getCurrentLocation(
                 context = context,
-                callbackLocation = { location ->
-                    viewModel.onEvent(
-                        RecordUiEvent.StartRecording(
-                            isPermissionGranted = true,
-                            latLng = LatLng.from(location.latitude, location.longitude)
+                callbackLocation = { location: Location? ->
+                    if (location != null) {
+                        viewModel.onEvent(
+                            RecordUiEvent.StartRecording(
+                                isPermissionGranted = true,
+                                latLng = LatLng.from(location.latitude, location.longitude)
+                            )
                         )
-                    )
+                    } else {
+                        context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                    }
                 })
         }
     }
@@ -118,13 +123,17 @@ fun RecordScreen(
                 if (permissionState.allPermissionsGranted) {
                     getCurrentLocation(
                         context = context,
-                        callbackLocation = { location ->
-                            viewModel.onEvent(
-                                RecordUiEvent.StartRecording(
-                                    isPermissionGranted = permissionState.allPermissionsGranted,
-                                    latLng = LatLng.from(location.latitude, location.longitude)
+                        callbackLocation = { location: Location? ->
+                            if (location != null) {
+                                viewModel.onEvent(
+                                    RecordUiEvent.StartRecording(
+                                        isPermissionGranted = permissionState.allPermissionsGranted,
+                                        latLng = LatLng.from(location.latitude, location.longitude)
+                                    )
                                 )
-                            )
+                            } else {
+                                context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                            }
                         })
                 } else {
                     viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
@@ -134,13 +143,17 @@ fun RecordScreen(
                 if (permissionState.allPermissionsGranted) {
                     getCurrentLocation(
                         context = context,
-                        callbackLocation = { location ->
-                            viewModel.onEvent(
-                                RecordUiEvent.StartRecording(
-                                    isPermissionGranted = permissionState.allPermissionsGranted,
-                                    latLng = LatLng.from(location.latitude, location.longitude)
+                        callbackLocation = { location: Location? ->
+                            if (location != null) {
+                                viewModel.onEvent(
+                                    RecordUiEvent.StartRecording(
+                                        isPermissionGranted = permissionState.allPermissionsGranted,
+                                        latLng = LatLng.from(location.latitude, location.longitude)
+                                    )
                                 )
-                            )
+                            } else {
+                                context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                            }
                         })
                 } else {
                     viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
@@ -208,13 +221,17 @@ fun RecordScreenContent(
             startRecording = {
                 getCurrentLocation(
                     context = context,
-                    callbackLocation = { location ->
-                        onEvent(
-                            RecordUiEvent.StartRecording(
-                                isPermissionGranted = permissionState.allPermissionsGranted,
-                                latLng = LatLng.from(location.latitude, location.longitude)
+                    callbackLocation = { location: Location? ->
+                        if (location != null) {
+                            onEvent(
+                                RecordUiEvent.StartRecording(
+                                    isPermissionGranted = permissionState.allPermissionsGranted,
+                                    latLng = LatLng.from(location.latitude, location.longitude)
+                                )
                             )
-                        )
+                        } else {
+                            context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                        }
                     })
             },
             toggleRecording = { onEvent(RecordUiEvent.OnClickToggleRecording) },

@@ -20,12 +20,9 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.choius323.saisai.ui.component.ComposableLifecycle
-import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.theme.SaiColor
-import com.choius323.saisai.util.locationPermissions
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
-import com.google.accompanist.permissions.rememberMultiplePermissionsState
 import com.google.android.gms.location.LocationCallback
 import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
@@ -166,13 +163,13 @@ fun ObserveLocation(
 @SuppressLint("MissingPermission")
 fun getCurrentLocation(
     context: Context,
-    callbackLocation: (Location) -> Unit,
+    callbackLocation: (Location?) -> Unit,
     callbackCanceled: () -> Unit = {},
 ) {
     val fusedLocationClient = LocationServices.getFusedLocationProviderClient(context)
     fusedLocationClient.getCurrentLocation(Priority.PRIORITY_HIGH_ACCURACY, null)
         .addOnSuccessListener(callbackLocation)
-        .addOnCanceledListener(callbackCanceled)
+        .addOnCanceledListener { callbackCanceled() }
 }
 
 private const val TAG = "MapScreen"

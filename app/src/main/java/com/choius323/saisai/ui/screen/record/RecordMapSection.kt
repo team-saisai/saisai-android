@@ -88,7 +88,7 @@ private fun RecordMapSetting(
     LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState) {
         val courseDetail = uiState.courseDetail
         val nowCheckPointIdx = uiState.nowCheckPointIndex
-        if (courseDetail != null && uiState.rideState == RideState.RECORDING && nowCheckPointIdx >= 0) {
+        if (courseDetail != null && uiState.rideState == RideState.RECORDING && nowCheckPointIdx in courseDetail.checkPointList.indices) {
             val checkPointList = courseDetail.checkPointList.map { LatLng.from(it.lat, it.lng) }
             kakaoMap.setCirclesStyle(checkPointList, nowCheckPointIdx)
             kakaoMap.drawRideRoute(

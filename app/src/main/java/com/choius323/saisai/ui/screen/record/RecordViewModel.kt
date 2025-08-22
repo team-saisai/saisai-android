@@ -32,10 +32,7 @@ class RecordViewModel(
                 result.onSuccess { courseDetail ->
                     reduce {
                         state.copy(
-                            courseDetail = courseDetail.copy(
-                                gpxPointList = courseDetail.gpxPointList,
-                                checkPointList = courseDetail.checkPointList,
-                            ),
+                            courseDetail = courseDetail,
                             isLoading = false,
                             rideId = courseDetail.rideId ?: 0,
                         )
@@ -97,7 +94,7 @@ class RecordViewModel(
             isPermissionGranted.not() -> postSideEffect(RecordSideEffect.ShowToast("위치 및 알림 권한이 필요합니다."))
             state.rideState == RideState.RECORDING -> postSideEffect(RecordSideEffect.ShowToast("이미 실행 중 입니다."))
             state.rideId != 0L -> resumeRecording()
-            calculateDistance(nowLatLng, state.route.first().toLatLng()) > 25f ->
+            calculateDistance(nowLatLng, state.route.first().toLatLng()) > DISTANCE_STANDARD ->
                 postSideEffect(RecordSideEffect.ShowToast("코스를 시작할 수 없습니다. 시작지점 근처로 이동해주세요."))
 
             state.route.isNotEmpty() -> startRecording()
@@ -126,24 +123,23 @@ class RecordViewModel(
     }
 
     private fun setNowLatLng(event: RecordUiEvent.SetNowLatLng) = intent {
-        if (state.permissionGranted.not()) return@intent
+        val courseDetail = state.courseDetail
+        if (state.permissionGranted.not() || courseDetail == null) return@intent
         reduce { state.copy(nowLatLng = event.latLng) }
-        if (state.rideState != RideState.RECORDING && state.nowCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex) return@intent
+        if (state.rideState != RideState.RECORDING && state.nowCheckPointIndex == courseDetail.checkPointList.lastIndex) return@intent
         val nextCheckPointIndex = state.nowCheckPointIndex + 1
-        val nextCheckPoint = state.courseDetail?.checkPointList?.get(nextCheckPointIndex)
-            ?: return@intent
-        val nextLatLng = state.courseDetail?.gpxPointList[nextCheckPoint.gpxPointIdx]?.toLatLng()
-            ?: return@intent
+        val nextLatLng =
+            if (state.nowCheckPointIndex == courseDetail.checkPointList.lastIndex) {
+                courseDetail.gpxPointList.last()
+            } else {
+                courseDetail.gpxPointList[courseDetail.checkPointList[nextCheckPointIndex].gpxPointIdx]
+            }.toLatLng()
         val distance = calculateDistance(event.latLng, nextLatLng)
-        if (distance < 25f) {
-            reduce {
-                state.copy(
-                    nowCheckPointIndex = nextCheckPointIndex,
-                )
-            }
-            if (nextCheckPointIndex == state.courseDetail?.checkPointList?.lastIndex) {
+        if (distance < DISTANCE_STANDARD) {
+            if (nextCheckPointIndex == courseDetail.checkPointList.size) {
                 completeRecording()
             } else {
+                reduce { state.copy(nowCheckPointIndex = nextCheckPointIndex) }
                 saveRideState(checkPointIndex = nextCheckPointIndex)
             }
         }
@@ -151,7 +147,6 @@ class RecordViewModel(
 
     private fun completeRecording() = intent {
         delay(300)
-        val courseDetail = state.courseDetail ?: return@intent
         reduce {
             state.copy(
                 isLoading = true,
@@ -290,3 +285,4 @@ class RecordViewModel(
 }
 
 private const val TAG = "RecordViewModel"
+private const val DISTANCE_STANDARD = 25f

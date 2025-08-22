@@ -173,7 +173,6 @@ private fun ProgressText(modifier: Modifier = Modifier) {
             modifier = Modifier
                 .align(Alignment.CenterStart)
                 .onGloballyPositioned { coordinates ->
-                    println(coordinates.size)
                     goTextWidthPx = coordinates.size.width
                 }
                 .offset(x = goTextOffset + 6.5.dp)

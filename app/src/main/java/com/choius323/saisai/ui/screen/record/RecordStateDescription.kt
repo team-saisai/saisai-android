@@ -75,7 +75,7 @@ fun RecordStateDescription(
         ) {
             DescriptionContent(
                 rideState = uiState.rideState,
-                nowCheckPointIdx = maxOf(uiState.nowCheckPointIndex, 0),
+                nowCheckPointIdx = uiState.nowCheckPointIndex,
                 totalCheckPointSize = courseDetail.checkPointList.size,
                 modifier = Modifier.weight(1f),
             )

@@ -91,7 +91,7 @@ fun MainNavController(
                 },
                 goCourseDetail = {
                     navController.navigate(MainNavItem.CourseDetail(it)) {
-                        popUpTo(MainNavItem.CourseDetail)
+                        popUpTo<MainNavItem.CourseDetail> { inclusive = true }
                     }
                 },
                 onBack = { navController.upPress() }

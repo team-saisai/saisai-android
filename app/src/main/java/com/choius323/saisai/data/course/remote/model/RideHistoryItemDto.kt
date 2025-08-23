@@ -11,7 +11,7 @@ data class RideHistoryItemDto(
     val level: Int,
     val lastRideDate: String,
     val distance: Double,
-    val estimatedTime: Double,
+    val durationSecond: Long,
     val progressRate:Int,
     val imageUrl: String? = null,
     val isCompleted: Boolean,

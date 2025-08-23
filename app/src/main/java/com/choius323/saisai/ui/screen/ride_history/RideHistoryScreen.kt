@@ -3,11 +3,13 @@ package com.choius323.saisai.ui.screen.ride_history
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
@@ -145,7 +148,7 @@ private fun RidingHeadLine(
             SortDropDown(
                 sortList = listOf(
                     CourseSort.newest,
-                    CourseSort.ordest,
+                    CourseSort.oldest,
                 ),
                 selected = selectedCourseSort,
                 onSelectedSort = onSelectedCourseSort,
@@ -172,6 +175,7 @@ private fun HandleAppBar(
                     Icons.AutoMirrored.Rounded.ArrowBackIos,
                     "뒤로 가기",
                     modifier = Modifier
+                        .offset(x = (-8).dp)
                         .size(40.dp)
                         .clickable { onEvent(RideHistoryUiEvent.OnClickBack) }
                         .padding(8.dp)

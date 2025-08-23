@@ -109,7 +109,7 @@ class CourseRemoteDataSourceImpl(
         saiFetch { saiClientProvider.client.delete("my/bookmarks/courses") { setBody(body) } }
 
     override suspend fun getRideHistory(page: Int, sort: String, notCompletedOnly: Boolean): Flow<Result<SaiResponseDto<RideHistoryDataDto>>> =
-        saiFetch { saiClientProvider.client.get("my/rides?page=$page&sort=$sort&notCompletedOnly=$notCompletedOnly") }
+        saiFetch { saiClientProvider.client.get("my/rides?page=$page&sort=$sort&ridingCourseOnly=$notCompletedOnly") }
 
     override suspend fun deleteRideHistory(rideIds: List<Long>): Flow<Result<SaiResponseDto<Unit>>> =
         saiFetch { saiClientProvider.client.delete("my/rides") { setBody(mapOf("rideIds" to rideIds)) } }

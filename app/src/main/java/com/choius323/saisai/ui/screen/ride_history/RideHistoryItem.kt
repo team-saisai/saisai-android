@@ -65,7 +65,7 @@ fun RideHistoryItem(
             distance = course.distance,
             level = course.level,
             rideDate = course.lastRideDate,
-            estimatedTime = course.estimatedTime,
+            duration = course.duration,
             rideProgress = course.progressRate,
             modifier = Modifier
                 .weight(1f)
@@ -80,7 +80,7 @@ private fun CourseInformationSection(
     distance: Double,
     level: Level,
     rideDate: LocalDate,
-    estimatedTime: Double,
+    duration: Long,
     rideProgress: Int,
     modifier: Modifier = Modifier,
 ) {
@@ -101,20 +101,20 @@ private fun CourseInformationSection(
         )
 
         // 현재 도전 인원 정보
-        RideInfo(rideDate, estimatedTime, rideProgress)
+        RideInfo(rideDate, duration, rideProgress)
     }
 }
 
 @Composable
 private fun RideInfo(
     rideDate: LocalDate,
-    estimatedTime: Double,
+    duration: Long,
     rideProgress: Int,
     modifier: Modifier = Modifier,
 ) {
-    val timeFormatted by remember(estimatedTime) {
+    val timeFormatted by remember(duration) {
         derivedStateOf {
-            estimatedTime.toLong().let {
+            duration.let {
                 val hours = TimeUnit.SECONDS.toHours(it)
                 val minutes = TimeUnit.SECONDS.toMinutes(it) % 60
                 val seconds = it % 60
@@ -132,7 +132,7 @@ private fun RideInfo(
             )
         ) {
             append(timeFormatted)
-            append(" ∙ 완주율")
+            append(" ∙ 달성률")
             withStyle(SpanStyle(fontWeight = FontWeight.W500, color = SaiColor.Lime)) {
                 append("${rideProgress}%")
             }

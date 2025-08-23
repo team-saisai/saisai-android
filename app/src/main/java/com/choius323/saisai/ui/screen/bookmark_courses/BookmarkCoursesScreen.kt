@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
@@ -77,12 +78,12 @@ private fun BookmarkCoursesScreenContent(
     onEvent: (BookmarkCoursesUiEvent) -> Unit,
 ) {
     Column(modifier = modifier.fillMaxSize()) {
-        BookmarkHeadLine(
-            isEditMode = uiState.editMode,
-            selectedCourseSort = uiState.sort,
-            modifier = Modifier.padding(horizontal = 18.dp),
-            onSelectedCourseSort = { onEvent(BookmarkCoursesUiEvent.OnSelectedCourseSort(it)) },
-        )
+        // BookmarkHeadLine(
+        //     isEditMode = uiState.editMode,
+        //     selectedCourseSort = uiState.sort,
+        //     modifier = Modifier.padding(horizontal = 18.dp),
+        //     onSelectedCourseSort = { onEvent(BookmarkCoursesUiEvent.OnSelectedCourseSort(it)) },
+        // )
         BookmarkCoursesListSection(
             courseList = uiState.courseList,
             selectedIndexList = uiState.selectedIndices,
@@ -121,7 +122,7 @@ fun BookmarkHeadLine(
             SortDropDown(
                 sortList = listOf(
                     CourseSort.newest,
-                    CourseSort.ordest,
+                    CourseSort.oldest,
                 ),
                 selected = selectedCourseSort,
                 onSelectedSort = onSelectedCourseSort,
@@ -148,6 +149,7 @@ private fun HandleAppBar(
                     Icons.AutoMirrored.Rounded.ArrowBackIos,
                     "뒤로 가기",
                     modifier = Modifier
+                        .offset(x = (-8).dp)
                         .size(40.dp)
                         .clickable { onEvent(BookmarkCoursesUiEvent.OnClickBack) }
                         .padding(8.dp)

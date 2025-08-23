@@ -4,7 +4,6 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
@@ -21,7 +20,6 @@ import androidx.compose.material.icons.filled.CheckCircleOutline
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -48,7 +46,6 @@ import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
-import org.threeten.bp.LocalDate
 
 @Composable
 fun CourseDetailDescription(
@@ -67,8 +64,8 @@ fun CourseDetailDescription(
 
     Column(modifier) {
         ChallengeStatusBadge(
-            LocalDate.of(2025, 9, 30),
-            isEvent = true,
+            detail.challengeEndedAt,
+            isEvent = detail.isEventActive,
             modifier = Modifier.padding(start = 12.dp)
         )
         Spacer(Modifier.height(8.dp))

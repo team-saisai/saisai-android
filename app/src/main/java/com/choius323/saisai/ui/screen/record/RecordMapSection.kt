@@ -22,7 +22,6 @@ import com.choius323.saisai.ui.screen.map.moveCamera
 import com.choius323.saisai.ui.screen.map.rememberMapView
 import com.choius323.saisai.ui.screen.map.setCirclesStyle
 import com.choius323.saisai.ui.screen.map.updateMapData
-import com.choius323.saisai.ui.theme.SaiColor
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapView
@@ -68,14 +67,10 @@ private fun RecordMapSetting(
     LaunchedEffect(kakaoMap, uiState.route) {
         updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
-        if (uiState.rideState == RideState.RECORDING) {
-            kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
-        } else {
-            kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
-        }
+        kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
         kakaoMap.moveCamera(latLngList)
     }
-    LaunchedEffect(uiState.courseDetail?.checkPointList) {
+    LaunchedEffect(kakaoMap, uiState.courseDetail?.checkPointList) {
         val checkPointList =
             uiState.courseDetail?.checkPointList?.map { LatLng.from(it.lat, it.lng) } ?: emptyList()
         kakaoMap.initCircles(checkPointList, false)
@@ -85,7 +80,7 @@ private fun RecordMapSetting(
             kakaoMap.createDirectionLabel(uiState.nowLatLng)
         }
     }
-    LaunchedEffect(uiState.nowCheckPointIndex, uiState.rideState) {
+    LaunchedEffect(kakaoMap, uiState.nowCheckPointIndex, uiState.rideState) {
         val courseDetail = uiState.courseDetail
         val nowCheckPointIdx = uiState.nowCheckPointIndex
         if (courseDetail != null && uiState.rideState == RideState.RECORDING && nowCheckPointIdx in courseDetail.checkPointList.indices) {

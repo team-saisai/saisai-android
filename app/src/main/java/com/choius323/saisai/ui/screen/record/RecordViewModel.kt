@@ -36,6 +36,9 @@ class RecordViewModel(
                             courseDetail = courseDetail,
                             isLoading = false,
                             rideId = courseDetail.rideId ?: 0,
+                            nowCheckPointIndex =
+                                courseDetail.checkpointIdx ?: state.nowCheckPointIndex,
+                            totalTime = courseDetail.duration ?: state.totalTime,
                         )
                     }
                     postSideEffect(RecordSideEffect.StartRecording)

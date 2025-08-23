@@ -25,13 +25,14 @@ class RideHistoryViewModel(
         is RideHistoryUiEvent.OnClickDeleteAll -> showDeleteDialog()
         is RideHistoryUiEvent.OnClickDialogConfirm -> deleteSelectedCourses()
         is RideHistoryUiEvent.OnClickDialogDismiss -> dismissDeleteDialog()
-        is RideHistoryUiEvent.OnClickBack -> intent{
+        is RideHistoryUiEvent.OnClickBack -> intent {
             when {
                 state.showDeleteDialog -> dismissDeleteDialog()
                 state.editMode -> cancelEditMode()
                 else -> goBack()
             }
         }
+
         is RideHistoryUiEvent.LoadMore -> fetchCourses(true)
         is RideHistoryUiEvent.OnClickDeleteItem -> toggleItemSelection(event.index)
         is RideHistoryUiEvent.OnClickRideHistory -> deleteCourses(listOf(event.index))
@@ -59,20 +60,20 @@ class RideHistoryViewModel(
 
         is RideHistoryUiEvent.OnClickShowRidingOnly -> intent {
             reduce { state.copy(isRidingOnly = event.isRidingOnly) }
-            fetchCourses()
+            fetchCourses(nextPageParam = 0)
         }
 
         is RideHistoryUiEvent.OnSelectedCourseSort -> intent {
             reduce {
                 state.copy(sort = event.sort)
             }
-            fetchCourses()
+            fetchCourses(nextPageParam = 0)
         }
     }
 
     private fun fetchCourses(isLoadMore: Boolean = false, nextPageParam: Int? = null) = intent {
         Log.d(TAG, "fetchCourseList isLoadMore: $isLoadMore")
-        if ((nextPageParam != null && state.isLoading) || state.isLoadingMore || state.isLastPage) return@intent
+        if ((nextPageParam != null && state.isLoading) || state.isLoadingMore || (isLoadMore && state.isLastPage)) return@intent
 
         val nextPage: Int
         if (isLoadMore) {

@@ -128,23 +128,29 @@ private fun RidingHeadLine(
     onSelectedCourseSort: (CourseSort) -> Unit,
     onClickShowRidingOnly: (Boolean) -> Unit = {},
 ) {
-    Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-        Row(
-            Modifier
-                .clip(RoundedCornerShape(4.dp))
-                .clickable(onClick = { onClickShowRidingOnly(isRidingOnly.not()) })
-                .padding(start = 4.dp, top = 5.dp, bottom = 5.dp, end = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Checkbox(
-                checked = isRidingOnly,
-                onCheckedChange = null,
-                modifier = Modifier.size(20.dp)
-            )
-            Spacer(Modifier.width(4.dp))
-            SaiText("주행 중인 코스만 보기")
-        }
-        if (isEditMode.not()) {
+    if (isEditMode.not()) {
+        Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+            Row(
+                Modifier
+                    .clip(RoundedCornerShape(4.dp))
+                    .clickable(onClick = { onClickShowRidingOnly(isRidingOnly.not()) })
+                    .padding(start = 4.dp, top = 5.dp, bottom = 5.dp, end = 4.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(
+                    Modifier.size(20.dp),
+                    contentAlignment = Alignment.Center
+                ) {
+                    // TODO: `Checkbox`의 최소 크기가 20dp 이므로, 커스텀해서 13dp로 수정 필요.
+                    Checkbox(
+                        checked = isRidingOnly,
+                        onCheckedChange = null,
+                        modifier = Modifier,
+                    )
+                }
+                Spacer(Modifier.width(4.dp))
+                SaiText("주행 중인 코스만 보기")
+            }
             SortDropDown(
                 sortList = listOf(
                     CourseSort.newest,
@@ -156,6 +162,20 @@ private fun RidingHeadLine(
         }
     }
 }
+
+@Composable
+@Preview
+private fun RidingHeadLinePreview() {
+    RidingHeadLine(
+        isEditMode = false,
+        isRidingOnly = true,
+        selectedCourseSort = CourseSort.newest,
+        modifier = Modifier.padding(horizontal = 18.dp),
+        onSelectedCourseSort = {},
+        onClickShowRidingOnly = {},
+    )
+}
+
 
 @Composable
 private fun HandleAppBar(

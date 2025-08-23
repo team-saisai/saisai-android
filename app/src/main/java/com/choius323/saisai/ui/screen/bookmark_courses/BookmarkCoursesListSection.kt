@@ -142,6 +142,7 @@ private fun BookmarkCourseListItem(
             modifier = Modifier.weight(1f),
             showBookmark = isEditMode.not(),
             onClickBookmark = onClickBookmark,
+            isColor = isEditMode.not(),
         )
     }
 }

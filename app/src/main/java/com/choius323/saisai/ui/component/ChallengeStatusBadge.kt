@@ -35,6 +35,7 @@ fun ChallengeStatusBadge(
     endDate: LocalDate?,
     modifier: Modifier = Modifier,
     isEvent: Boolean = false,
+    isColor: Boolean = true,
 ) {
     val isFinished = remember(endDate) { endDate?.isBefore(LocalDate.now()) }
     Row(
@@ -46,10 +47,10 @@ fun ChallengeStatusBadge(
         if (isFinished == true) {
             EndedBadge(Modifier)
         } else if (isFinished == false && endDate != null) {
-            DateBadge(endDate = endDate, modifier = Modifier)
+            DateBadge(endDate = endDate, modifier = Modifier, isColor = isColor)
         }
         if (isEvent) {
-            EventBadge(Modifier.fillMaxHeight())
+            EventBadge(Modifier.fillMaxHeight(), isColor)
         }
     }
 }
@@ -58,12 +59,12 @@ fun ChallengeStatusBadge(
  * 진행 중인 챌린지의 종료 날짜를 표시하는 배지
  */
 @Composable
-private fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier) {
+private fun DateBadge(endDate: LocalDate, modifier: Modifier = Modifier, isColor: Boolean = true) {
     val endDateStr = remember(endDate) { endDate.format(DateTimeFormat.monthDay) }
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(Color(0xFCDE6666))
+            .background(if (isColor) Color(0xFCDE6666) else SaiColor.Gray60)
             .padding(start = 4.dp, top = 3.dp, bottom = 3.dp, end = 9.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -104,11 +105,11 @@ private fun EndedBadge(modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun EventBadge(modifier: Modifier = Modifier) {
+private fun EventBadge(modifier: Modifier = Modifier, isColor: Boolean = true) {
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(8.dp))
-            .background(SaiColor.LightPurple)
+            .background(if (isColor) SaiColor.LightPurple else SaiColor.Gray60)
             .padding(horizontal = 6.dp, vertical = 4.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {

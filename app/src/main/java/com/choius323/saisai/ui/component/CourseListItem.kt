@@ -50,6 +50,7 @@ fun CourseListItemHorizontal(
     modifier: Modifier = Modifier,
     course: CourseListItem,
     showBookmark: Boolean = true,
+    isColor: Boolean = true,
     onClickBookmark: () -> Unit = {},
 ) {
     Row(
@@ -64,7 +65,8 @@ fun CourseListItemHorizontal(
             course.imageUrl,
             course.challengeEndedAt,
             course.isEventActive,
-            Modifier.size(width = 160.dp, height = 132.dp)
+            Modifier.size(width = 160.dp, height = 132.dp),
+            isColor = isColor,
         )
         Spacer(Modifier.width(4.dp))
         CourseInformationSection(
@@ -169,6 +171,7 @@ fun CourseItemImageSection(
     endDate: LocalDate?,
     isEventActive: Boolean,
     modifier: Modifier = Modifier,
+    isColor: Boolean = true,
 ) {
     Box(modifier = modifier) {
         AsyncImage(
@@ -180,7 +183,8 @@ fun CourseItemImageSection(
         ChallengeStatusBadge(
             endDate = endDate,
             isEvent = isEventActive,
-            modifier = Modifier.padding(6.dp)
+            modifier = Modifier.padding(6.dp),
+            isColor = isColor,
         )
     }
 }

@@ -40,8 +40,9 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun RideHistoryItem(
-    modifier: Modifier = Modifier,
     course: RideHistoryItem,
+    isEditMode: Boolean,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier
@@ -55,7 +56,8 @@ fun RideHistoryItem(
             course.imageUrl,
             course.challengeEndedAt,
             course.isEventActive,
-            Modifier.size(width = 160.dp, height = 132.dp)
+            Modifier.size(width = 160.dp, height = 132.dp),
+            isColor = isEditMode.not()
         )
         Spacer(Modifier.width(4.dp))
         CourseInformationSection(

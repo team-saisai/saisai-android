@@ -126,6 +126,7 @@ private fun RideHistoryListItem(
         }
         RideHistoryItem(
             course = item,
+            isEditMode = isEditMode,
             modifier = Modifier.weight(1f),
         )
     }

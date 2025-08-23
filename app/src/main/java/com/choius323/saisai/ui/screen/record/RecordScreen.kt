@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -64,7 +65,10 @@ fun RecordScreen(
                 Icon(
                     Icons.AutoMirrored.Default.ArrowBack,
                     contentDescription = "Go Back",
-                    modifier = Modifier.clickable(onClick = onBack),
+                    modifier = Modifier
+                        .size(40.dp)
+                        .padding(8.dp)
+                        .clickable(onClick = onBack),
                     tint = SaiColor.Gray90
                 )
             }

@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -37,6 +36,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
+import com.choius323.saisai.ui.component.TopAppBarHeight
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import java.util.Locale
@@ -47,26 +47,35 @@ fun RideCompleteDialog(
     imageUrl: String?,
     courseName: String,
     distance: Double,
-    rideTime:Long,
+    rideTime: Long,
     modifier: Modifier = Modifier,
     goHome: () -> Unit,
     goCourseDetail: () -> Unit,
 ) {
     Box(
-        modifier.background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f)),
+        modifier
+            .background(MaterialTheme.colorScheme.background.copy(alpha = 0.9f))
+            .clickable(interactionSource = null, indication = null) {},
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-            Icons.AutoMirrored.Default.ArrowBack,
-            contentDescription = "Go Back",
-            modifier = Modifier
+        Box(
+            Modifier
                 .align(Alignment.TopStart)
+                .padding(start = 24.dp)
                 .statusBarsPadding()
-                .offset(x = 18.dp, y = 8.dp)
-                .size(24.dp)
-                .clickable(onClick = goCourseDetail),
-            tint = Color.White,
-        )
+                .size(TopAppBarHeight),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Icon(
+                Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = "Go Back",
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(8.dp)
+                    .clickable(onClick = goCourseDetail),
+                tint = Color.White,
+            )
+        }
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             SaiText("수고하셨습니다!", fontSize = 18.sp)
             Spacer(Modifier.height(30.dp))
@@ -89,7 +98,7 @@ fun RideCompleteDialog(
             Button(
                 goHome,
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color(0x14FFFFFF),
+                    containerColor = Color(0x08FFFFFF),
                     contentColor = SaiColor.White
                 )
             ) {
@@ -97,7 +106,6 @@ fun RideCompleteDialog(
             }
         }
     }
-    // TODO: 뒤로가기 이벤트에 goCourseDetail 등록
 }
 
 @Composable
@@ -116,6 +124,7 @@ private fun RideCompleteDescription(
     ) {
         Column {
             SaiText(courseName, fontSize = 20.sp, fontWeight = FontWeight.W500)
+            Spacer(Modifier.height(11.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 SaiText(
                     "총 ${String.format(Locale.KOREA, "%.1f", distance)}km",

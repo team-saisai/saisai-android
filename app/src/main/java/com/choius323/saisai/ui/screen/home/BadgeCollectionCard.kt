@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.home
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,10 +9,12 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -37,7 +40,9 @@ fun BadgeCollectionCard(
     Column(
         verticalArrangement = Arrangement.spacedBy(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = modifier.padding(vertical = 24.dp, horizontal = 14.dp)
+        modifier = modifier
+            .background(Color(0xFF2B2E31), RoundedCornerShape(12.dp))
+            .padding(vertical = 24.dp, horizontal = 14.dp)
     ) {
         for (y in 0..badgeList.size / 3) {
             Row(

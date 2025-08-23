@@ -14,10 +14,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.outlined.Notifications
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -34,7 +30,6 @@ import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
-import com.choius323.saisai.ui.model.BadgeInfo
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.UserBadge
@@ -173,6 +168,7 @@ fun HomeScreenContent(
             text = "나의 뱃지", fontSize = 18.sp, modifier = Modifier.padding(bottom = 12.dp)
         )
         BadgeCollectionCard(badges, Modifier.fillMaxWidth())
+        Spacer(Modifier.height(20.dp))
     }
 }
 

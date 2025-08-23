@@ -80,7 +80,7 @@ private fun BookmarkCoursesScreenContent(
         BookmarkHeadLine(
             isEditMode = uiState.editMode,
             selectedCourseSort = uiState.sort,
-            modifier = Modifier,
+            modifier = Modifier.padding(horizontal = 18.dp),
             onSelectedCourseSort = { onEvent(BookmarkCoursesUiEvent.OnSelectedCourseSort(it)) },
         )
         BookmarkCoursesListSection(
@@ -89,7 +89,9 @@ private fun BookmarkCoursesScreenContent(
             isEditMode = uiState.editMode,
             onCourseClick = { index -> onEvent(BookmarkCoursesUiEvent.OnClickCourse(index)) },
             onCourseSelect = { index -> onEvent(BookmarkCoursesUiEvent.OnClickDeleteItem(index)) },
-            modifier = Modifier.weight(1f),
+            modifier = Modifier
+                .padding(horizontal = 18.dp)
+                .weight(1f),
             loadMore = { onEvent(BookmarkCoursesUiEvent.LoadMore) },
             isLoadingMore = uiState.isLoadingMore,
             onClickEmptyButton = { onEvent(BookmarkCoursesUiEvent.OnClickEmptyButton) },
@@ -112,7 +114,7 @@ fun BookmarkHeadLine(
     isEditMode: Boolean,
     selectedCourseSort: CourseSort,
     modifier: Modifier,
-    onSelectedCourseSort: (CourseSort) -> Unit
+    onSelectedCourseSort: (CourseSort) -> Unit,
 ) {
     Row(modifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
         if (isEditMode.not()) {

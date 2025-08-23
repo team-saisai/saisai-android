@@ -59,9 +59,7 @@ fun BookmarkCoursesListSection(
         )
     } else {
         LazyColumn(
-            modifier = modifier
-                .padding(horizontal = 18.dp)
-                .fillMaxSize(),
+            modifier = modifier.fillMaxSize(),
             contentPadding = PaddingValues(vertical = 10.dp)
         ) {
 

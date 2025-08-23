@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -14,6 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.choius323.saisai.ui.component.SaiTopAppBar
 import com.choius323.saisai.ui.navigation.BottomNavigationBar
@@ -30,7 +32,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             SaiTheme {
                 MainApp()
-
             }
         }
     }
@@ -54,6 +55,7 @@ fun MainApp(
     }
 
     Scaffold(
+        contentWindowInsets = WindowInsets(0.dp),
         topBar = {
             SaiTopAppBar(
                 mainNavController = mainNavController,

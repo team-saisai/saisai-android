@@ -94,7 +94,7 @@ fun MainNavController(
                         popUpTo<MainNavItem.CourseDetail> { inclusive = true }
                     }
                 },
-                onBack = { navController.upPress() }
+                onBack = navController::upPress
             )
         }
         composable<MainNavItem.BottomNavItem.MyPage> { backStackEntry ->
@@ -115,7 +115,7 @@ fun MainNavController(
             CourseDetailScreen(
                 modifier = Modifier.fillMaxSize(),
                 goRecordScreen = { navController.navigate(MainNavItem.Record(it)) },
-                goBack = { navController.upPress() }
+                goBack = navController::upPress
             )
         }
         composable<MainNavItem.Login> { backStackEntry ->
@@ -139,19 +139,19 @@ fun MainNavController(
                         popUpTo(MainNavItem.Login) { inclusive = true }
                     }
                 },
-                goBack = { navController.upPress() }
+                goBack = navController::upPress
             )
         }
         composable<MainNavItem.BadgeList> { backStackEntry ->
             BadgeListScreen(
                 modifier = modifier.fillMaxSize(),
-                goBack = { navController.upPress() }
+                goBack = navController::upPress
             )
         }
         composable<MainNavItem.NotificationList> { backStackEntry ->
             NotificationListScreen(
                 modifier = modifier.fillMaxSize(),
-                goBack = { navController.upPress() }
+                goBack = navController::upPress
             )
         }
         composable<MainNavItem.BookmarkList> { backStackEntry ->
@@ -166,13 +166,13 @@ fun MainNavController(
                         popUpTo(MainNavItem.BottomNavItem.MyPage)
                     }
                 },
-                goBack = { navController.upPress() },
+                goBack = navController::upPress,
             )
         }
         composable<MainNavItem.AppSettings> { backStackEntry ->
             SettingsScreen(
                 modifier = modifier.fillMaxSize(),
-                goBack = { navController.upPress() },
+                goBack = navController::upPress,
                 goLogin = {
                     navController.navigate(MainNavItem.Login) {
                         popUpTo(MainNavItem.Login) {
@@ -206,7 +206,7 @@ fun MainNavController(
                         popUpTo(MainNavItem.BottomNavItem.MyPage)
                     }
                 },
-                goBack = { navController.upPress() },
+                goBack = navController::upPress,
             )
         }
         composable<MainNavItem.TotalReward> { backStackEntry ->
@@ -222,7 +222,7 @@ fun MainNavController(
                         }
                     }
                 },
-                goBack = { navController.upPress() }
+                goBack = navController::upPress
             )
         }
     }

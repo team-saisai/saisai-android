@@ -107,15 +107,17 @@ private fun SignUpScreenContent(
             Modifier
                 .fillMaxWidth()
                 .clickable { onEvent(SignUpUiEvent.OnClickAllCheckBox) }
-                .padding(vertical = 7.dp), verticalAlignment = Alignment.CenterVertically
+                .padding(vertical = 7.dp),
+            horizontalArrangement = Arrangement.spacedBy(6.dp),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             Icon(
-                if (uiState.isAllChecked) Icons.Default.CheckCircle else Icons.Default.Check,
+                Icons.Default.CheckCircle,
                 "체크",
                 Modifier
                     .size(22.dp)
                     .clip(CircleShape),
-                tint = Color(0xFF6556B3),
+                tint = if (uiState.isAllChecked) Color(0xFFB0A2FF) else Color(0xFF51565A),
             )
             Spacer(Modifier.width(6.dp))
             SaiText("서비스 약관 전체 동의")
@@ -200,16 +202,17 @@ private fun CheckItem(
         horizontalArrangement = Arrangement.spacedBy(6.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row(Modifier
-            .weight(1f)
-            .clickable(onClick = onCheckedChange)
-            .padding(vertical = 6.dp)
+        Row(
+            Modifier
+                .weight(1f)
+                .clickable(onClick = onCheckedChange)
+                .padding(vertical = 6.dp)
         ) {
             Icon(
-                if (isChecked) Icons.Default.CheckCircle else Icons.Default.Check,
+                Icons.Default.Check,
                 "체크",
                 Modifier.size(22.dp),
-                tint = Color(0xFF6556B3),
+                tint = if (isChecked) Color(0xFFB0A2FF) else Color(0xFF51565A),
             )
             Spacer(Modifier.width(6.dp))
             SaiText(content, fontSize = 14.sp, color = Color(0xFFD3D5D9))

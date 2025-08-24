@@ -7,15 +7,14 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,13 +45,14 @@ fun RecentCourseCard(
     recentCourse: RecentCourse,
     modifier: Modifier = Modifier,
     onClickCourse: (courseId: Long) -> Unit,
+    onClickResume: (courseId: Long) -> Unit,
 ) {
     Box(
         modifier = modifier
             .fillMaxWidth()
             .height(IntrinsicSize.Min)
             .clip(RoundedCornerShape(16.dp))
-            .background(Color(0xFF292929))
+            .background(Color(0xFF292C2F))
             .clickable { onClickCourse(recentCourse.courseId) }
     ) {
         AsyncImage(
@@ -62,16 +62,15 @@ fun RecentCourseCard(
             error = ColorPainter(Color.DarkGray),
             placeholder = ColorPainter(Color.DarkGray),
             modifier = Modifier
-                .fillMaxHeight()
-                .fillMaxWidth(0.45f)
+                .size(width = 174.dp, height = 145.dp)
                 .align(Alignment.CenterEnd)
                 .drawWithContent {
                     drawContent()
                     drawRect(
                         brush = Brush.horizontalGradient(
-                            colors = listOf(Color(0xFF292929), Color.Transparent),
+                            colors = listOf(Color(0xFF292C2F), Color.Transparent),
                             startX = 0f,
-                            endX = 20.dp.toPx(),
+                            endX = 15.dp.toPx(),
                         )
                     )
                 }
@@ -141,7 +140,13 @@ fun RecentCourseCard(
         // 3. 오른쪽 하단 버튼
         val isCompleted = recentCourse.progressRate >= 100.0
         Button(
-            onClick = { onClickCourse(recentCourse.courseId) },
+            onClick = {
+                if (isCompleted) {
+                    onClickCourse(recentCourse.courseId)
+                } else {
+                    onClickResume(recentCourse.courseId)
+                }
+            },
             modifier = Modifier
                 .align(Alignment.BottomEnd)
                 .padding(end = 12.dp, bottom = 18.dp),
@@ -176,7 +181,10 @@ private fun RecentCourseCardCompletedPreview() {
     SaiTheme {
         Surface {
             Box(modifier = Modifier.padding(16.dp)) {
-                RecentCourseCard(recentCourse = sampleCourse, onClickCourse = {})
+                RecentCourseCard(
+                    recentCourse = sampleCourse,
+                    onClickCourse = {},
+                    onClickResume = {})
             }
         }
     }
@@ -197,7 +205,10 @@ private fun RecentCourseCardInProgressPreview() {
     SaiTheme {
         Surface {
             Box(modifier = Modifier.padding(16.dp)) {
-                RecentCourseCard(recentCourse = sampleCourse, onClickCourse = {})
+                RecentCourseCard(
+                    recentCourse = sampleCourse,
+                    onClickCourse = {},
+                    onClickResume = {})
             }
         }
     }

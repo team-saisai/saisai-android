@@ -73,6 +73,8 @@ fun MainNavController(
                 goNotificationList = { navController.navigate(MainNavItem.NotificationList) },
                 goToDetail = {
                     navController.navigate(MainNavItem.CourseDetail(it))
+                }, goToRecord = {
+                    navController.navigate(MainNavItem.Record(it))
                 }
             )
         }

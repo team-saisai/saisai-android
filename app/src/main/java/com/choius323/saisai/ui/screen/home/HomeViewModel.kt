@@ -32,6 +32,10 @@ class HomeViewModel(
                 postSideEffect(HomeSideEffect.GoToDetail(event.courseId))
             }
 
+            is HomeUiEvent.ResumeClicked -> intent {
+                postSideEffect(HomeSideEffect.GoToRecord(event.courseId))
+            }
+
             HomeUiEvent.OnClickNotification -> intent {
                 postSideEffect(HomeSideEffect.GoNotificationList)
             }

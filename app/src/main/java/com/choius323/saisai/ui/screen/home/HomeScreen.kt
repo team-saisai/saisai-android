@@ -48,6 +48,7 @@ fun HomeScreen(
     goNotificationList: () -> Unit,
     viewModel: HomeViewModel = koinViewModel(),
     goToDetail: (Long) -> Unit,
+    goToRecord: (Long) -> Unit,
 ) {
     val uiState by viewModel.collectAsState()
     val context = LocalContext.current
@@ -55,6 +56,7 @@ fun HomeScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is HomeSideEffect.GoToDetail -> goToDetail(sideEffect.courseId)
+            is HomeSideEffect.GoToRecord -> goToRecord(sideEffect.courseId)
             is HomeSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
             is HomeSideEffect.GoNotificationList -> goNotificationList()
         }
@@ -108,7 +110,9 @@ fun HomeScreenContent(
         Spacer(Modifier.height(36.dp))
         recentChallenge?.apply {
             RecentCourseCard(
-                this, onClickCourse = { onEvent(HomeUiEvent.CourseClicked(it)) }
+                this,
+                onClickCourse = { onEvent(HomeUiEvent.CourseClicked(it)) },
+                onClickResume = { onEvent(HomeUiEvent.ResumeClicked(it)) }
             )
             Spacer(Modifier.height(40.dp))
         }

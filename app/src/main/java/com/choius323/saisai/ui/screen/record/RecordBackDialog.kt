@@ -33,7 +33,7 @@ import com.choius323.saisai.ui.theme.SaiColor
 fun RecordBackDialog(
     isShow: Boolean,
     modifier: Modifier = Modifier,
-    onClickButton: (isConfirm: Boolean) -> Unit
+    onClickButton: (isConfirm: Boolean) -> Unit,
 ) {
     if (isShow) {
         Box(
@@ -88,7 +88,8 @@ private fun BackDialogButtons(
             onClick = { onClickButton(false) },
             shape = RoundedCornerShape(8.dp),
             colors = ButtonDefaults.buttonColors(
-                containerColor = SaiColor.Gray80
+                containerColor = SaiColor.Gray80,
+                contentColor = SaiColor.Gray20,
             ),
             modifier = Modifier
                 .weight(1f)

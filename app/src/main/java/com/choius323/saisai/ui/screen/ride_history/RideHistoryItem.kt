@@ -35,7 +35,6 @@ import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.theme.SaiColor
 import org.threeten.bp.LocalDate
 import org.threeten.bp.format.DateTimeFormatter
-import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @Composable
@@ -117,9 +116,8 @@ private fun RideInfo(
             duration.let {
                 val hours = TimeUnit.SECONDS.toHours(it)
                 val minutes = TimeUnit.SECONDS.toMinutes(it) % 60
-                val seconds = it % 60
 
-                String.Companion.format(Locale.KOREA, "%02d:%02d:%02d", hours, minutes, seconds)
+                "${hours}h ${minutes}m"
             }
         }
     }

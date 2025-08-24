@@ -277,10 +277,10 @@ class RecordViewModel(
         timerJob?.cancel()
         intent { reduce { state.copy(lastTimestamp = System.currentTimeMillis()) } }
         timerJob = viewModelScope.launch {
-            intent {
-                while (true) {
-                    delay(500L)
-                    val now = System.currentTimeMillis()
+            while (true) {
+                delay(500L)
+                val now = System.currentTimeMillis()
+                intent {
                     val elapsedTime = now - state.lastTimestamp
                     reduce {
                         state.copy(

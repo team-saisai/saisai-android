@@ -1,21 +1,20 @@
 package com.choius323.saisai.data.course.local
 
-import com.choius323.saisai.RecentRideProto
 import kotlinx.coroutines.flow.Flow
 
 interface CourseLocalDataSource {
-    suspend fun getRecentRideCourse(): Flow<RecentRideProto>
-    suspend fun setRecentRideCourse(recentRideProto: RecentRideProto)
+    suspend fun getLastShowDateCourseCaution(): Flow<String?>
+    suspend fun setLastShowDateCourseCaution(lastShowDate: String)
 }
 
 class CourseLocalDataSourceImpl(
-    private val courseDataStore: RideDataStore,
+    private val courseDataStore: CourseDataStore,
 ) : CourseLocalDataSource {
-    override suspend fun getRecentRideCourse(): Flow<RecentRideProto> {
-        return courseDataStore.recentRideProto
+    override suspend fun getLastShowDateCourseCaution(): Flow<String?> {
+        return courseDataStore.lastShowDate
     }
 
-    override suspend fun setRecentRideCourse(recentRideProto: RecentRideProto) {
-        courseDataStore.saveRecentRideProto(recentRideProto)
+    override suspend fun setLastShowDateCourseCaution(lastShowDate: String) {
+        courseDataStore.saveDate(lastShowDate)
     }
 }

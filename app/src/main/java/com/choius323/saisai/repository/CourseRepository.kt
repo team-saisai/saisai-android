@@ -11,25 +11,29 @@ import com.choius323.saisai.ui.model.CoursePage
 import com.choius323.saisai.ui.model.CourseSort
 import com.choius323.saisai.ui.model.CourseType
 import com.choius323.saisai.ui.model.RecentCourse
-import com.choius323.saisai.ui.model.RecentRide
 import com.choius323.saisai.ui.model.ResumeRideInfo
 import com.choius323.saisai.ui.model.RideHistoryItem
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOn
 import kotlinx.coroutines.flow.map
+import org.threeten.bp.LocalDate
 
 interface CourseRepository {
     suspend fun getRecentCourse(): Flow<Result<RecentCourse?>>
     suspend fun getCourseDetail(courseId: Long): Flow<Result<CourseDetail>>
     suspend fun getPopularChallenge(): Flow<Result<List<CourseListItem>>>
     suspend fun startCourse(courseId: Long): Flow<Result<Long>>
-    suspend fun setRecentRide(recentRide: RecentRide)
+    suspend fun setLastShowDateCourseCaution(lastDate: LocalDate)
+    suspend fun getLastShowDateCourseCaution(): Flow<LocalDate?>
     suspend fun resumeRide(rideId: Long): Flow<Result<ResumeRideInfo>>
     suspend fun pauseRide(rideId: Long, duration: Long, checkPointIdx: Int): Flow<Result<Unit>>
     suspend fun deleteBookmark(courseId: Long): Flow<Result<Boolean>>
     suspend fun addBookmark(courseId: Long): Flow<Result<Boolean>>
-    suspend fun getBookmarkedCourses(page: Int, sort: String): Flow<Result<CoursePage<CourseListItem>>>
+    suspend fun getBookmarkedCourses(
+        page: Int, sort: String,
+    ): Flow<Result<CoursePage<CourseListItem>>>
+
     suspend fun deleteBookmarkedCourses(courseIds: List<Long>): Flow<Result<Unit>>
     suspend fun getAllCourses(
         page: Int, courseType: CourseType, sort: CourseSort,
@@ -40,10 +44,15 @@ interface CourseRepository {
     ): Flow<Result<Unit?>>
 
     suspend fun syncRide(
-        rideId: Long, duration: Long, checkPointIdx: Int
+        rideId: Long, duration: Long, checkPointIdx: Int,
     ): Flow<Result<Unit>>
 
-    suspend fun getRideHistory(page: Int, sort: String, notCompletedOnly: Boolean): Flow<Result<CoursePage<RideHistoryItem>>>
+    suspend fun getRideHistory(
+        page: Int,
+        sort: String,
+        notCompletedOnly: Boolean,
+    ): Flow<Result<CoursePage<RideHistoryItem>>>
+
     suspend fun deleteRideHistory(rideIds: List<Long>): Flow<Result<Unit>>
 }
 
@@ -96,16 +105,20 @@ class CourseRepositoryImpl(
             }.flowOn(ioDispatcher)
 
     override suspend fun syncRide(
-        rideId: Long, duration: Long, checkPointIdx: Int
+        rideId: Long, duration: Long, checkPointIdx: Int,
     ): Flow<Result<Unit>> =
         courseRemoteDataSource.syncRide(rideId, SaveRideDto(duration, checkPointIdx))
             .map { result ->
                 result.mapCatching { }
             }.flowOn(ioDispatcher)
 
-    override suspend fun setRecentRide(recentRide: RecentRide) {
-        courseLocalDataSource.setRecentRideCourse(recentRide.toProto())
-    }
+    override suspend fun setLastShowDateCourseCaution(lastDate: LocalDate) =
+        courseLocalDataSource.setLastShowDateCourseCaution(lastDate.toString())
+
+    override suspend fun getLastShowDateCourseCaution(): Flow<LocalDate?> =
+        courseLocalDataSource.getLastShowDateCourseCaution().map {
+            it?.let { LocalDate.parse(it) }
+        }.flowOn(ioDispatcher)
 
     override suspend fun resumeRide(rideId: Long): Flow<Result<ResumeRideInfo>> =
         courseRemoteDataSource.resumeRide(rideId).map { result ->
@@ -132,7 +145,10 @@ class CourseRepositoryImpl(
                 result.mapCatching { it.data.isCourseBookmarked }
             }.flowOn(ioDispatcher)
 
-    override suspend fun getBookmarkedCourses(page: Int, sort: String): Flow<Result<CoursePage<CourseListItem>>> =
+    override suspend fun getBookmarkedCourses(
+        page: Int,
+        sort: String,
+    ): Flow<Result<CoursePage<CourseListItem>>> =
         courseRemoteDataSource.getBookmarkedCourses(page, sort).map { result ->
             result.mapCatching { it.toCoursePage() }
         }.flowOn(ioDispatcher)
@@ -144,7 +160,7 @@ class CourseRepositoryImpl(
     override suspend fun getRideHistory(
         page: Int,
         sort: String,
-        notCompletedOnly: Boolean
+        notCompletedOnly: Boolean,
     ): Flow<Result<CoursePage<RideHistoryItem>>> =
         courseRemoteDataSource.getRideHistory(page, sort, notCompletedOnly).map { result ->
             result.mapCatching { it.toCoursePage() }

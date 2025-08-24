@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.course_detail
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
@@ -56,12 +57,17 @@ fun CourseDetailScreen(
             is CourseDetailSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
         }
     }
+    BackHandler {
+        viewModel.onEvent(CourseDetailUiEvent.BackClicked)
+    }
     ProvideAppBar(
         navigationIcon = {
             Icon(
                 Icons.AutoMirrored.Default.ArrowBack,
                 contentDescription = "Go Back",
-                modifier = Modifier.clickable(onClick = goBack),
+                modifier = Modifier.clickable {
+                    viewModel.onEvent(CourseDetailUiEvent.BackClicked)
+                },
                 tint = SaiColor.Gray90,
             )
         },
@@ -89,6 +95,17 @@ fun CourseDetailScreen(
                 viewModel = mapViewModel
             )
         },
+    )
+    CourseDetailCautionDialog(
+        uiState.isShowCourseCaution,
+        Modifier.fillMaxSize(),
+        onClickButton = { isConfirm, isCheckedNoMoreShow ->
+            viewModel.onEvent(
+                CourseDetailUiEvent.CourseCautionClickedButton(
+                    isConfirm, isCheckedNoMoreShow
+                )
+            )
+        }
     )
     if (uiState.isLoading) {
         FullScreenLoading()

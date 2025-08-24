@@ -9,9 +9,9 @@ import com.choius323.saisai.data.account.AccountRemoteDataSourceImpl
 import com.choius323.saisai.data.account.AuthDataStore
 import com.choius323.saisai.data.account.SessionManager
 import com.choius323.saisai.data.account.model.AccountTokenDto
+import com.choius323.saisai.data.course.local.CourseDataStore
 import com.choius323.saisai.data.course.local.CourseLocalDataSource
 import com.choius323.saisai.data.course.local.CourseLocalDataSourceImpl
-import com.choius323.saisai.data.course.local.RideDataStore
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSource
 import com.choius323.saisai.data.course.remote.CourseRemoteDataSourceImpl
 import com.choius323.saisai.data.course.remote.model.SaiResponseDto
@@ -154,7 +154,7 @@ val dataModule = module {
     single { SaiClientProvider(getKoin()) }
 
     single { AuthDataStore(androidContext()) }
-    single { RideDataStore(androidContext()) }
+    single { CourseDataStore(androidContext()) }
 
     single<CourseRemoteDataSource> {
         CourseRemoteDataSourceImpl(

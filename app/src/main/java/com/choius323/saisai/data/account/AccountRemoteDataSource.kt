@@ -123,7 +123,9 @@ class AccountRemoteDataSourceImpl(
                 setBody(mapOf("socialAccessToken" to socialAccessToken))
             }
         }.onEach {
-            GoogleAuthUtil.clearToken(context, socialAccessToken)
+            it.onSuccess {
+                GoogleAuthUtil.clearToken(context, socialAccessToken)
+            }
         }
 
     override suspend fun getIsNewUserKakao(

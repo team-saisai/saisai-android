@@ -150,7 +150,7 @@ object GoogleAccountUtil {
             if (result.resultCode == Activity.RESULT_OK) {
                 val task = GoogleSignIn.getSignedInAccountFromIntent(result.data)
                 try {
-                    val account = task.result // Can throw ApiException
+                    val account = task.result
                     Log.d("GoogleLogin", "로그인 성공: ${account.email}")
 
                     coroutineScope.launch {
@@ -158,7 +158,7 @@ object GoogleAccountUtil {
                             val accessToken = withContext(Dispatchers.IO) {
                                 GoogleAuthUtil.getToken(
                                     context,
-                                    account.account!!, // Consider null safety here
+                                    account.account!!,
                                     "oauth2:${Scope("https://www.googleapis.com/auth/userinfo.profile").scopeUri}"
                                 )
                             }
@@ -169,7 +169,7 @@ object GoogleAccountUtil {
                             onError("액세스 토큰 요청 실패", e)
                         }
                     }
-                } catch (e: Exception) { // Catches ApiException from task.result
+                } catch (e: Exception) {
                     Log.e("GoogleLogin", "로그인 결과 처리 실패", e)
                     onError("로그인 결과 처리 실패", e)
                 }

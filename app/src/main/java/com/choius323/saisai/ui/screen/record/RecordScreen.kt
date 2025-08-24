@@ -68,7 +68,7 @@ fun RecordScreen(
                     modifier = Modifier
                         .size(40.dp)
                         .padding(8.dp)
-                        .clickable(onClick = onBack),
+                        .clickable { viewModel.onEvent(RecordUiEvent.OnClickBack) },
                     tint = SaiColor.Gray90
                 )
             }

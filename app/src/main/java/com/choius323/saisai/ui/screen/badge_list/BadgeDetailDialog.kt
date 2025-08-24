@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -29,7 +30,6 @@ import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.UserBadge
-import com.choius323.saisai.ui.model.UserBadgeDetail
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 
@@ -49,6 +49,7 @@ fun BadgeDetailDialog(
         Box(
             Modifier
                 .clip(RoundedCornerShape(24.dp))
+                .width(320.dp)
                 .background(SaiColor.Gray85)
                 .clickable(null, null) {}
         ) {
@@ -102,7 +103,8 @@ private fun BadgeDetailDialogDescription(
                 badge.name,
                 color = SaiColor.White,
                 fontSize = 22.sp,
-                fontWeight = FontWeight.W500
+                fontWeight = FontWeight.W500,
+                textAlign = TextAlign.Center,
             )
             Spacer(Modifier.height(7.dp))
             SaiText(

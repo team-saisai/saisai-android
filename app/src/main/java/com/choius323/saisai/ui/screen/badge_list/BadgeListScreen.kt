@@ -4,6 +4,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
@@ -88,6 +89,7 @@ private fun BadgeListScreenContent(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = 20.dp, start = 30.dp, end = 30.dp),
+            contentPadding = PaddingValues(bottom = 15.dp),
             horizontalArrangement = Arrangement.spacedBy(24.dp),
         ) {
             itemsIndexed(uiState.badgeList, { _, badge -> badge.id }) { index, badge ->

@@ -50,9 +50,7 @@ kakao = "2.21.6"
 
 # DataStore
 datastore = "1.1.7"
-protobufJavalite = "4.31.1"
 datastoreCore = "1.1.7"
-protobuf = "0.9.5"
 
 # GMS
 playServicesAuth = "21.4.0"
@@ -142,7 +140,6 @@ kakao-auth = { module = "com.kakao.sdk:v2-auth", version.ref = "kakao" }
 
 # DataStore
 datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
-protobuf-javalite = { module = "com.google.protobuf:protobuf-javalite", version.ref = "protobufJavalite" }
 androidx-datastore-core = { module = "androidx.datastore:datastore-core", version.ref = "datastoreCore" }
 
 # GMS
@@ -158,4 +155,3 @@ android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
-protobuf = { id = "com.google.protobuf", version.ref = "protobuf" }

@@ -69,9 +69,7 @@ fun LoginScreen(
             }
 
             is LoginSideEffect.GoSignUp -> {
-                pendingNavigation = {
-                    goSignUp(sideEffect.token, sideEffect.loginType.name)
-                }
+                pendingNavigation = { goSignUp(sideEffect.token, sideEffect.loginType.name) }
             }
         }
     }
@@ -80,7 +78,6 @@ fun LoginScreen(
         if (uiState.isDelayed && pendingNavigation != null) {
             isShownSplash = true
             pendingNavigation?.invoke()
-            pendingNavigation = null
         }
     }
 
@@ -157,7 +154,7 @@ fun LoginButtons(
     modifier: Modifier = Modifier,
     onGoogleSuccess: (idToken: String) -> Unit,
     onKakaoSuccess: (accessToken: String) -> Unit,
-    onError: (Throwable) -> Unit = {}
+    onError: (Throwable) -> Unit = {},
 ) {
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()

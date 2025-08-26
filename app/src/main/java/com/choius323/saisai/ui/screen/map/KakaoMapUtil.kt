@@ -93,12 +93,9 @@ fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
 
 fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
     val layer = this?.labelManager?.addLayer(LabelLayerOptions.from(CIRCLE_LAYER_ID)) ?: return
-    val resource = if (isColor) R.drawable.ic_circle_lime else R.drawable.ic_circle_gray
+    val circleStyle = if (isColor) limeCircleStyle else grayCircleStyle
     list.forEachIndexed { index, latLng ->
-        val label = layer.addLabel(
-            LabelOptions.from(latLng)
-                .setStyles(LabelStyle.from(resource).setAnchorPoint(0.5f, 0.5f))
-        )
+        val label = layer.addLabel(LabelOptions.from(latLng).setStyles(circleStyle))
         label.scaleTo(CIRCLE_SCALE, CIRCLE_SCALE)
     }
 }
@@ -107,13 +104,8 @@ fun KakaoMap?.setCirclesStyle(list: List<LatLng>, passedIndex: Int) {
     val layer = this?.labelManager?.getLayer(CIRCLE_LAYER_ID) ?: return
     layer.removeAll()
     for ((index, latLng) in list.withIndex()) {
-        val label = layer.addLabel(
-            LabelOptions.from(latLng)
-                .setStyles(
-                    LabelStyle.from(if (index > passedIndex) R.drawable.ic_circle_gray else R.drawable.ic_circle_lime)
-                        .setAnchorPoint(0.5f, 0.5f)
-                )
-        )
+        val circleStyle = if (index <= passedIndex) limeCircleStyle else grayCircleStyle
+        val label = layer.addLabel(LabelOptions.from(latLng).setStyles(circleStyle))
         label.scaleTo(CIRCLE_SCALE, CIRCLE_SCALE)
     }
 }
@@ -136,6 +128,6 @@ private val rideLineStyle = RouteLineStyle.from(LINE_WIDTH, SaiColor.Lime.toArgb
 private val grayCircleStyle = LabelStyle.from(R.drawable.ic_circle_gray).setAnchorPoint(0.5f, 0.5f)
 private val limeCircleStyle = LabelStyle.from(R.drawable.ic_circle_lime).setAnchorPoint(0.5f, 0.5f)
 
-private const val LINE_WIDTH = 20f
-private const val CIRCLE_SCALE = 2.8f
-private const val DIRECTION_LABEL_SCALE = 2f
+private const val LINE_WIDTH = 10f
+private const val CIRCLE_SCALE = 2.3f
+private const val DIRECTION_LABEL_SCALE = 1.5f

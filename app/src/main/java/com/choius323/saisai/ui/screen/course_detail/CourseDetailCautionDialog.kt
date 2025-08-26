@@ -116,14 +116,12 @@ private fun CheckboxRow(
     }
 }
 
-
 @Composable
 private fun CautionDialogItemList(modifier: Modifier = Modifier) {
     Column(modifier.padding(horizontal = 8.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        // TODO: 아이템 목록 내용 변경
-        CautionDialogItem("코스를 이탈한 경우,\n 주행이 자동으로 일시정지돼요.")
-        CautionDialogItem("일시 정지 후 12시간이 지나면\n주행 기록이 초기화돼요.")
-        CautionDialogItem("일시 정지 된 코스는\n코스 기록에서 확인할 수 있어요.")
+        CautionDialogItem("마지막 체크 포인트 도달 후 종료 지점까지 이동해야 완주로 인정됩니다.")
+        CautionDialogItem("일시 정지 후 12시간이 지나면 주행 기록이 초기화돼요.")
+        CautionDialogItem("일시 정지 된 코스는 코스 기록에서 확인할 수 있어요.")
     }
 }
 

@@ -3,16 +3,10 @@ package com.choius323.saisai.ui.screen.record
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -20,7 +14,6 @@ import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
-import kotlinx.coroutines.delay
 import java.util.Locale
 import java.util.concurrent.TimeUnit
 
@@ -30,7 +23,7 @@ fun RecordTimerText(
     rideState: RideState,
     modifier: Modifier = Modifier,
 ) {
-    if (rideState != RideState.READY && rideState != RideState.COMPLETE) {
+    if (rideState != RideState.COMPLETE) {
         val timeFormatted = totalSeconds.let {
             val hours = TimeUnit.SECONDS.toHours(it)
             val minutes = TimeUnit.SECONDS.toMinutes(it) % 60

@@ -47,6 +47,7 @@ fun RecordStateDescription(
     toggleExpanded: () -> Unit,
 ) {
     val courseDetail = uiState.courseDetail ?: return
+    if (uiState.rideState == RideState.COMPLETE) return
     Column(
         modifier = modifier
     ) {

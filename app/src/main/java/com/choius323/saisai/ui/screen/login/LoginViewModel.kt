@@ -28,18 +28,20 @@ class LoginViewModel(
                 reduce { state.copy(isDelayed = true) }
             }
             reduce { state.copy(isLoading = true) }
-            if (SessionManager.refreshToken.value != null) {
-                reissueTokenUseCase().collectLatest { result ->
-                    result.onSuccess {
-                        postSideEffect(LoginSideEffect.GoHome)
-                    }.onFailure {
-                        reduce { state.copy(isLoading = false) }
-                        postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
+            SessionManager.refreshToken.collectLatest { token ->
+                if (token != null) {
+                    reissueTokenUseCase().collectLatest { result ->
+                        result.onSuccess {
+                            postSideEffect(LoginSideEffect.GoHome)
+                        }.onFailure {
+                            reduce { state.copy(isLoading = false) }
+                            postSideEffect(LoginSideEffect.ShowToast(it.message ?: "Unknown Error"))
+                        }
                     }
+                } else {
+                    SessionManager.onLogout()
+                    reduce { state.copy(isLoading = false) }
                 }
-            } else {
-                SessionManager.onLogout()
-                reduce { state.copy(isLoading = false) }
             }
         }
     }

@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.login
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -7,8 +8,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.runtime.Composable
@@ -28,7 +29,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.em
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.FullScreenLoading
@@ -65,6 +68,7 @@ fun LoginScreen(
             }
 
             is LoginSideEffect.GoHome -> {
+                Log.d(TAG, "SideEffectGoHome")
                 pendingNavigation = { goHome() }
             }
 
@@ -75,6 +79,7 @@ fun LoginScreen(
     }
 
     LaunchedEffect(uiState.isDelayed, pendingNavigation) {
+        Log.d(TAG, "LaunchedEffect: ${uiState.isDelayed}, $pendingNavigation")
         if (uiState.isDelayed && pendingNavigation != null) {
             isShownSplash = true
             pendingNavigation?.invoke()
@@ -99,8 +104,8 @@ fun LoginScreenContent(
 ) {
     val context = LocalContext.current
     Box(
-        modifier,
-        contentAlignment = Alignment.Center
+        modifier.fillMaxSize(),
+        contentAlignment = Alignment.TopCenter,
     ) {
         Image(
             painter = painterResource(id = R.drawable.img_background_full),
@@ -120,16 +125,17 @@ fun LoginScreenContent(
                 },
             contentScale = ContentScale.Crop
         )
+        // 앱 타이틀
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier
-                .align(Alignment.Center)
-                .offset(y = (-50).dp)
+            modifier = Modifier.fillMaxHeight(0.48f),
+            verticalArrangement = Arrangement.Bottom,
         ) {
             SaiText(
                 text = "사이사이",
                 style = Typography.AppTitle.copy(fontSize = 42.sp, fontWeight = FontWeight.W400),
-                color = SaiColor.White
+                color = SaiColor.White,
+                lineHeight = 1.em
             )
             SaiText(
                 text = "일상 사이 스며드는 라이딩 코스",
@@ -138,15 +144,33 @@ fun LoginScreenContent(
                 color = SaiColor.White
             )
         }
-        LoginButtons(
-            modifier = Modifier.offset(y = 130.dp),
-            isShow = uiState.isDelayed,
-            onGoogleSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.GOOGLE, it)) },
-            onKakaoSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.KAKAO, it)) },
-            onError = { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
-        )
+        Box(Modifier.fillMaxHeight(0.76f), contentAlignment = Alignment.BottomCenter) {
+            LoginButtons(
+                isShow = uiState.isDelayed,
+                onGoogleSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.GOOGLE, it)) },
+                onKakaoSuccess = { onEvent(LoginUiEvent.SuccessOAuthLogin(LoginType.KAKAO, it)) },
+                onError = { Toast.makeText(context, it.message, Toast.LENGTH_SHORT).show() }
+            )
+        }
     }
 }
+
+@Preview
+@Composable
+fun LoginScreenContentPreview() {
+    LoginScreenContent(
+        uiState = LoginUiState(isDelayed = false)
+    ) {}
+}
+
+@Preview
+@Composable
+fun LoginScreenContentPreviewDelayed() {
+    LoginScreenContent(
+        uiState = LoginUiState(isDelayed = true)
+    ) {}
+}
+
 
 @Composable
 fun LoginButtons(
@@ -160,13 +184,13 @@ fun LoginButtons(
     val coroutineScope = rememberCoroutineScope()
     if (isShow) {
         Row(
-            horizontalArrangement = Arrangement.spacedBy(32.dp), modifier = modifier
+            modifier, horizontalArrangement = Arrangement.spacedBy(18.dp),
         ) {
             Image(
                 painterResource(R.drawable.ic_google),
                 "구글 로그인",
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(54.dp)
                     .clip(CircleShape)
                     .clickable {
                         coroutineScope.launch {
@@ -178,7 +202,7 @@ fun LoginButtons(
                 painterResource(R.drawable.ic_kakao_talk),
                 "구글 로그인",
                 modifier = Modifier
-                    .size(48.dp)
+                    .size(54.dp)
                     .clip(CircleShape)
                     .clickable {
                         KakaoAccountUtil.kakaoLogin(context, onKakaoSuccess, onError)

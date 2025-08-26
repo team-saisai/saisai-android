@@ -88,7 +88,7 @@ fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
         LabelOptions.from(DIRECTION_LABEL, latLng).setStyles(directionStyle)
     )
     label.moveTo(latLng)
-    label.scaleTo(2f, 2f)
+    label.scaleTo(DIRECTION_LABEL_SCALE, DIRECTION_LABEL_SCALE)
 }
 
 fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
@@ -99,7 +99,7 @@ fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
             LabelOptions.from(latLng)
                 .setStyles(LabelStyle.from(resource).setAnchorPoint(0.5f, 0.5f))
         )
-        label.scaleTo(3f, 3f)
+        label.scaleTo(CIRCLE_SCALE, CIRCLE_SCALE)
     }
 }
 
@@ -114,7 +114,7 @@ fun KakaoMap?.setCirclesStyle(list: List<LatLng>, passedIndex: Int) {
                         .setAnchorPoint(0.5f, 0.5f)
                 )
         )
-        label.scaleTo(3f, 3f)
+        label.scaleTo(CIRCLE_SCALE, CIRCLE_SCALE)
     }
 }
 
@@ -137,3 +137,5 @@ private val grayCircleStyle = LabelStyle.from(R.drawable.ic_circle_gray).setAnch
 private val limeCircleStyle = LabelStyle.from(R.drawable.ic_circle_lime).setAnchorPoint(0.5f, 0.5f)
 
 private const val LINE_WIDTH = 20f
+private const val CIRCLE_SCALE = 2.8f
+private const val DIRECTION_LABEL_SCALE = 2f

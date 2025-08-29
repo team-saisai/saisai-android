@@ -137,6 +137,7 @@ fun List<PointDto>.toCheckPointList(gpxPointDtoList: List<GpxPointDto>): List<Ch
             null
         }
     }
+    if (newCheckPointList.size != this.size) throw Exception("체크 포인트가 GPX 포인트와 매칭되지 않습니다.")
     return newCheckPointList.sortedBy(CheckPoint::gpxPointIdx)
 }
 

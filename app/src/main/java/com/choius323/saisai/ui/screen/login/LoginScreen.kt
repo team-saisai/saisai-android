@@ -109,7 +109,7 @@ fun LoginScreenContent(
         contentAlignment = Alignment.TopCenter,
     ) {
         Image(
-            painter = painterResource(id = R.drawable.img_background_full),
+            painter = painterResource(id = R.drawable.img_splash_screen),
             contentDescription = "스플래시 배경 이미지",
             modifier = Modifier
                 .fillMaxSize()
@@ -176,6 +176,13 @@ fun LoginScreenContentPreviewDelayed() {
     ) {}
 }
 
+@Preview(device = "spec:parent=pixel_5, orientation=landscape")
+@Composable
+fun LoginScreenContentPreviewLandscape() {
+    LoginScreenContent(
+        uiState = LoginUiState(isDelayed = true)
+    ) {}
+}
 
 @Composable
 fun LoginButtons(

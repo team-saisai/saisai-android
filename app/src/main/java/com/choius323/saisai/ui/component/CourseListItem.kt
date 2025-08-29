@@ -255,20 +255,22 @@ private fun CourseListItemPreview() {
 
     SaiTheme {
         Surface {
-            courseListItem.apply {
-                CourseListItemVertical(
-                    imageUrl = imageUrl,
-                    courseName = courseName,
-                    distance = distance,
-                    level = level,
-                    participantCount = participantsCount,
-                    isEventActive = isEventActive,
-                    reward = reward,
-                    endDate = challengeEndedAt,
-                    modifier = Modifier,
-                    isBookmarked = isBookmarked,
-                    onClickBookmark = {}
-                )
+            Box(Modifier.height(IntrinsicSize.Max)) {
+                courseListItem.apply {
+                    CourseListItemVertical(
+                        imageUrl = imageUrl,
+                        courseName = courseName,
+                        distance = distance,
+                        level = level,
+                        participantCount = participantsCount,
+                        isEventActive = isEventActive,
+                        reward = reward,
+                        endDate = challengeEndedAt,
+                        modifier = Modifier,
+                        isBookmarked = isBookmarked,
+                        onClickBookmark = {}
+                    )
+                }
             }
         }
     }

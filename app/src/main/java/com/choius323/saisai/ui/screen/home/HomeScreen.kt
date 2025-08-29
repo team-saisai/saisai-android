@@ -131,12 +131,10 @@ fun HomeScreenContent(
                     placeable.placeRelative(0, 0)
                 }
             }) {
-
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
-                        .padding(horizontal = 11.dp)
                         .height(IntrinsicSize.Max)
                 ) {
                     for (courseInfo in trendChallenges) {

@@ -88,6 +88,26 @@ fun CourseListItemHorizontal(
     }
 }
 
+@Composable
+fun CourseListItemVertical(
+    courseInfo: CourseListItem,
+    modifier: Modifier = Modifier,
+    onClickBookmark: () -> Unit = {},
+) {
+    CourseListItemVertical(
+        imageUrl = courseInfo.imageUrl ?: "",
+        courseName = courseInfo.courseName,
+        distance = courseInfo.distance,
+        level = courseInfo.level,
+        isEventActive = courseInfo.isEventActive,
+        endDate = courseInfo.challengeEndedAt,
+        reward = courseInfo.reward,
+        participantCount = courseInfo.participantsCount,
+        modifier = modifier,
+        isBookmarked = courseInfo.isBookmarked,
+        onClickBookmark = onClickBookmark
+    )
+}
 
 @Composable
 fun CourseListItemVertical(
@@ -114,7 +134,7 @@ fun CourseListItemVertical(
             imageUrl = imageUrl,
             endDate = endDate,
             isEventActive = isEventActive,
-            modifier = modifier
+            modifier = Modifier
                 .size(width = 200.dp, height = 160.dp),
             isHorizontalGradient = false,
         )

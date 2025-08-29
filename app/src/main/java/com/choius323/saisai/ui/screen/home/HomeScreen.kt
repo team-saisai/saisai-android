@@ -5,11 +5,11 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -23,14 +23,15 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.CourseListItemVertical
+import com.choius323.saisai.ui.component.FullBleedContainer
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
@@ -127,36 +128,25 @@ fun HomeScreenContent(
             "추천 코스", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
         )
         if (trendChallenges.isNotEmpty()) {
-            Box(Modifier.layout { measurable, constraints ->
-                // 부모가 준 최대 너비 제약에 오른쪽 패딩(22.dp)만큼을 더합니다.
-                val newConstraints = constraints.copy(
-                    maxWidth = constraints.maxWidth + 22.dp.roundToPx()
-
-                )
-                val placeable = measurable.measure(newConstraints)
-                layout(placeable.width, placeable.height) {
-                    placeable.placeRelative(0, 0)
-                }
-            }) {
+            FullBleedContainer(
+                modifier = Modifier.height(IntrinsicSize.Max)
+            ) { measuredStartPadding, measuredEndPadding ->
                 Row(
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
                     modifier = Modifier
                         .horizontalScroll(rememberScrollState())
-                        .height(IntrinsicSize.Max)
+                        .fillMaxHeight()
+                        .padding(
+                            start = measuredStartPadding,
+                            end = measuredEndPadding
+                        ),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
                     for (courseInfo in trendChallenges) {
                         CourseListItemVertical(
-                            imageUrl = courseInfo.imageUrl ?: "",
-                            courseName = courseInfo.courseName,
-                            distance = courseInfo.distance,
-                            level = courseInfo.level,
-                            isEventActive = courseInfo.isEventActive,
-                            endDate = courseInfo.challengeEndedAt,
-                            reward = courseInfo.reward,
-                            participantCount = courseInfo.participantsCount,
-                            modifier = Modifier
+                            courseInfo,
+                            Modifier
                                 .clickable { onEvent(HomeUiEvent.CourseClicked(courseInfo.courseId)) },
-                            isBookmarked = courseInfo.isBookmarked,
                             onClickBookmark = {
                                 onEvent(
                                     HomeUiEvent.OnClickBookmark(

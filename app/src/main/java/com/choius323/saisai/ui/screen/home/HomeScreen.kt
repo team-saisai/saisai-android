@@ -117,7 +117,7 @@ fun HomeScreenContent(
             Spacer(Modifier.height(40.dp))
         }
         SaiText(
-            "인기 챌린지", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
+            "추천 코스", fontSize = 18.sp, modifier = Modifier.padding(bottom = 16.dp)
         )
         if (trendChallenges.isNotEmpty()) {
             Box(Modifier.layout { measurable, constraints ->
@@ -163,7 +163,7 @@ fun HomeScreenContent(
                 }
             }
         } else {
-            SaiText("인기 챌린지가 없습니다.", fontSize = 22.sp, fontWeight = FontWeight.Bold)
+            SaiText("추천 코스가 없습니다.", fontSize = 22.sp, fontWeight = FontWeight.Bold)
         }
         Spacer(Modifier.height(40.dp))
         SaiText(

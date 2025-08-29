@@ -43,15 +43,16 @@ fun FullScreenLoading(modifier: Modifier = Modifier, isModal: Boolean = false) {
     ) {
         Box(
             modifier = modifier
-                .fillMaxSize()
-                .then(interactionModifier),
+                .fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             AnimatedVisibility(
                 visible = shouldShow,
                 enter = fadeIn()
             ) {
-                CircularProgressIndicator()
+                Box(interactionModifier) {
+                    CircularProgressIndicator()
+                }
             }
         }
     }

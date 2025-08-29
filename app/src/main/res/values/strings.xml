@@ -5,11 +5,14 @@
     <!-- 권한 요청 -->
     <string name="permission_dialog_title_access_fine_location">자세한 위치 권한</string>
     <string name="permission_dialog_description_access_fine_location">코스를 시작하기 위해 권한이 필요합니다.</string>
-    <string name="permission_dialog_description_access_fine_location_permanently_declined">코스를 시작하기 위해 권한이 필요합니다.</string>
+    <!--    <string name="permission_dialog_description_access_fine_location_permanently_declined">코스를 시작하기 위해 권한이 필요합니다.</string>-->
+    <string name="permission_dialog_description_access_fine_location_permanently_declined">""</string>
     <string name="permission_dialog_title_access_coarse_location">대략적인 위치 권한</string>
     <string name="permission_dialog_description_access_coarse_location">코스를 시작하기 위해 권한이 필요합니다.</string>
-    <string name="permission_dialog_description_access_coarse_location_permanently_declined">코스를 시작하기 위해 권한이 필요합니다.</string>
+    <!--    <string name="permission_dialog_description_access_coarse_location_permanently_declined">코스를 시작하기 위해 권한이 필요합니다.</string>-->
+    <string name="permission_dialog_description_access_coarse_location_permanently_declined">""</string>
     <string name="permission_dialog_title_post_notification">알림 권한</string>
-    <string name="permission_dialog_description_post_notification">코스 시작 등을 위해 권한이 필요합니다.</string>
-    <string name="permission_dialog_description_post_notification_permanently_declined">코스 시작 등을 위해 권한이 필요합니다.</string>
+    <string name="permission_dialog_description_post_notification">코스 시작을 위해 권한이 필요합니다.</string>
+    <!--    <string name="permission_dialog_description_post_notification_permanently_declined">코스 시작 등을 위해 권한이 필요합니다.</string>-->
+    <string name="permission_dialog_description_post_notification_permanently_declined">""</string>
 </resources>

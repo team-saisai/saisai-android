@@ -6,7 +6,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,24 +22,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.em
-import androidx.compose.ui.unit.sp
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.FullScreenLoading
-import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.model.LoginType
-import com.choius323.saisai.ui.theme.AppTitle
-import com.choius323.saisai.ui.theme.SaiColor
-import com.choius323.saisai.ui.theme.Typography
 import com.choius323.saisai.util.GoogleAccountUtil
 import com.choius323.saisai.util.KakaoAccountUtil
 import kotlinx.coroutines.launch
@@ -114,36 +107,40 @@ fun LoginScreenContent(
                 .fillMaxSize()
                 .drawWithContent {
                     drawContent()
-                    drawRect(
-                        brush = Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF222B40),
-                                Color(0x00222B40)
-                            )
+                    if (uiState.isDelayed) {
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(
+                                    Color(0x00000000),
+                                    Color(0x00202326),
+                                    Color(0xE5151719),
+                                )
+                            ),
+                            topLeft = Offset(x = 0f, y = size.height * 0.5f)
                         )
-                    )
+                    }
                 },
             contentScale = ContentScale.Crop
         )
         // 앱 타이틀
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.fillMaxHeight(0.48f),
-            verticalArrangement = Arrangement.Bottom,
-        ) {
-            SaiText(
-                text = "사이사이",
-                style = Typography.AppTitle.copy(fontSize = 42.sp, fontWeight = FontWeight.W400),
-                color = SaiColor.White,
-                lineHeight = 1.em
-            )
-            SaiText(
-                text = "일상 사이 스며드는 라이딩 코스",
-                fontWeight = FontWeight.W500,
-                fontSize = 13.sp,
-                color = SaiColor.White
-            )
-        }
+        // Column(
+        //     horizontalAlignment = Alignment.CenterHorizontally,
+        //     modifier = Modifier.fillMaxHeight(0.48f),
+        //     verticalArrangement = Arrangement.Bottom,
+        // ) {
+        //     SaiText(
+        //         text = "사이사이",
+        //         style = Typography.AppTitle.copy(fontSize = 42.sp, fontWeight = FontWeight.W400),
+        //         color = SaiColor.White,
+        //         lineHeight = 1.em
+        //     )
+        //     SaiText(
+        //         text = "일상 사이 스며드는 라이딩 코스",
+        //         fontWeight = FontWeight.W500,
+        //         fontSize = 13.sp,
+        //         color = SaiColor.White
+        //     )
+        // }
         Box(Modifier.fillMaxHeight(0.76f), contentAlignment = Alignment.BottomCenter) {
             LoginButtons(
                 isShow = uiState.isDelayed,

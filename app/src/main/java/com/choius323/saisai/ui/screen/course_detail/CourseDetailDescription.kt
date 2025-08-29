@@ -15,10 +15,9 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.DirectionsBike
 import androidx.compose.material.icons.filled.CheckCircleOutline
+import androidx.compose.material.icons.filled.Motorcycle
 import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
@@ -191,16 +190,16 @@ private fun ChallengeButton(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(
-            imageVector = Icons.AutoMirrored.Default.DirectionsBike,
+            imageVector = Icons.Default.Motorcycle,
             contentDescription = "도전하기 아이콘",
             tint = SaiColor.Black
         )
         Spacer(modifier = Modifier.height(4.dp))
         SaiText(
             text = "도전하기",
-            style = MaterialTheme.typography.labelMedium.copy(
-                color = SaiColor.Black, fontWeight = FontWeight.SemiBold
-            ),
+            fontWeight = FontWeight.W600,
+            fontSize = 12.sp,
+            color = Color(0xFF1C1B1F)
         )
     }
 }

@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -25,6 +26,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import coil3.compose.AsyncImage
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
@@ -39,28 +42,34 @@ fun BadgeDetailDialog(
     closeBadgeDialog: () -> Unit,
 ) {
     if (badge == null) return
-    Box(
-        modifier
-            .background(Color(0x804A4D50))
-            .clickable(null, null, onClick = closeBadgeDialog),
-        contentAlignment = Alignment.Center
+    Dialog(
+        closeBadgeDialog,
+        DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
     ) {
         Box(
-            Modifier
-                .clip(RoundedCornerShape(24.dp))
-                .width(320.dp)
-                .background(SaiColor.Gray85)
-                .clickable(null, null) {}
+            modifier
+                .fillMaxSize()
+                .background(Color(0x804A4D50))
+                .clickable(null, null, onClick = closeBadgeDialog),
+            contentAlignment = Alignment.Center
         ) {
-            Icon(
-                Icons.Default.Close,
-                contentDescription = "Close",
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
-                    .padding(18.dp)
-                    .clickable(onClick = closeBadgeDialog)
-            )
-            BadgeDetailDialogContent(badge, Modifier.align(Alignment.Center))
+            Box(
+                Modifier
+                    .clip(RoundedCornerShape(24.dp))
+                    .width(320.dp)
+                    .background(SaiColor.Gray85)
+                    .clickable(null, null) {}
+            ) {
+                Icon(
+                    Icons.Default.Close,
+                    contentDescription = "Close",
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(18.dp)
+                        .clickable(onClick = closeBadgeDialog)
+                )
+                BadgeDetailDialogContent(badge, Modifier.align(Alignment.Center))
+            }
         }
     }
 }

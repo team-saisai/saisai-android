@@ -147,9 +147,7 @@ fun MainNavController(
         }
         composable<MainNavItem.BadgeList> { backStackEntry ->
             BadgeListScreen(
-                modifier = modifier
-                    .fillMaxSize()
-                    .navigationBarsPadding(),
+                modifier = Modifier.fillMaxSize(),
                 goBack = navController::upPress
             )
         }

@@ -6,6 +6,7 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
@@ -135,7 +136,7 @@ fun MainNavController(
         }
         composable<MainNavItem.SignUp> { backStackEntry ->
             SignUpScreen(
-                modifier = modifier,
+                modifier = modifier.navigationBarsPadding(),
                 goHome = {
                     navController.navigate(MainNavItem.BottomNavItem.Home) {
                         popUpTo(MainNavItem.Login) { inclusive = true }
@@ -146,7 +147,9 @@ fun MainNavController(
         }
         composable<MainNavItem.BadgeList> { backStackEntry ->
             BadgeListScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding(),
                 goBack = navController::upPress
             )
         }
@@ -198,9 +201,8 @@ fun MainNavController(
         }
         composable<MainNavItem.BottomNavItem.RideHistory> { backStackEntry ->
             RideHistoryScreen(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(top = TopAppBarHeight)
+                modifier = modifier
+                    .navigationBarsPadding()
                     .fillMaxSize(),
                 goCourseDetail = { navController.navigate(MainNavItem.CourseDetail(it)) },
                 goCourseList = {
@@ -213,9 +215,8 @@ fun MainNavController(
         }
         composable<MainNavItem.TotalReward> { backStackEntry ->
             TotalRewardScreen(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(top = TopAppBarHeight)
+                modifier = modifier
+                    .navigationBarsPadding()
                     .fillMaxSize(),
                 goToCourseList = {
                     navController.navigate(MainNavItem.BottomNavItem.Course) {

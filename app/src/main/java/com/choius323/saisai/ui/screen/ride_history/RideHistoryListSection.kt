@@ -27,6 +27,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.choius323.saisai.ui.component.EmptyCourseList
+import com.choius323.saisai.ui.component.bottomNavigationBarHeight
 import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -52,7 +53,8 @@ fun RideHistoryListSection(
         )
     } else {
         LazyColumn(
-            modifier = modifier.fillMaxSize(), contentPadding = PaddingValues(vertical = 10.dp)
+            modifier = modifier.fillMaxSize(),
+            contentPadding = PaddingValues(top = 10.dp, bottom = bottomNavigationBarHeight),
         ) {
             itemsIndexed(
                 items = courseList, key = { _, item -> item.rideId }

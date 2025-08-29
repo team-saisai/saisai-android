@@ -162,7 +162,7 @@ class RecordViewModel(
         reduce {
             state.copy(
                 isLoading = true,
-                isCameraTracking = false,
+                isCameraTracking = true,
                 rideState = RideState.COMPLETE,
             )
         }

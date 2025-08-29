@@ -12,10 +12,10 @@ import com.kakao.vectormap.label.LabelLayerOptions
 import com.kakao.vectormap.label.LabelOptions
 import com.kakao.vectormap.label.LabelStyle
 import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.PathOptions
 import com.kakao.vectormap.route.RouteLineOptions
 import com.kakao.vectormap.route.RouteLineSegment
 import com.kakao.vectormap.route.RouteLineStyle
-import com.kakao.vectormap.R as KakaoMapR
 
 
 fun updateMapData(map: KakaoMap?, route: List<GpxPoint>) {
@@ -26,25 +26,43 @@ fun updateMapData(map: KakaoMap?, route: List<GpxPoint>) {
 }
 
 fun KakaoMap?.drawRoute(route: List<LatLng>, color: Int = SaiColor.Lime.toArgb()) {
-    val layer = this?.routeLineManager?.layer ?: return
+    val layer = this?.routeLineManager?.getLayer(DEFAULT_LINE_LAYER_ID)
+        ?: this?.routeLineManager?.addLayer(DEFAULT_LINE_LAYER_ID, Z_ORDER_DEFAULT_LINE)
+        ?: return
     if (route.size < 2) return
     layer.removeAll()
     val style = RouteLineStyle.from(LINE_WIDTH, color)
     val segment = RouteLineSegment.from(route)
         .setStyles(style)
-    val routeLine = layer.addRouteLine(RouteLineOptions.from(segment))
-    routeLine.zOrder = 2
+    layer.addRouteLine(RouteLineOptions.from(segment))
+}
+
+fun KakaoMap?.createEndPointsLabel(startPoint: LatLng, endPoint: LatLng) {
+    val layer = this?.labelManager?.getLayer(END_POINTS_LAYER_ID)
+        ?: this?.labelManager?.addLayer(LabelLayerOptions.from(END_POINTS_LAYER_ID))
+        ?: return
+    layer.zOrder = Z_ORDER_END_POINTS
+    layer.addLabels(
+        listOf(
+            LabelOptions.from(START_LABEL, startPoint).setStyles(startStyle),
+            LabelOptions.from(END_LABEL, endPoint).setStyles(endStyle)
+        )
+    )
+    layer.allLabels.forEach {
+        it.scaleTo(4f, 4f)
+    }
 }
 
 fun KakaoMap?.drawRideRoute(route: List<LatLng>, startIndex: Int, endIndex: Int) {
-    val layer = this?.routeLineManager?.layer ?: return
+    val layer = this?.routeLineManager?.getLayer(COLOR_LINE_LAYER_ID)
+        ?: this?.routeLineManager?.addLayer(COLOR_LINE_LAYER_ID, Z_ORDER_COLOR_LINE)
+        ?: return
     if (route.size < 2) return
     if (layer.getRouteLine("rideLine/${startIndex}/${endIndex}") != null) return
     val segment =
         RouteLineSegment.from(route.subList(startIndex, endIndex)).setStyles(rideLineStyle)
     val routeLine =
         layer.addRouteLine(RouteLineOptions.from("rideLine/${startIndex}/${endIndex}", segment))
-    routeLine.zOrder = 3
 }
 
 @JvmName("drawRideRouteWithGpxPoints")
@@ -84,15 +102,20 @@ fun KakaoMap?.createLabel(start: LatLng, end: LatLng) {
 
 fun KakaoMap?.createDirectionLabel(latLng: LatLng) {
     val layer = this?.labelManager?.layer ?: return
-    val label = layer.getLabel(DIRECTION_LABEL) ?: layer.addLabel(
-        LabelOptions.from(DIRECTION_LABEL, latLng).setStyles(directionStyle)
-    )
-    label.moveTo(latLng)
-    label.scaleTo(DIRECTION_LABEL_SCALE, DIRECTION_LABEL_SCALE)
+    val label = layer.getLabel(DIRECTION_LABEL)
+    if (label == null) {
+        val newLabel = layer.addLabel(
+            LabelOptions.from(DIRECTION_LABEL, latLng).setStyles(directionStyle)
+        )
+        newLabel.scaleTo(DIRECTION_LABEL_SCALE, DIRECTION_LABEL_SCALE)
+    } else {
+        label.moveOnPath(PathOptions.fromPath(label.position, latLng))
+    }
 }
 
 fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
     val layer = this?.labelManager?.addLayer(LabelLayerOptions.from(CIRCLE_LAYER_ID)) ?: return
+    layer.zOrder = Z_ORDER_DEFAULT_CIRCLE
     val circleStyle = if (isColor) limeCircleStyle else grayCircleStyle
     list.forEachIndexed { index, latLng ->
         val label = layer.addLabel(LabelOptions.from(latLng).setStyles(circleStyle))
@@ -103,6 +126,7 @@ fun KakaoMap?.initCircles(list: List<LatLng>, isColor: Boolean = true) {
 fun KakaoMap?.setCirclesStyle(list: List<LatLng>, passedIndex: Int) {
     val layer = this?.labelManager?.getLayer(CIRCLE_LAYER_ID) ?: return
     layer.removeAll()
+    layer.zOrder = Z_ORDER_COLOR_CIRCLE
     for ((index, latLng) in list.withIndex()) {
         val circleStyle = if (index <= passedIndex) limeCircleStyle else grayCircleStyle
         val label = layer.addLabel(LabelOptions.from(latLng).setStyles(circleStyle))
@@ -115,11 +139,14 @@ private const val END_LABEL = "End"
 private const val DIRECTION_LABEL = "Direction"
 private const val CIRCLE_ID = "Circle"
 private const val CIRCLE_LAYER_ID = "CircleLayer"
+private const val DEFAULT_LINE_LAYER_ID = "DefaultLineLayer"
+private const val COLOR_LINE_LAYER_ID = "ColorLineLayer"
+private const val END_POINTS_LAYER_ID = "EndPointsLayer"
 
-private val startStyle: LabelStyles =
-    LabelStyles.from(START_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
-private val endStyle: LabelStyles =
-    LabelStyles.from(END_LABEL, LabelStyle.from(KakaoMapR.style.LabelStyle))
+private val startStyle: LabelStyle =
+    LabelStyle.from(R.drawable.img_play_arrow).setAnchorPoint(0.5f, 0.5f)
+private val endStyle: LabelStyle =
+    LabelStyle.from(R.drawable.img_flag).setAnchorPoint(0.5f, 0.5f)
 private val directionStyle: LabelStyles =
     LabelStyles.from(
         DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_ride_bicycle).setAnchorPoint(0.5f, 0.5f)
@@ -131,3 +158,9 @@ private val limeCircleStyle = LabelStyle.from(R.drawable.ic_circle_lime).setAnch
 private const val LINE_WIDTH = 10f
 private const val CIRCLE_SCALE = 2.3f
 private const val DIRECTION_LABEL_SCALE = 1.5f
+
+private const val Z_ORDER_DEFAULT_LINE = 3300
+private const val Z_ORDER_COLOR_LINE = 3400
+private const val Z_ORDER_DEFAULT_CIRCLE = 3500
+private const val Z_ORDER_COLOR_CIRCLE = 3600
+private const val Z_ORDER_END_POINTS = 3700

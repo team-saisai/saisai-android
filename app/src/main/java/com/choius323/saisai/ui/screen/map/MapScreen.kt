@@ -73,9 +73,11 @@ private fun MapScreen(
     LaunchedEffect(kakaoMap, uiState.route) {
         updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
+        if (latLngList.isEmpty()) return@LaunchedEffect
         kakaoMap.drawRoute(latLngList, SaiColor.Lime.toArgb())
         kakaoMap.moveCamera(latLngList)
         kakaoMap.initCircles(uiState.checkPointList.map { it.toLatLng() })
+        kakaoMap.createEndPointsLabel(latLngList.first(), latLngList.last())
     }
     Box(modifier = modifier) {
         AndroidView(
@@ -173,4 +175,4 @@ fun getCurrentLocation(
 }
 
 private const val TAG = "MapScreen"
-private const val OBSERVE_INTERVAL = 300L
+private const val OBSERVE_INTERVAL = 500L

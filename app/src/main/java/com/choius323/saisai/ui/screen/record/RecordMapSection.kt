@@ -15,13 +15,13 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.viewinterop.AndroidView
 import com.choius323.saisai.ui.screen.map.ObserveLocation
 import com.choius323.saisai.ui.screen.map.createDirectionLabel
+import com.choius323.saisai.ui.screen.map.createEndPointsLabel
 import com.choius323.saisai.ui.screen.map.drawRideRoute
 import com.choius323.saisai.ui.screen.map.drawRoute
 import com.choius323.saisai.ui.screen.map.initCircles
 import com.choius323.saisai.ui.screen.map.moveCamera
 import com.choius323.saisai.ui.screen.map.rememberMapView
 import com.choius323.saisai.ui.screen.map.setCirclesStyle
-import com.choius323.saisai.ui.screen.map.updateMapData
 import com.kakao.vectormap.KakaoMap
 import com.kakao.vectormap.LatLng
 import com.kakao.vectormap.MapView
@@ -65,10 +65,11 @@ private fun RecordMapSetting(
         }
     }
     LaunchedEffect(kakaoMap, uiState.route) {
-        updateMapData(kakaoMap, uiState.route)
         val latLngList = uiState.route.map { it.toLatLng() }
+        if (latLngList.isEmpty()) return@LaunchedEffect
         kakaoMap.drawRoute(latLngList, Color(0xFFBABEC3).toArgb())
         kakaoMap.moveCamera(latLngList)
+        kakaoMap.createEndPointsLabel(latLngList.first(), latLngList.last())
     }
     LaunchedEffect(kakaoMap, uiState.courseDetail?.checkPointList) {
         val checkPointList =

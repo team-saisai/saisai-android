@@ -1,7 +1,6 @@
 package com.choius323.saisai.ui.screen.badge_list
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -10,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -28,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.theme.SaiColor
@@ -74,12 +73,10 @@ private fun BadgeDetailDialogContent(badge: UserBadge, modifier: Modifier = Modi
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         AsyncImage(
-            badge.imageUrl,
+            badge.imageUrl ?: R.drawable.img_badge_lock,
             contentDescription = "뱃지 이미지",
             modifier = Modifier
-                .size(140.dp)
-                .border(1.dp, SaiColor.Gray50, CircleShape)
-                .clip(CircleShape),
+                .size(140.dp),
             contentScale = ContentScale.Crop,
         )
         Spacer(Modifier.height(12.dp))

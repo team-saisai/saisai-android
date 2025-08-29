@@ -21,9 +21,7 @@ class BadgeListViewModel(
     fun onEvent(event: BadgeListUiEvent) = when (event) {
         BadgeListUiEvent.CloseBadgeDialog -> closeBadgeDialog()
         is BadgeListUiEvent.OnClickBadge -> onClickBadge(event.badge)
-        BadgeListUiEvent.OnClickBack -> intent {
-            postSideEffect(BadgeListSideEffect.GoBack)
-        }
+        BadgeListUiEvent.OnClickBack -> onClickBack()
     }
 
     private fun loadData() = intent {
@@ -52,6 +50,14 @@ class BadgeListViewModel(
     private fun onClickBadge(badge: UserBadge) = intent {
         reduce {
             state.copy(showBadgeDialog = badge)
+        }
+    }
+
+    private fun onClickBack() = intent {
+        if (state.showBadgeDialog == null) {
+            postSideEffect(BadgeListSideEffect.GoBack)
+        } else {
+            closeBadgeDialog()
         }
     }
 }

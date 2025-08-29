@@ -1,5 +1,6 @@
 package com.choius323.saisai.ui.screen.badge_list
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -70,6 +71,9 @@ fun BadgeListScreen(
     }, title = {
         SaiText("나의 뱃지", fontWeight = FontWeight.W500, fontSize = 18.sp)
     })
+    BackHandler {
+        viewModel.onEvent(BadgeListUiEvent.OnClickBack)
+    }
     BadgeListScreenContent(uiState, modifier, viewModel::onEvent)
     if (uiState.isLoading) {
         FullScreenLoading()

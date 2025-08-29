@@ -74,7 +74,7 @@ private fun BadgeGridItem(
             modifier = Modifier
                 .widthIn(max = 80.dp)
                 .aspectRatio(1f),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
         )
         Spacer(Modifier.height(8.dp))
         SaiText(

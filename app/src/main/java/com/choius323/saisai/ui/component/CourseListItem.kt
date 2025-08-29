@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
@@ -26,6 +27,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -65,6 +68,7 @@ fun CourseListItemHorizontal(
             course.imageUrl,
             course.challengeEndedAt,
             course.isEventActive,
+            isHorizontalGradient = true,
             Modifier.size(width = 160.dp, height = 132.dp),
             isColor = isColor,
         )
@@ -113,6 +117,7 @@ fun CourseListItemVertical(
             isEventActive = isEventActive,
             modifier = modifier
                 .size(width = 200.dp, height = 160.dp),
+            isHorizontalGradient = false,
         )
 
         // 하단 정보 섹션
@@ -170,6 +175,7 @@ fun CourseItemImageSection(
     imageUrl: Any?,
     endDate: LocalDate?,
     isEventActive: Boolean,
+    isHorizontalGradient: Boolean,
     modifier: Modifier = Modifier,
     isColor: Boolean = true,
 ) {
@@ -177,8 +183,29 @@ fun CourseItemImageSection(
         AsyncImage(
             model = imageUrl,
             contentDescription = "코스 이미지",
-            modifier = Modifier,
-            contentScale = ContentScale.Crop
+            modifier = Modifier
+                .fillMaxSize()
+                .drawWithContent {
+                    drawContent()
+                    if (isHorizontalGradient) {
+                        drawRect(
+                            brush = Brush.horizontalGradient(
+                                colors = listOf(Color.Transparent, Color(0xFF2B2E31)),
+                                startX = size.width - 15.dp.toPx(),
+                                endX = size.width,
+                            )
+                        )
+                    } else {
+                        drawRect(
+                            brush = Brush.verticalGradient(
+                                colors = listOf(Color.Transparent, Color(0xFF2B2E31)),
+                                startY = size.height - 15.dp.toPx(),
+                                endY = size.height,
+                            )
+                        )
+                    }
+                },
+            contentScale = ContentScale.FillBounds,
         )
         ChallengeStatusBadge(
             endDate = endDate,

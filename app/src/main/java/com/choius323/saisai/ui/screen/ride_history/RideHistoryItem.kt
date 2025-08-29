@@ -55,6 +55,7 @@ fun RideHistoryItem(
             course.imageUrl,
             course.challengeEndedAt,
             course.isEventActive,
+            isHorizontalGradient = true,
             Modifier.size(width = 160.dp, height = 132.dp),
             isColor = isEditMode.not()
         )

@@ -63,8 +63,10 @@ fun DescriptionContent(
         } else {
             SaiText("체크포인트 달성률", fontSize = 10.sp, color = SaiColor.Gray40)
             Row(verticalAlignment = Alignment.Bottom) {
+                val percentage =
+                    ((nowCheckPointIdx + 1).toFloat() / totalCheckPointSize * 100).roundToInt()
                 SaiText(
-                    "${((nowCheckPointIdx + 1).toFloat() / totalCheckPointSize * 100).roundToInt()}%",
+                    "${if (percentage == 100 && rideState != RideState.COMPLETE) 99 else percentage}%",
                     color = SaiColor.Lime,
                     fontSize = 22.sp
                 )

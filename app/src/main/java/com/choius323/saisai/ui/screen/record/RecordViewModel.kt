@@ -298,4 +298,4 @@ class RecordViewModel(
 }
 
 private const val TAG = "RecordViewModel"
-private const val DISTANCE_STANDARD = 25f
+private const val DISTANCE_STANDARD = 75f

@@ -143,7 +143,7 @@ fun ObserveLocation(
     LifecycleResumeEffect(permissionGranted) {
         if (permissionGranted) {
             val locationRequest = LocationRequest.Builder(
-                Priority.PRIORITY_HIGH_ACCURACY, 1000
+                Priority.PRIORITY_HIGH_ACCURACY, OBSERVE_INTERVAL
             ).build()
 
             // 위치 업데이트 시작
@@ -173,3 +173,4 @@ fun getCurrentLocation(
 }
 
 private const val TAG = "MapScreen"
+private const val OBSERVE_INTERVAL = 300L

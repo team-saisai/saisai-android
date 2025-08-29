@@ -1,5 +1,7 @@
 package com.choius323.saisai.ui.screen.home
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -18,6 +20,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.platform.LocalContext
@@ -61,6 +66,8 @@ fun HomeScreen(
             is HomeSideEffect.GoNotificationList -> goNotificationList()
         }
     }
+
+    HomeBackHandler()
 
     LaunchedEffect(Unit) {
         viewModel.onEvent(HomeUiEvent.LoadData())
@@ -171,6 +178,23 @@ fun HomeScreenContent(
         )
         BadgeCollectionCard(badges, Modifier.fillMaxWidth())
         Spacer(Modifier.height(20.dp))
+    }
+}
+
+@Composable
+private fun HomeBackHandler() {
+    val context = LocalContext.current
+    val activity = (context as? Activity)
+    var backPressedTime by remember { mutableLongStateOf(0L) }
+
+    BackHandler {
+        // 1초 안에 다시 눌렀다면 앱을 종료합니다.
+        if (System.currentTimeMillis() - backPressedTime <= 1000L) {
+            activity?.finish()
+        } else {
+            backPressedTime = System.currentTimeMillis()
+            context.SaiToast("한 번 더 누르면 종료됩니다.")
+        }
     }
 }
 

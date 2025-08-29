@@ -108,7 +108,10 @@ private fun BadgeDetailDialogDescription(
             )
             Spacer(Modifier.height(7.dp))
             SaiText(
-                "첫번째 코스 완주 시", color = SaiColor.Lime, fontSize = 14.sp, fontWeight = FontWeight.W400
+                badge.condition,
+                color = SaiColor.Lime,
+                fontSize = 14.sp,
+                fontWeight = FontWeight.W400
             )
         }
         Spacer(Modifier.height(16.dp))

@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -18,6 +19,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ArrowBackIos
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Icon
+import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
@@ -34,8 +36,11 @@ import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.SortDropDown
 import com.choius323.saisai.ui.model.CourseSort
+import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.screen.bookmark_courses.DeleteBookmarkDialog
 import com.choius323.saisai.ui.screen.bookmark_courses.DeleteSnackBar
+import com.choius323.saisai.ui.theme.SaiTheme
+import com.jakewharton.threetenabp.AndroidThreeTen
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
 import org.orbitmvi.orbit.compose.collectSideEffect
@@ -164,20 +169,6 @@ private fun RidingHeadLine(
 }
 
 @Composable
-@Preview
-private fun RidingHeadLinePreview() {
-    RidingHeadLine(
-        isEditMode = false,
-        isRidingOnly = true,
-        selectedCourseSort = CourseSort.newest,
-        modifier = Modifier.padding(horizontal = 18.dp),
-        onSelectedCourseSort = {},
-        onClickShowRidingOnly = {},
-    )
-}
-
-
-@Composable
 private fun HandleAppBar(
     editMode: Boolean,
     onEvent: (RideHistoryUiEvent) -> Unit,
@@ -217,3 +208,82 @@ private fun TextButton(text: String, color: Color = Color.Unspecified, onClick: 
     )
 }
 
+@Preview(heightDp = 400)
+@Composable
+private fun RideHistoryScreenPreview() {
+    AndroidThreeTen.init(LocalContext.current)
+    val courseList = listOf(
+        RideHistoryItem.sample1,
+        RideHistoryItem.sample2,
+        RideHistoryItem.sample2.copy(rideId = 3),
+    )
+    SaiTheme {
+        Surface {
+            RideHistoryScreenContent(
+                RideHistoryUiState(courseList = courseList),
+                Modifier
+                    .navigationBarsPadding()
+                    .fillMaxSize(),
+            ) {}
+        }
+    }
+}
+
+@Preview(showSystemUi = true, device = "spec:width=392.7dp,height=400dp,dpi=440")
+@Composable
+private fun RideHistoryScreenPreviewEditMode() {
+    AndroidThreeTen.init(LocalContext.current)
+    val courseList = listOf(
+        RideHistoryItem.sample1,
+        RideHistoryItem.sample2,
+        RideHistoryItem.sample2.copy(rideId = 3),
+    )
+    SaiTheme {
+        Surface {
+            RideHistoryScreenContent(
+                RideHistoryUiState(editMode = true, courseList = courseList),
+                Modifier
+                    .navigationBarsPadding()
+                    .fillMaxSize(),
+            ) {}
+        }
+    }
+}
+
+@Preview(showSystemUi = true, device = "spec:width=392.7dp,height=400dp,dpi=440,navigation=buttons")
+@Composable
+private fun RideHistoryScreenPreviewEditModeWithDeviceButton() {
+    AndroidThreeTen.init(LocalContext.current)
+    val courseList = listOf(
+        RideHistoryItem.sample1,
+        RideHistoryItem.sample2,
+        RideHistoryItem.sample2.copy(rideId = 3),
+    )
+    SaiTheme {
+        Surface {
+            RideHistoryScreenContent(
+                RideHistoryUiState(editMode = true, courseList = courseList),
+                Modifier
+                    .navigationBarsPadding()
+                    .fillMaxSize(),
+            ) {}
+        }
+    }
+}
+
+@Composable
+@Preview
+private fun RidingHeadLinePreview() {
+    SaiTheme {
+        Surface {
+            RidingHeadLine(
+                isEditMode = false,
+                isRidingOnly = true,
+                selectedCourseSort = CourseSort.newest,
+                modifier = Modifier.padding(horizontal = 18.dp),
+                onSelectedCourseSort = {},
+                onClickShowRidingOnly = {},
+            )
+        }
+    }
+}

@@ -55,7 +55,7 @@ fun BottomNavigationBar(
         modifier,
     ) { screen ->
         mainNavController.navigate(to = screen, from = navBackStackEntry) {
-            popUpTo(mainNavController.navController.graph.startDestinationId) {
+            popUpTo<MainNavItem.BottomNavItem.Home> {
                 saveState = true
             }
             launchSingleTop = true
@@ -89,7 +89,7 @@ private fun BottomNavigationBarContent(
                         modifier = Modifier
                             .weight(1f)
                             .clickable { navigate(screen) }
-                            .padding(top = 10.dp, bottom = 16.dp)
+                            .padding(top = 10.dp, bottom = 12.dp)
                             .navigationBarsPadding(),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally

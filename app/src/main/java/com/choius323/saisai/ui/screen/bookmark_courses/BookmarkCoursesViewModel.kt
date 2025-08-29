@@ -65,7 +65,7 @@ class BookmarkCoursesViewModel(
 
     private fun fetchCourses(isLoadMore: Boolean = false, nextPageParam: Int? = null) = intent {
         Log.d(TAG, "fetchCourseList isLoadMore: $isLoadMore")
-        if ((nextPageParam != null && state.isLoading) || state.isLoadingMore || state.isLastPage) return@intent
+        if ((nextPageParam != null && state.isLoading) || state.isLoadingMore || (isLoadMore && state.isLastPage)) return@intent
 
         val nextPage: Int
         if (isLoadMore) {

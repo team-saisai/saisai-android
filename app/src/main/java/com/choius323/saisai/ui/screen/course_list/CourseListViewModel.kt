@@ -47,7 +47,7 @@ class CourseListViewModel(
 
     private fun fetchCourseList(isLoadMore: Boolean = false) = intent {
         Log.d(TAG, "fetchCourseList isLoadMore: $isLoadMore")
-        if (state.isLoading || state.isLoadingMore || state.isLastPage) return@intent
+        if (state.isLoading || state.isLoadingMore || (isLoadMore && state.isLastPage)) return@intent
         val nextPage: Int
         if (isLoadMore) {
             nextPage = state.page + 1

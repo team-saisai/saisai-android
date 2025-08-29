@@ -71,7 +71,7 @@ fun HomeScreen(
     HomeBackHandler()
 
     LaunchedEffect(Unit) {
-        viewModel.onEvent(HomeUiEvent.LoadData())
+        viewModel.onEvent(HomeUiEvent.LoadData(true))
     }
     ProvideAppBar(
         navigationIcon = {

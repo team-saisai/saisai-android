@@ -105,7 +105,6 @@ private fun SignUpScreenContent(
     ) {
         Row(
             Modifier
-                .fillMaxWidth()
                 .clickable { onEvent(SignUpUiEvent.OnClickAllCheckBox) }
                 .padding(vertical = 7.dp),
             horizontalArrangement = Arrangement.spacedBy(6.dp),
@@ -204,7 +203,6 @@ private fun CheckItem(
     ) {
         Row(
             Modifier
-                .weight(1f)
                 .clickable(onClick = onCheckedChange)
                 .padding(vertical = 6.dp)
         ) {
@@ -217,6 +215,7 @@ private fun CheckItem(
             Spacer(Modifier.width(6.dp))
             SaiText(content, fontSize = 14.sp, color = Color(0xFFD3D5D9))
         }
+        Spacer(Modifier.weight(1f))
         if (onClickDetail != null) {
             Spacer(Modifier.width(6.dp))
             SaiText(

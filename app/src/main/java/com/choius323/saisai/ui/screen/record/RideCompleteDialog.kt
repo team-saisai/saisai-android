@@ -30,11 +30,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.component.TopAppBarHeight
 import com.choius323.saisai.ui.theme.SaiColor
@@ -44,7 +46,7 @@ import java.util.concurrent.TimeUnit
 
 @Composable
 fun RideCompleteDialog(
-    imageUrl: String?,
+    imageUrl: Any?,
     courseName: String,
     distance: Double,
     rideTime: Long,
@@ -88,9 +90,10 @@ fun RideCompleteDialog(
                 AsyncImage(
                     modifier = Modifier
                         .size(width = 320.dp, 400.dp)
-                        .background(color = Color.LightGray),
+                        .background(color = Color(0xFF1D1E20)),
                     model = imageUrl,
                     contentDescription = "코스 이미지",
+                    contentScale = ContentScale.Fit,
                 )
                 RideCompleteDescription(courseName, distance, rideTime)
             }
@@ -161,10 +164,10 @@ private fun RideCompleteScreenContentPreview() {
     SaiTheme {
         Surface {
             RideCompleteDialog(
-                imageUrl = "",
+                imageUrl = R.drawable.img_course_ex,
                 courseName = "여의대로 - 국회대로",
                 distance = 13.2123,
-                rideTime = System.currentTimeMillis() - 1000,
+                rideTime = 10000,
                 goHome = {},
                 goCourseDetail = {},
                 modifier = Modifier.fillMaxSize()

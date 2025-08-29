@@ -17,6 +17,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.outlined.CheckCircle
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -43,7 +44,7 @@ import com.choius323.saisai.ui.theme.SaiColor
 fun CourseDetailCautionDialog(
     isShowDialog: Boolean,
     modifier: Modifier = Modifier,
-    onClickButton: (Boolean, Boolean) -> Unit,
+    onClickButton: (isConfirm: Boolean, isCheckedNoMoreShow: Boolean) -> Unit,
 ) {
     if (isShowDialog.not()) return
     var isCheckedNoMoreShow by remember { mutableStateOf(false) }
@@ -55,38 +56,52 @@ fun CourseDetailCautionDialog(
             },
         contentAlignment = Alignment.Center
     ) {
-        Column(
+        Box(
             Modifier
                 .clickable(interactionSource = null, indication = null) {}
                 .clip(RoundedCornerShape(20.dp))
                 .width(320.dp)
-                .background(SaiColor.Gray90)
-                .padding(top = 36.dp, bottom = 20.dp, start = 20.dp, end = 20.dp),
+                .background(SaiColor.Gray90),
         ) {
-            SaiText(
-                "주행 안내사항",
-                Modifier.align(Alignment.CenterHorizontally),
-                fontSize = 18.sp,
-                color = SaiColor.White
+            Icon(
+                Icons.Default.Close,
+                contentDescription = "Close",
+                modifier = Modifier
+                    .align(Alignment.TopEnd)
+                    .padding(18.dp)
+                    .clickable { onClickButton(false, false) }
+                    .size(24.dp),
+                tint = SaiColor.Gray00,
             )
-            Spacer(Modifier.height(16.dp))
-            CautionDialogItemList()
-            Spacer(Modifier.height(34.dp))
-            CheckboxRow(isCheckedNoMoreShow, Modifier.align(Alignment.CenterHorizontally)) {
-                isCheckedNoMoreShow = isCheckedNoMoreShow.not()
-            }
-            Spacer(Modifier.height(6.dp))
-            TextButton(
-                { onClickButton(true, isCheckedNoMoreShow) },
-                Modifier.fillMaxWidth(),
-                contentPadding = PaddingValues(vertical = 12.dp),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = SaiColor.Lime,
-                    contentColor = SaiColor.Gray90,
-                ),
-                shape = RoundedCornerShape(8.dp)
+            Column(
+                Modifier
+                    .padding(top = 36.dp, bottom = 20.dp, start = 20.dp, end = 20.dp)
             ) {
-                SaiText("코스 도전 시작", fontSize = 16.sp, fontWeight = FontWeight.W600)
+                SaiText(
+                    "주행 안내사항",
+                    Modifier.align(Alignment.CenterHorizontally),
+                    fontSize = 18.sp,
+                    color = SaiColor.White
+                )
+                Spacer(Modifier.height(16.dp))
+                CautionDialogItemList()
+                Spacer(Modifier.height(34.dp))
+                CheckboxRow(isCheckedNoMoreShow, Modifier.align(Alignment.CenterHorizontally)) {
+                    isCheckedNoMoreShow = isCheckedNoMoreShow.not()
+                }
+                Spacer(Modifier.height(6.dp))
+                TextButton(
+                    { onClickButton(true, isCheckedNoMoreShow) },
+                    Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(vertical = 12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = SaiColor.Lime,
+                        contentColor = SaiColor.Gray90,
+                    ),
+                    shape = RoundedCornerShape(8.dp)
+                ) {
+                    SaiText("코스 도전 시작", fontSize = 16.sp, fontWeight = FontWeight.W600)
+                }
             }
         }
     }

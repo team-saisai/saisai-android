@@ -26,6 +26,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
 import com.choius323.saisai.ui.component.SaiText
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -38,7 +40,11 @@ fun DeleteBookmarkDialog(
     onConfirm: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    if (showDialog) {
+    if (showDialog.not()) return
+    Dialog(
+        onDismissRequest,
+        DialogProperties(usePlatformDefaultWidth = false, decorFitsSystemWindows = false)
+    ) {
         Box(
             modifier
                 .background(Color(0x804A4D50))

@@ -34,7 +34,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.HandlePermissionActions
-import com.choius323.saisai.ui.component.PermissionDialog
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiDialog
 import com.choius323.saisai.ui.component.SaiSwitch

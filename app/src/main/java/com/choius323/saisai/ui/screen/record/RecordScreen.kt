@@ -106,17 +106,6 @@ fun RecordScreen(
                 })
         }
     }
-    HandlePermissionActions(
-        permissionState,
-        isShowPermissionDialog = uiState.isShowPermissionDialog,
-        setShowPermissionDialog = { viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(it)) },
-        onPermissionAllGranted = {
-            if (permissionState.allPermissionsGranted) {
-                viewModel.onEvent(RecordUiEvent.SetPermissionGranted(true))
-            } else {
-                viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
-            }
-        })
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is RecordSideEffect.NavigateBack -> onBack()
@@ -192,6 +181,17 @@ fun RecordScreen(
     RecordBackDialog(uiState.isShowBackDialog) {
         viewModel.onEvent(RecordUiEvent.OnClickBackDialog(it))
     }
+    HandlePermissionActions(
+        permissionState,
+        isShowPermissionDialog = uiState.isShowPermissionDialog,
+        setShowPermissionDialog = { viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(it)) },
+        onPermissionAllGranted = {
+            if (permissionState.allPermissionsGranted) {
+                viewModel.onEvent(RecordUiEvent.SetPermissionGranted(true))
+            } else {
+                viewModel.onEvent(RecordUiEvent.SetShowPermissionDialog(true))
+            }
+        })
     if (uiState.isLoading) {
         FullScreenLoading(isModal = true)
     }

@@ -18,5 +18,5 @@ data class RideHistoryItemDto(
     val isBookmarked: Boolean = false,
     val challengeStatus: String?,
     val challengeEndedAt: String?,
-    val isEventActive: Boolean,
+    val isEventActive: Boolean?,
 )

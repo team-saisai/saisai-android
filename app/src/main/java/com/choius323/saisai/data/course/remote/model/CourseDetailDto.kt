@@ -18,7 +18,7 @@ data class CourseDetailDto(
     val rideId: Long?,
     val challengeStatus: String?,
     val challengeEndedAt: String?,
-    val isEventActive: Boolean,
+    val isEventActive: Boolean?,
     @SerialName("gpxPoints")
     val gpxPointDtoList: List<GpxPointDto> = emptyList(),
     @SerialName("checkpoint")

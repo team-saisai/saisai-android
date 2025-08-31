@@ -79,7 +79,7 @@ fun RideHistoryItemDto.toRideHistoryItem() = RideHistoryItem(
     challengeEndedAt = challengeEndedAt?.let {
         LocalDate.parse(challengeEndedAt, DateTimeFormat.dateTimeFormat)
     },
-    isEventActive = isEventActive,
+    isEventActive = isEventActive ?: false,
     rideId = rideId,
     lastRideDate = LocalDate.parse(lastRideDate, DateTimeFormat.dateTimeFormat),
     progressRate = progressRate,
@@ -104,7 +104,7 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
         challengeEndedAt = challengeEndedAt?.let {
             LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat)
         },
-        isEventActive = isEventActive,
+        isEventActive = isEventActive ?: false,
         checkPointList = checkpointList.toCheckPointList(gpxPointDtoList),
         duration = durationSecond?.times(1),
         checkpointIdx = checkpointIdx
@@ -154,7 +154,7 @@ fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListIt
         sigun = sigun,
         imageUrl = imageUrl,
         courseId = courseId,
-        isEventActive = isEventActive,
+        isEventActive = isEventActive ?: false,
         reward = reward,
     )
 }

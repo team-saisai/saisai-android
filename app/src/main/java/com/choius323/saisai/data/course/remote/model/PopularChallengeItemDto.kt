@@ -13,7 +13,7 @@ data class PopularChallengeItemDto(
     val level: Int,
     val challengerCount: Int,
     val sigun: String,
-    val isEventActive: Boolean,
+    val isEventActive: Boolean?,
     val reward: Int,
     val imageUrl: String? = null,
 )

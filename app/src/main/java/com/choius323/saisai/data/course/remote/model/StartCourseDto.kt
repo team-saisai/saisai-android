@@ -12,5 +12,5 @@ data class StartCourseDto(
     @SerialName("gpxPoints")
     val gpxPointList: List<GpxPointDto> = emptyList(),
     @SerialName("checkpoints")
-    val checkpointList: List<PointDto> = emptyList()
+    val checkpointList: List<CheckPointDto> = emptyList(),
 )

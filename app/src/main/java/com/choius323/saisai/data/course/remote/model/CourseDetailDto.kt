@@ -22,7 +22,7 @@ data class CourseDetailDto(
     @SerialName("gpxPoints")
     val gpxPointDtoList: List<GpxPointDto> = emptyList(),
     @SerialName("checkpoint")
-    val checkpointList: List<PointDto> = emptyList(),
+    val checkpointList: List<CheckPointDto> = emptyList(),
     val durationSecond: Long? = null,
     val checkpointIdx: Int? = null,
 )

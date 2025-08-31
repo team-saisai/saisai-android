@@ -1,10 +1,10 @@
 package com.choius323.saisai.repository
 
+import com.choius323.saisai.data.course.remote.model.CheckPointDto
 import com.choius323.saisai.data.course.remote.model.CourseDataDto
 import com.choius323.saisai.data.course.remote.model.CourseDetailDto
 import com.choius323.saisai.data.course.remote.model.CourseItemDto
 import com.choius323.saisai.data.course.remote.model.GpxPointDto
-import com.choius323.saisai.data.course.remote.model.PointDto
 import com.choius323.saisai.data.course.remote.model.PopularChallengeItemDto
 import com.choius323.saisai.data.course.remote.model.RecentCourseDto
 import com.choius323.saisai.data.course.remote.model.ResumeRideDto
@@ -105,7 +105,7 @@ fun CourseDetailDto.toCourseDetail(): CourseDetail {
             LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat)
         },
         isEventActive = isEventActive ?: false,
-        checkPointList = checkpointList.toCheckPointList(gpxPointDtoList),
+        checkPointList = checkpointList.toCheckPointList(),
         duration = durationSecond?.times(1),
         checkpointIdx = checkpointIdx
     )
@@ -119,28 +119,8 @@ fun GpxPointDto.toGpxPoint(): GpxPoint = GpxPoint(
     totalDistance = totalDistance,
 )
 
-fun List<PointDto>.toCheckPointList(gpxPointDtoList: List<GpxPointDto>): List<CheckPoint> {
-    val gpxPointMap = gpxPointDtoList.withIndex().associate { (index, gpxPoint) ->
-        PointDto(gpxPoint.latitude, gpxPoint.longitude) to index
-    }
-
-    val newCheckPointList = this.mapNotNull { checkpoint ->
-        val gpxIndex = gpxPointMap[checkpoint]
-
-        if (gpxIndex != null && gpxPointDtoList[gpxIndex].elevation == null) {
-            CheckPoint(
-                lat = checkpoint.latitude,
-                lng = checkpoint.longitude,
-                gpxPointIdx = gpxIndex
-            )
-        } else {
-            null
-        }
-    }
-    if (newCheckPointList.size != this.size) throw Exception("체크 포인트가 GPX 포인트와 매칭되지 않습니다.")
-    return newCheckPointList.sortedBy(CheckPoint::gpxPointIdx)
-}
-
+fun List<CheckPointDto>.toCheckPointList() =
+    map { CheckPoint(lat = it.latitude, lng = it.longitude, gpxPointIdx = it.gpxPathIdx) }
 
 fun PopularChallengeItemDto.toPopularChallengeListItem(): PopularChallengeListItem {
     return PopularChallengeListItem(

@@ -77,7 +77,7 @@ fun RideHistoryItemDto.toRideHistoryItem() = RideHistoryItem(
     imageUrl = imageUrl,
     challengeStatus = challengeStatus,
     challengeEndedAt = challengeEndedAt?.let {
-        LocalDate.parse(challengeEndedAt, DateTimeFormat.dateTimeFormat)
+        LocalDate.parse(challengeEndedAt, DateTimeFormat.dateFormat)
     },
     isEventActive = isEventActive ?: false,
     rideId = rideId,

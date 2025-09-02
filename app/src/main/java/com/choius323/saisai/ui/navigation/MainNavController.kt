@@ -206,6 +206,9 @@ fun MainNavController(
                 goCourseList = {
                     navController.navigate(MainNavItem.BottomNavItem.Course) {
                         popUpTo(MainNavItem.BottomNavItem.MyPage)
+                        popUpTo(MainNavItem.BottomNavItem.RideHistory) {
+                            inclusive = true
+                        }
                     }
                 },
                 goBack = navController::upPress,

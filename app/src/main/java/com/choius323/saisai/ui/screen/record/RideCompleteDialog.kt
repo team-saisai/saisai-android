@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
@@ -60,25 +62,10 @@ fun RideCompleteDialog(
             .clickable(interactionSource = null, indication = null) {},
         contentAlignment = Alignment.Center
     ) {
-        Box(
-            Modifier
-                .align(Alignment.TopStart)
-                .padding(start = 24.dp)
-                .statusBarsPadding()
-                .size(TopAppBarHeight),
-            contentAlignment = Alignment.CenterStart,
+        Column(
+            Modifier.verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Icon(
-                Icons.AutoMirrored.Default.ArrowBack,
-                contentDescription = "Go Back",
-                modifier = Modifier
-                    .size(40.dp)
-                    .padding(8.dp)
-                    .clickable(onClick = goCourseDetail),
-                tint = Color.White,
-            )
-        }
-        Column(horizontalAlignment = Alignment.CenterHorizontally) {
             SaiText("수고하셨습니다!", fontSize = 18.sp)
             Spacer(Modifier.height(30.dp))
             Column(
@@ -107,6 +94,24 @@ fun RideCompleteDialog(
             ) {
                 SaiText("홈으로 이동하기", fontSize = 16.sp)
             }
+        }
+        Box(
+            Modifier
+                .align(Alignment.TopStart)
+                .padding(start = 24.dp)
+                .statusBarsPadding()
+                .size(TopAppBarHeight),
+            contentAlignment = Alignment.CenterStart,
+        ) {
+            Icon(
+                Icons.AutoMirrored.Default.ArrowBack,
+                contentDescription = "Go Back",
+                modifier = Modifier
+                    .size(40.dp)
+                    .padding(8.dp)
+                    .clickable(onClick = goCourseDetail),
+                tint = Color.White,
+            )
         }
     }
 }

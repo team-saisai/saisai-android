@@ -107,7 +107,7 @@ private fun AchievementItem(
 
 @Preview
 @Composable
-fun MyPageAchievementSectionPreview() {
+private fun MyPageAchievementSectionPreview() {
     val userProfile = UserProfile.sample1
     MyPageAchievementSection(
         userProfile = userProfile,

@@ -74,7 +74,7 @@ fun EmptyCourseList(
 
 @Preview
 @Composable
-fun EmptyCourseListPreview() {
+private fun EmptyCourseListPreview() {
     SaiTheme {
         EmptyCourseList(
             content = "저장한 코스가 없습니다.\n" +

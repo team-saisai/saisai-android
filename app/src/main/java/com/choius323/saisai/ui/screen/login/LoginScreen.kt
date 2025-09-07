@@ -162,7 +162,7 @@ fun LoginScreenContent(
 
 @Preview
 @Composable
-fun LoginScreenContentPreview() {
+private fun LoginScreenContentPreview() {
     LoginScreenContent(
         uiState = LoginUiState(isDelayed = false)
     ) {}
@@ -170,7 +170,7 @@ fun LoginScreenContentPreview() {
 
 @Preview
 @Composable
-fun LoginScreenContentPreviewDelayed() {
+private fun LoginScreenContentPreviewDelayed() {
     LoginScreenContent(
         uiState = LoginUiState(isDelayed = true)
     ) {}
@@ -178,7 +178,7 @@ fun LoginScreenContentPreviewDelayed() {
 
 @Preview(device = "spec:parent=pixel_5, orientation=landscape")
 @Composable
-fun LoginScreenContentPreviewLandscape() {
+private fun LoginScreenContentPreviewLandscape() {
     LoginScreenContent(
         uiState = LoginUiState(isDelayed = true)
     ) {}

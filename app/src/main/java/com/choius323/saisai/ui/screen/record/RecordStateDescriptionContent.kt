@@ -194,7 +194,7 @@ private fun ProgressText(modifier: Modifier = Modifier) {
 
 @Preview(showBackground = true, backgroundColor = 0xFF555555)
 @Composable
-fun DescriptionContentPreview() {
+private fun DescriptionContentPreview() {
     SaiTheme {
         DescriptionContent(
             nowCheckPointIdx = 2,
@@ -206,7 +206,7 @@ fun DescriptionContentPreview() {
 
 @Preview
 @Composable
-fun DescriptionContentPreviewCompleted() {
+private fun DescriptionContentPreviewCompleted() {
     SaiTheme {
         DescriptionContent(
             nowCheckPointIdx = 4,
@@ -218,7 +218,7 @@ fun DescriptionContentPreviewCompleted() {
 
 @Preview(showBackground = true, backgroundColor = 0xFF555555)
 @Composable
-fun DescriptionContentPreviewNoStarted() {
+private fun DescriptionContentPreviewNoStarted() {
     SaiTheme {
         DescriptionContent(
             nowCheckPointIdx = -1,
@@ -230,7 +230,7 @@ fun DescriptionContentPreviewNoStarted() {
 
 @Preview(showBackground = true, backgroundColor = 0xFF555555)
 @Composable
-fun DescriptionContentPausedPreview() {
+private fun DescriptionContentPausedPreview() {
     SaiTheme {
         DescriptionContent(
             nowCheckPointIdx = 3,

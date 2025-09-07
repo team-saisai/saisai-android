@@ -160,7 +160,7 @@ private fun CautionDialogItem(
 
 @Preview
 @Composable
-fun CourseDetailCautionDialogPreview() {
+private fun CourseDetailCautionDialogPreview() {
     CourseDetailCautionDialog(
         true,
         onClickButton = { _, _ -> }

@@ -102,7 +102,7 @@ fun DeleteBookmarkDialog(
 
 @Preview
 @Composable
-fun DeleteBookmarkDialogPreview() {
+private fun DeleteBookmarkDialogPreview() {
     SaiTheme {
         Surface(
             modifier = Modifier.size(500.dp)

@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">사이사이</string>
+    <string name="app_name">사이사이 - 일상에 스며든 라이딩 코스</string>
     <string name="app_name_debug">사이사이(디버그)</string>
 
     <!-- 권한 요청 -->

@@ -20,7 +20,7 @@ import androidx.compose.ui.viewinterop.AndroidView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.choius323.saisai.ui.component.ComposableLifecycle
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.theme.SaiColor
 import com.google.accompanist.permissions.ExperimentalPermissionsApi
 import com.google.android.gms.location.LocationCallback
@@ -48,7 +48,7 @@ fun MapScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MapSideEffect.NavigateBack -> goBack()
-            is MapSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is MapSideEffect.ShowToast -> context.saiToast(sideEffect.message)
         }
     }
 

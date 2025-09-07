@@ -35,7 +35,7 @@ import com.choius323.saisai.BuildConfig
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.UserProfile
 import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiColor
@@ -65,7 +65,7 @@ fun MyPageScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is MyPageSideEffect.ShowToast -> {
-                context.SaiToast(sideEffect.message)
+                context.saiToast(sideEffect.message)
             }
 
             MyPageSideEffect.GoProfile -> goProfile()
@@ -81,9 +81,9 @@ fun MyPageScreen(
                 try {
                     context.startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
-                    context.SaiToast("웹 페이지를 열 수 있는 앱이 설치되어 있지 않습니다.")
+                    context.saiToast("웹 페이지를 열 수 있는 앱이 설치되어 있지 않습니다.")
                 } catch (e: Exception) {
-                    context.SaiToast("알 수 없는 오류가 발생했습니다.")
+                    context.saiToast("알 수 없는 오류가 발생했습니다.")
                 }
             }
         }

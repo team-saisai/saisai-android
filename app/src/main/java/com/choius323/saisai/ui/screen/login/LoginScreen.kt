@@ -37,7 +37,7 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.ui.theme.AppTitle
 import com.choius323.saisai.ui.theme.SaiColor
@@ -65,7 +65,7 @@ fun LoginScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is LoginSideEffect.ShowToast -> {
-                context.SaiToast(sideEffect.message)
+                context.saiToast(sideEffect.message)
             }
 
             is LoginSideEffect.GoHome -> {

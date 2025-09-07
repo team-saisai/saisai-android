@@ -30,8 +30,8 @@ import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.HandlePermissionActions
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.TopAppBarHeight
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.screen.map.getCurrentLocation
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -101,7 +101,7 @@ fun RecordScreen(
                             )
                         )
                     } else {
-                        context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                        context.saiToast("위치 정보를 가져올 수 없습니다.")
                     }
                 })
         }
@@ -110,7 +110,7 @@ fun RecordScreen(
         when (sideEffect) {
             is RecordSideEffect.NavigateBack -> onBack()
             is RecordSideEffect.PermissionRequest -> permissionState.launchMultiplePermissionRequest()
-            is RecordSideEffect.ShowToast -> context.SaiToast(sideEffect.msg)
+            is RecordSideEffect.ShowToast -> context.saiToast(sideEffect.msg)
 
             is RecordSideEffect.PermissionCheck ->
                 if (permissionState.allPermissionsGranted) {
@@ -125,7 +125,7 @@ fun RecordScreen(
                                     )
                                 )
                             } else {
-                                context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                                context.saiToast("위치 정보를 가져올 수 없습니다.")
                             }
                         })
                 } else {
@@ -145,7 +145,7 @@ fun RecordScreen(
                                     )
                                 )
                             } else {
-                                context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                                context.saiToast("위치 정보를 가져올 수 없습니다.")
                             }
                         })
                 } else {
@@ -234,7 +234,7 @@ fun RecordScreenContent(
                                 )
                             )
                         } else {
-                            context.SaiToast("위치 정보를 가져올 수 없습니다.")
+                            context.saiToast("위치 정보를 가져올 수 없습니다.")
                         }
                     })
             },

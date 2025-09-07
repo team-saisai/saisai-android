@@ -27,7 +27,7 @@ import com.choius323.saisai.ui.component.ChangeStatusBarIconsColor
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.CourseDetail
 import com.choius323.saisai.ui.screen.map.MapScreen
 import com.choius323.saisai.ui.screen.map.MapUiEvent
@@ -54,7 +54,7 @@ fun CourseDetailScreen(
         when (sideEffect) {
             is CourseDetailSideEffect.StartCourse -> goRecordScreen(viewModel.courseId)
             is CourseDetailSideEffect.GoBack -> goBack()
-            is CourseDetailSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is CourseDetailSideEffect.ShowToast -> context.saiToast(sideEffect.message)
         }
     }
     BackHandler {

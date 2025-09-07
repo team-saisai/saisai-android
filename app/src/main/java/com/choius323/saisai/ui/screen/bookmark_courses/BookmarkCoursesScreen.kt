@@ -24,8 +24,8 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.SortDropDown
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.CourseSort
 import org.koin.androidx.compose.koinViewModel
 import org.orbitmvi.orbit.compose.collectAsState
@@ -50,7 +50,7 @@ fun BookmarkCoursesScreen(
             is BookmarkCoursesSideEffect.GoCourseDetail -> goCourseDetail(sideEffect.courseId)
             is BookmarkCoursesSideEffect.GoCourseList -> goCourseList()
             is BookmarkCoursesSideEffect.ShowToast -> {
-                context.SaiToast(sideEffect.message)
+                context.saiToast(sideEffect.message)
             }
         }
     }

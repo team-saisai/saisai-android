@@ -43,7 +43,7 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.ui.theme.pretendardFamily
@@ -64,7 +64,7 @@ fun NicknameEditScreen(
         when (sideEffect) {
             is NicknameEditSideEffect.NavigateBack -> goBack()
             is NicknameEditSideEffect.NicknameUpdateSuccess -> goBack()
-            is NicknameEditSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is NicknameEditSideEffect.ShowToast -> context.saiToast(sideEffect.message)
         }
     }
 

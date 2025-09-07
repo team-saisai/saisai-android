@@ -26,8 +26,8 @@ import com.choius323.saisai.ui.component.CourseListItemHorizontal
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.bottomNavigationBarHeight
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -53,7 +53,7 @@ fun CourseListScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             is CourseListSideEffect.GoCourseDetail -> onClickCourse(sideEffect.courseId)
-            is CourseListSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is CourseListSideEffect.ShowToast -> context.saiToast(sideEffect.message)
         }
     }
 

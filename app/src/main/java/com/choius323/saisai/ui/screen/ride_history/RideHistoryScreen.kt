@@ -33,8 +33,8 @@ import androidx.compose.ui.unit.sp
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.SortDropDown
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.CourseSort
 import com.choius323.saisai.ui.model.RideHistoryItem
 import com.choius323.saisai.ui.screen.bookmark_courses.DeleteBookmarkDialog
@@ -63,7 +63,7 @@ fun RideHistoryScreen(
             is RideHistorySideEffect.GoBack -> goBack()
             is RideHistorySideEffect.GoCourseDetail -> goCourseDetail(sideEffect.courseId)
             is RideHistorySideEffect.GoCourseList -> goCourseList()
-            is RideHistorySideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is RideHistorySideEffect.ShowToast -> context.saiToast(sideEffect.message)
         }
     }
 

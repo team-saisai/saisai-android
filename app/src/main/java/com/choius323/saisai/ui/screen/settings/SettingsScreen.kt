@@ -38,7 +38,7 @@ import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiDialog
 import com.choius323.saisai.ui.component.SaiSwitch
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.LoginType
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.util.GoogleAccountUtil
@@ -109,7 +109,7 @@ fun SettingsScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             SettingsSideEffect.GoBack -> goBack()
-            is SettingsSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is SettingsSideEffect.ShowToast -> context.saiToast(sideEffect.message)
             SettingsSideEffect.GoLogin -> goLogin()
             is SettingsSideEffect.ReLoginOAuth -> when (sideEffect.loginType) {
                 LoginType.KAKAO -> {

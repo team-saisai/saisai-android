@@ -40,7 +40,7 @@ import androidx.compose.ui.unit.sp
 import androidx.core.net.toUri
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
 import com.choius323.saisai.util.SAISAI_TERM_OF_SERVICE
@@ -60,16 +60,16 @@ fun SignUpScreen(
     viewModel.collectSideEffect { sideEffect ->
         when (sideEffect) {
             SignUpSideEffect.GoBack -> goBack()
-            is SignUpSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is SignUpSideEffect.ShowToast -> context.saiToast(sideEffect.message)
             SignUpSideEffect.GoHome -> goHome()
             SignUpSideEffect.GoTermOfServiceDetail -> {
                 val intent = Intent(Intent.ACTION_VIEW, SAISAI_TERM_OF_SERVICE.toUri())
                 try {
                     context.startActivity(intent)
                 } catch (e: ActivityNotFoundException) {
-                    context.SaiToast("웹 페이지를 열 수 있는 앱이 설치되어 있지 않습니다.")
+                    context.saiToast("웹 페이지를 열 수 있는 앱이 설치되어 있지 않습니다.")
                 } catch (e: Exception) {
-                    context.SaiToast("알 수 없는 오류가 발생했습니다.")
+                    context.saiToast("알 수 없는 오류가 발생했습니다.")
                 }
             }
         }

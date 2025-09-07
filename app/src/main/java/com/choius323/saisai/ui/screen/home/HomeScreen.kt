@@ -35,7 +35,7 @@ import com.choius323.saisai.ui.component.FullBleedContainer
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.CourseListItem
 import com.choius323.saisai.ui.model.RecentCourse
 import com.choius323.saisai.ui.model.UserBadge
@@ -63,7 +63,7 @@ fun HomeScreen(
         when (sideEffect) {
             is HomeSideEffect.GoToDetail -> goToDetail(sideEffect.courseId)
             is HomeSideEffect.GoToRecord -> goToRecord(sideEffect.courseId)
-            is HomeSideEffect.ShowToast -> context.SaiToast(sideEffect.message)
+            is HomeSideEffect.ShowToast -> context.saiToast(sideEffect.message)
             is HomeSideEffect.GoNotificationList -> goNotificationList()
         }
     }
@@ -183,7 +183,7 @@ private fun HomeBackHandler() {
             activity?.finish()
         } else {
             backPressedTime = System.currentTimeMillis()
-            context.SaiToast("한 번 더 누르면 종료됩니다.")
+            context.saiToast("한 번 더 누르면 종료됩니다.")
         }
     }
 }

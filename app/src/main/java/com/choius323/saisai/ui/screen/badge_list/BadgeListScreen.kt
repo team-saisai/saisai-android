@@ -37,8 +37,8 @@ import com.choius323.saisai.R
 import com.choius323.saisai.ui.component.FullScreenLoading
 import com.choius323.saisai.ui.component.ProvideAppBar
 import com.choius323.saisai.ui.component.SaiText
-import com.choius323.saisai.ui.component.SaiToast
 import com.choius323.saisai.ui.component.TopAppBarHeight
+import com.choius323.saisai.ui.component.saiToast
 import com.choius323.saisai.ui.model.UserBadge
 import com.choius323.saisai.ui.theme.SaiColor
 import com.choius323.saisai.ui.theme.SaiTheme
@@ -58,7 +58,7 @@ fun BadgeListScreen(
         when (sideEffect) {
             is BadgeListSideEffect.GoBack -> goBack
             is BadgeListSideEffect.ShowToast -> {
-                context.SaiToast(sideEffect.message)
+                context.saiToast(sideEffect.message)
             }
         }
     }

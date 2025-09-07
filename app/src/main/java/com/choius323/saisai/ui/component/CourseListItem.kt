@@ -59,8 +59,7 @@ fun CourseListItemHorizontal(
         modifier = modifier
             .fillMaxWidth()
             .clip(CircleShape.copy(CornerSize(16.dp)))
-            .background(Color(0xFF2B2E31))
-            .height(IntrinsicSize.Min),
+            .background(Color(0xFF2B2E31)),
         verticalAlignment = Alignment.CenterVertically
     ) {
         CourseItemImageSection(
@@ -82,6 +81,7 @@ fun CourseListItemHorizontal(
             isBookmarked = if (showBookmark) course.isBookmarked else null,
             modifier = Modifier
                 .weight(1f)
+                .heightIn(min = 132.dp)
                 .padding(top = 12.dp, bottom = 18.dp, end = 10.dp),
             onClickBookmark = onClickBookmark,
         )
@@ -168,7 +168,8 @@ private fun CourseInformationSection(
     onClickBookmark: () -> Unit = {},
 ) {
     Column(
-        modifier = modifier
+        modifier = modifier,
+        verticalArrangement = Arrangement.SpaceBetween
     ) {
         CourseItemTitleSection(
             courseName,
@@ -176,12 +177,6 @@ private fun CourseInformationSection(
             level,
             isBookmarked,
             onClickBookmark = onClickBookmark
-        )
-
-        Spacer(
-            modifier = Modifier
-                .weight(1f)
-                .heightIn(min = 10.dp)
         )
 
         // 현재 도전 인원 정보

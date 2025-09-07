@@ -3,9 +3,11 @@ package com.choius323.saisai.ui.screen.course_list
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -53,7 +55,11 @@ fun CourseListHead(
     setCourseType: (CourseType) -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    Row(modifier, verticalAlignment = Alignment.CenterVertically) {
+    FlowRow(
+        modifier,
+        itemVerticalAlignment = Alignment.CenterVertically,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
         CourseTypeButtonGroup(
             selected = courseType,
             setCourseType = setCourseType
@@ -128,7 +134,7 @@ private fun CourseTypeButtonGroupItem(
 @Composable
 private fun SortDropDown(
     selected: CourseSort,
-    sortList:List<CourseSort>,
+    sortList: List<CourseSort>,
     onSelectedSort: (CourseSort) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -212,6 +218,29 @@ private fun ColumnScope.CourseSortDropDownItem(
 @Preview
 @Composable
 private fun CourseListHeadPreview() {
+    val sortList = listOf(
+        CourseSort.levelAsc,
+        CourseSort.levelDesc,
+        CourseSort.participantsDesc,
+        CourseSort.endSoon,
+    )
+    SaiTheme {
+        Surface {
+            CourseListHead(
+                CourseType.challenge,
+                CourseSort.levelAsc,
+                sortList,
+                {},
+                {},
+                Modifier.fillMaxWidth()
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 300)
+@Composable
+private fun CourseListHeadPreview2() {
     val sortList = listOf(
         CourseSort.levelAsc,
         CourseSort.levelDesc,

@@ -4,10 +4,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -80,7 +78,6 @@ fun CourseListScreenContent(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp)
-                .height(IntrinsicSize.Min)
         )
         CourseListSection(
             courseList = uiState.courseList,
@@ -102,10 +99,9 @@ private fun CourseListSection(
 ) {
     LazyColumn(
         modifier = modifier
-            .fillMaxWidth()
-            .padding(top = 10.dp),
+            .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(20.dp),
-        contentPadding = PaddingValues(top = 10.dp, bottom = bottomNavigationBarHeight)
+        contentPadding = PaddingValues(top = 10.dp, bottom = bottomNavigationBarHeight + 10.dp)
     ) {
         itemsIndexed(courseList, { _, course -> course.courseId }) { index, course ->
             CourseListItemHorizontal(
@@ -142,6 +138,27 @@ private fun CourseListSection(
 @Preview
 @Composable
 private fun CourseListScreenContentPreview() {
+    AndroidThreeTen.init(LocalContext.current)
+    val sampleCourseList = listOf(
+        CourseListItem.dummyItem1,
+        CourseListItem.dummyItem2,
+        CourseListItem.dummyItem3
+    )
+    SaiTheme {
+        Surface {
+            CourseListScreenContent(
+                uiState = CourseListUiState(
+                    courseList = sampleCourseList
+                ),
+                onEvent = {}
+            )
+        }
+    }
+}
+
+@Preview(widthDp = 300)
+@Composable
+private fun CourseListScreenContentPreviewSmallWidth() {
     AndroidThreeTen.init(LocalContext.current)
     val sampleCourseList = listOf(
         CourseListItem.dummyItem1,

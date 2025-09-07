@@ -3,11 +3,11 @@ agp = "8.11.1"
 
 # Kotlin
 googleid = "1.1.1"
-kotlin = "2.2.0"
+kotlin = "2.2.10"
 
 # Androidx
 coreKtx = "1.16.0"
-lifecycleRuntimeKtx = "2.9.2"
+lifecycleRuntimeKtx = "2.9.3"
 
 # Testing
 junit = "4.13.2"
@@ -17,16 +17,16 @@ espressoCore = "3.6.1"
 # Compose
 composeBom = "2025.07.00"
 activityCompose = "1.10.1"
-navigationCompose = "2.9.2"
+navigationCompose = "2.9.3"
 
 # Koin
-koin = "4.1.0"
+koin = "4.1.1"
 
 # Coroutines
 kotlinxCoroutines = "1.10.2"
 
 # Network
-ktor = "3.2.2"
+ktor = "3.2.3"
 logbackClassic = "1.5.18"
 
 # Kotlin Serialization
@@ -46,7 +46,7 @@ accompanist = "0.37.3"
 
 # Kakao
 kakaoMap = "2.12.8"
-kakao = "2.21.6"
+kakao = "2.21.7"
 
 # DataStore
 datastore = "1.1.7"

@@ -146,7 +146,6 @@ private fun RidingHeadLine(
                     Modifier.size(20.dp),
                     contentAlignment = Alignment.Center
                 ) {
-                    // TODO: `Checkbox`의 최소 크기가 20dp 이므로, 커스텀해서 13dp로 수정 필요.
                     Checkbox(
                         checked = isRidingOnly,
                         onCheckedChange = null,

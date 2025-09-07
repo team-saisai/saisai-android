@@ -80,7 +80,8 @@ private fun BottomNavigationBarContent(
         ) {
             Row(
                 modifier = Modifier
-                    .width(390.dp),
+                    .width(390.dp)
+                    .navigationBarsPadding(),
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
                 for (screen in bottomBarItems) {
@@ -89,8 +90,7 @@ private fun BottomNavigationBarContent(
                         modifier = Modifier
                             .weight(1f)
                             .clickable { navigate(screen) }
-                            .padding(top = 10.dp, bottom = 12.dp)
-                            .navigationBarsPadding(),
+                            .padding(top = 10.dp, bottom = 12.dp),
                         verticalArrangement = Arrangement.Center,
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {

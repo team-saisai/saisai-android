@@ -187,7 +187,9 @@ fun MainNavController(
         }
         composable<MainNavItem.NicknameEdit> { backStackEntry ->
             NicknameEditScreen(
-                modifier = modifier.fillMaxSize(),
+                modifier = modifier
+                    .fillMaxSize()
+                    .navigationBarsPadding(),
                 goBack = {
                     navController.navigate(MainNavItem.BottomNavItem.MyPage) {
                         popUpTo(MainNavItem.BottomNavItem.MyPage) {

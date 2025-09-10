@@ -86,7 +86,7 @@ private fun BadgeDetailDialogContent(badge: UserBadge, modifier: Modifier = Modi
             contentDescription = "뱃지 이미지",
             modifier = Modifier
                 .size(140.dp),
-            contentScale = ContentScale.Crop,
+            contentScale = ContentScale.Fit,
         )
         Spacer(Modifier.height(12.dp))
         BadgeDetailDialogDescription(badge)

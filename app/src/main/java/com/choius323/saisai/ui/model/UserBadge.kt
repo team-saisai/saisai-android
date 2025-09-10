@@ -1,5 +1,7 @@
 package com.choius323.saisai.ui.model
 
+import com.choius323.saisai.R
+
 data class UserBadge(
     val id: Long,
     val name: String,
@@ -11,7 +13,7 @@ data class UserBadge(
         val sample1 = UserBadge(
             id = 1,
             name = "천리 길도\n한 바퀴부터",
-            imageUrl = null,
+            imageUrl = R.drawable.img_badge_lock,
             description = "사이사이에서의 완벽한 첫 걸음! 앞으로 함께 나아갈 길이 기대됩니다.",
             condition = "첫 코스 완주 시 "
         )

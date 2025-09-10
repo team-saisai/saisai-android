@@ -144,9 +144,9 @@ private const val COLOR_LINE_LAYER_ID = "ColorLineLayer"
 private const val END_POINTS_LAYER_ID = "EndPointsLayer"
 
 private val startStyle: LabelStyle =
-    LabelStyle.from(R.drawable.img_play_arrow).setAnchorPoint(0.5f, 0.5f)
+    LabelStyle.from(R.drawable.img_play_arrow).setAnchorPoint(0.45f, 0.45f)
 private val endStyle: LabelStyle =
-    LabelStyle.from(R.drawable.img_flag).setAnchorPoint(0.5f, 0.5f)
+    LabelStyle.from(R.drawable.img_flag).setAnchorPoint(0.2f, 0.9f)
 private val directionStyle: LabelStyles =
     LabelStyles.from(
         DIRECTION_LABEL, LabelStyle.from(R.drawable.ic_ride_bicycle).setAnchorPoint(0.5f, 0.5f)
